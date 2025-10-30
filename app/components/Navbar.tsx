@@ -3,9 +3,9 @@ import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@cl
 
 export default function Navbar() {
     return (
-        <nav className='fixed w-full pt-4 top-0 left-0 flex items-center bg-blue-400'>
+        <nav className='fixed w-full pt-8 top-0 left-0 flex items-center bg-transparent z-50'>
             <Link href='/'>
-                <h2 className='text-blue-700 text-3xl ml-6'>Gorilla Ai</h2>
+                <h2 className='text-blue-700 text-3xl ml-6 cursor-pointer'>Gorilla Ai</h2>
             </Link>
             <ul className='absolute left-1/2 -translate-x-1/2 flex flex-row gap-8'>
                 <Link href='/features'>

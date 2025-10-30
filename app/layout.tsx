@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Gorilla AI - Your Creative AI Agent",
-  description: "Generate stunning AI images with DALL-E",
+  description: "Generate stunning AI images with Gorilla",
 };
 
 export default function RootLayout({
@@ -29,7 +29,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           <Navbar />
-          <main className='pt-[140px]'>
+          <main>
             {children}
           </main>
         </body>
