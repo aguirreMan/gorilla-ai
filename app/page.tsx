@@ -4,7 +4,7 @@ import Gorilla from '../public/assets/super-gorilla.jpg'
 
 export default function Home() {
   return (
-    <div className='relative h-[150vh] w-full'>
+    <div className='relative h-[150vh] w-full '>
       <Image
         src={Gorilla}
         alt='super-gorilla'
