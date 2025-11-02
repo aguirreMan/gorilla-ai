@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-
-
+import Link from 'next/link'
 
 export default function Banner() {
     const [banner, setBanner] = useState(false)
@@ -72,18 +71,29 @@ export default function Banner() {
                         />
                     </div>
 
+                    {/**dark overlay */}
+
+                    <div className='absolute inset-0 bg-black/40' />
+
                     {/* Content */}
-                    <div className="relative z-10 text-center p-6">
+                    <div className='relative z-10 flex flex-col justify-center
+                    h-full text-center p-8 items-center'>
                         <button
                             onClick={closeBanner}
-                            className="absolute top-2 right-3 text-white hover:text-gray-300 text-xl cursor-pointer z-20"
-                        >
+                            className='absolute top-4 right-4 text-white 
+                            hover:text-gray-300 text-xl cursor-pointer z-20
+                            bg-black/30 rounded-full w-8 h-8 flex justify-center
+                            hover:bg-black/50 transition'>
                             X
                         </button>
-                        <h1 className="text-2xl font-semibold text-cyan-400 mb-2 mt-4">
-                            Gorilla AI Model 2 coming soon!
+                        <h1 className='text-4xl font-bold text-green-700 mb-4'>
+                            Gorilla Mode coming soon!
                         </h1>
-                        <p className="text-gray-200">Stay tuned for the latest updates!</p>
+                        <p className='text-xl text-center text-white/80 mb-8'>The next evolution of Ai image generation</p>
+                        <Link href='/research' onClick={closeBanner}
+                            className='mt-8 px-6 py-2 bg-green-600 text-white rounded-full
+                        hover:bg-green-950 transition font-semibold
+                        text-lg shadow-xl hover:scale-105 transform'>Learn more</Link>
                     </div>
                 </div>
             </div>
