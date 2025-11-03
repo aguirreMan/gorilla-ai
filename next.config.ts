@@ -1,7 +1,29 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
-};
+  reactStrictMode: true,
 
-export default nextConfig;
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '2mb',
+      allowedOrigins: ['*']
+    }
+  },
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'openai.com'
+      }
+    ],
+    formats: ['image/webp'],
+    minimumCacheTTL: 60
+  },
+  env: {
+    NEXT_PUBLIC_APP_NAME: 'Gorilla AI'
+  }
+  /* config options here */
+}
+
+export default nextConfig
