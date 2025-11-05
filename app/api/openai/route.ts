@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     if (!apiKey || apiKey === 'fakeKeyforNow') {
         return NextResponse.json({
             data: [
-                { url: 'https://via.placeholder.com/1024x1024?text=Mock+Image' }
+                { url: 'https://media.istockphoto.com/id/484915982/photo/akihabara-tokyo.jpg?s=612x612&w=0&k=20&c=kbCRYJS5vZuF4jLB3y4-apNebcCEkWnDbKPpxXdf9Cg=' }
             ]
         })
         //fetchOpenAI() this would be the real key eventually
