@@ -5,8 +5,8 @@ export default function SignInPage() {
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-blue-800">
-            <SignIn />
+        <div className='min-h-screen flex items-center justify-center bg-blue-800'>
+            <SignIn forceRedirectUrl='/dashboard' />
         </div>
     )
 }
