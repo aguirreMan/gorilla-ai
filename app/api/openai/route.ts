@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { RequestImage } from '@/app/types/openai'
+import { OpenAIImageResponse, OpenAIImageRequest, UserImageRequest } from '@/app/types/openai'
 
+
+const apiKey = process.env.OPENAI_IMAGE_API_KEY
 
 export async function POST(request: Request) {
     const { userId } = await auth()
@@ -12,17 +14,38 @@ export async function POST(request: Request) {
         )
     }
 
-    const body: RequestImage = await request.json()
-    const { prompt } = body
+    const userRequest: UserImageRequest = await request.json()
 
-    const apiKey = process.env.OPENAI_API_KEY
-    if (!apiKey || apiKey === 'fakeKeyforNow') {
-        return NextResponse.json({
-            data: [
-                { url: 'https://media.istockphoto.com/id/484915982/photo/akihabara-tokyo.jpg?s=612x612&w=0&k=20&c=kbCRYJS5vZuF4jLB3y4-apNebcCEkWnDbKPpxXdf9Cg=' }
-            ]
-        })
-        //fetchOpenAI() this would be the real key eventually
+    const userOptions: OpenAIImageRequest = {
+        model: userRequest.model ?? 'dall-e-3',
+        prompt: userRequest.prompt as string,
+        n: userRequest.n ?? 1,
+        size: userRequest.size ?? '512x512',
+        response_format: userRequest.response_format ?? 'url'
     }
+
+
+
+    if (!apiKey) {
+        return NextResponse.json(
+            { error: 'Server error check api key' },
+            { status: 500 }
+        )
+    }
+    fetchOpenAi(userOptions)
     return NextResponse.json(prompt)
+}
+
+
+async function fetchOpenAi(options: OpenAIImageRequest): Promise<OpenAIImageResponse> {
+    const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify(options)
+    })
+    const imageData: OpenAIImageResponse = await imageResponse.json()
+    return imageData
 }
