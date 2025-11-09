@@ -1,5 +1,5 @@
 export type OpenAIImageRequest = {
-    model: 'dall-e-3' | 'dall-e-2' | 'gpt-image-1'
+    model: 'dall-e-3' | 'dall-e-2'
     size?: '1024x1024' | '256x256' | '512x512'
     n: number
     prompt: string
@@ -23,10 +23,4 @@ export type RequestImage = {
 
 export type UserImageRequest = Partial<Omit<OpenAIImageRequest, 'prompt'>> & {
     prompt: string
-}
-
-// This is data that i want to track later for supabase
-type ReturnedImageObject = {
-    responseFormat: 'url' | 'b64_json'
-    imageFormat: 'webp' | 'jpeg' | 'png'
 }
