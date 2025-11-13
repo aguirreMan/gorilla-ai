@@ -21,10 +21,10 @@ export default function DashboardPage() {
 
     return (
         <>
-            <div className='pt-6'>
-                <h1>Gorilla AI</h1>
-                <h1 className='text-2xl font-semibold p-4 m-2'>Welcome {user?.firstName}</h1>
-            </div>
+            <aside className='pt-6 bg-blue-500 max-w-[20%] h-screen fixed'>
+                <h1 className='ml-4 text-green-700 text-3xl top-0 left-0'>Gorilla AI</h1>
+                <h2 className='text-2xl font-semibold pt-4 m-2 break-normal'>Welcome {user?.firstName}</h2>
+            </aside>
         </>
     )
 }
