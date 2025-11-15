@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation'
 export default function ConditionalNavbar() {
     const pathname = usePathname()
     const hideNavBar = pathname.startsWith('/sign-in') ||
-        pathname.startsWith('/sign-up') || ('/dashboard')
+        pathname.startsWith('/sign-up') || pathname.startsWith('/dashboard')
 
     if (hideNavBar) return null
     return <Navbar />
