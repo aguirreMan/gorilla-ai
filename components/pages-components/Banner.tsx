@@ -35,7 +35,6 @@ export default function Banner() {
         return () => window.removeEventListener('keydown', closeWithEscape)
     }, [])
 
-
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (bannerRef.current && !bannerRef.current.contains(event.target as Node)) {
