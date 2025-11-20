@@ -2,9 +2,8 @@
 
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
-import { Label } from '@/components/ui/label'
-
 import { useState } from 'react'
+import { Check } from 'lucide-react'
 
 type PaymentType = 'yearly' | 'monthly'
 
@@ -61,32 +60,66 @@ export default function PricingPage() {
 
     return (
         <>
-            <div className='flex flex-col items-center pt-24'>
-                <h1 className='mb-4'>Choose your plan</h1>
-                <span>{subscriptionType}</span>
-                <Switch
-                    id='subscription-switch'
-                    checked={subscriptionType === 'yearly'}
-                    onCheckedChange={toggleSubscriptionPlans}
-                    className='flex items-center cursor-pointer' />
-                <Label htmlFor='subscription-switch' />
+            <div className='flex flex-col items-center pt-24 px-4'>
+                <h1 className='text-4xl md:text-6xl font-bold tracking-tight text-center'>Simple transparent pricing</h1>
+                <p className='text-lg text-muted-foreground mt-4 text-center max-w-2xl'>
+                    Choose the plan that fits your workflow. No hidden fees. Cancel anytime.
+                </p>
+                {/*Toggle switch*/}
+                <div className='flex items-center gap-3 mt-8'>
+                    <span className={subscriptionType === 'monthly' ? 'font-semibold' : 'text-muted-foreground'}>
+                        Monthly
+                    </span>
+                    <Switch
+                        id="subscription-switch"
+                        checked={subscriptionType === 'yearly'}
+                        onCheckedChange={toggleSubscriptionPlans}
+                    />
+                    <span className={subscriptionType === 'yearly' ? 'font-semibold' : 'text-muted-foreground'}>
+                        Yearly
+                    </span>
+                </div>
             </div>
-            <div className='grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl pt-4 px-4'>
+
+            {/*Pricing Cards */}
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl pt-16 px-4'>
                 {plans.map((plan, index) => (
                     <Card
                         key={index}
-                        className={plan.featured ? 'scale-105 border-2 border-green-500 shadow-xl relative' : ''}
+                        className={`relative rounded-2xl p-6 bg-linear-to from-background to-muted/20
+                            border border-border/40 shadow-lg transition-all
+                            hover:shadow-2xl hover:-translate-y-1
+                             ${plan.featured ? 'ring-2 ring-primary bg-primary/5 scale-[1.02]' : ''}`}
                     >
+                        {plan.featured && (
+                            <span className='absolute top-4 right-4 text-xs px-2
+                            py-1 rounded-full bg-primary text-primary-foreground'>
+                                Most Popular
+                            </span>
+                        )}
                         <CardHeader>
-                            <CardTitle className='text-center text-4xl'>{plan.name}</CardTitle>
+                            <CardTitle className='text-center text-4xl font-bold'>
+                                {plan.name}
+                            </CardTitle>
                         </CardHeader>
+
                         <CardContent>
-                            <div className='text-3xl font-bold'>
+                            <div className='text-3xl font-bold tracking-tight flex items-baseline gap-1 justify-center'>
                                 {subscriptionType === 'yearly' ? plan.yearlyPlan : plan.monthlyPlan}
+
+                                {plan.monthlyPlan !== 'Custom' && (
+                                    <span className='text-base text-muted-foreground'>
+                                        /{subscriptionType === 'yearly' ? 'year' : 'month'}
+                                    </span>
+                                )}
                             </div>
-                            <ul className='mt-4 space-y-2'>
+
+                            <ul className='mt-6 space-y-3'>
                                 {plan.features.map((feature, idx) => (
-                                    <li key={idx} className='text-sm'>{feature}</li>
+                                    <li key={idx} className='flex items-center gap-2 text-sm'>
+                                        <Check className='w-4 h-4 text-primary ' />
+                                        {feature}
+                                    </li>
                                 ))}
                             </ul>
                         </CardContent>
