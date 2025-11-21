@@ -86,7 +86,7 @@ export default function Banner() {
                             X
                         </button>
                         <h1 className='text-4xl font-bold text-green-700 mb-4'>
-                            Gorilla Mode coming soon!
+                            Kong model coming soon!
                         </h1>
                         <p className='text-xl text-center text-white/80 mb-8'>The next evolution of Ai image generation</p>
                         <Link href='/research' onClick={closeBanner}
