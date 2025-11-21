@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'openai.com'
+        hostname: 'oaidalleapiprodscus.blob.core.windows.net',
       }
     ],
     formats: ['image/webp'],

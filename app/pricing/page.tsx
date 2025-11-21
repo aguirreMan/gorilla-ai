@@ -4,6 +4,8 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { useState } from 'react'
 import { Check } from 'lucide-react'
+import Image from 'next/image'
+import Gorilla from '@/public/assets/gorilla-night.jpg'
 
 type PaymentType = 'yearly' | 'monthly'
 
@@ -15,14 +17,13 @@ export default function PricingPage() {
         setSubscriptionType(checked ? 'yearly' : 'monthly')
     }
 
-
     //Create plans for my pricing cards to dynamically generate cards from shad cn
     const plans = [
         {
-            name: 'Standard',
-            monthlyPlan: '$6',
-            yearlyPlan: '$65',
-            price: '$6',
+            name: 'Free',
+            monthlyPlan: '$0',
+            yearlyPlan: '$0',
+            price: '$0',
             featured: false,
             features: [
                 '5 generations per week',
@@ -32,21 +33,21 @@ export default function PricingPage() {
         },
         {
             name: 'Pro',
-            monthlyPlan: '$8',
-            yearlyPlan: '$80',
+            monthlyPlan: '$9',
+            yearlyPlan: '$85',
             featured: true,
             features: [
                 'Unlimited generations',
                 'Edit images',
-                'Access to premier model',
+                'Access to our premier models',
                 'Different model options',
                 'High quality images'
             ]
         },
         {
-            name: 'Enterprise',
-            monthlyPlan: 'Custom',
-            yearlyPlan: 'Custom',
+            name: 'Unlimited',
+            monthlyPlan: '$25',
+            yearlyPlan: '$200',
             featured: false,
             features: [
                 'Everything in Pro',
@@ -59,37 +60,56 @@ export default function PricingPage() {
     ]
 
     return (
-        <>
-            <div className='flex flex-col items-center pt-24 px-4'>
-                <h1 className='text-4xl md:text-6xl font-bold tracking-tight text-center'>Simple transparent pricing</h1>
-                <p className='text-lg text-muted-foreground mt-4 text-center max-w-2xl'>
+        <div className='min-h-screen text-white relative'>
+            {/**This is for the background */}
+            <div className='absolute inset-0 -z-10 overflow-hidden'>
+                <Image
+                    src={Gorilla}
+                    alt='super-gorilla'
+                    fill
+                    priority
+                    sizes='100vw'
+                    className='object-cover object-center'
+                />
+                <div className='absolute inset-0 bg-black/60'></div>
+            </div>
+
+            {/**Header and toggle */}
+            <div className='relative z-2 flex flex-col items-center pt-24 px-4'>
+                <h1 className='text-4xl sm:text-4xl font-bold tracking-tight 
+                    text-center leading-tight'>
+                    Unlock the power of Gorilla AI
+                </h1>
+                <p className='text-lg sm:text-lg text-white/80 mt-4 text-center max-w-2xl'>
                     Choose the plan that fits your workflow. No hidden fees. Cancel anytime.
                 </p>
                 {/*Toggle switch*/}
                 <div className='flex items-center gap-3 mt-8'>
-                    <span className={subscriptionType === 'monthly' ? 'font-semibold' : 'text-muted-foreground'}>
+                    <span className={subscriptionType === 'monthly' ? 'font-semibold' : 'text-white/60'}>
                         Monthly
                     </span>
                     <Switch
-                        id="subscription-switch"
+                        id='subscription-switch'
                         checked={subscriptionType === 'yearly'}
                         onCheckedChange={toggleSubscriptionPlans}
+                        className='cursor-pointer'
                     />
-                    <span className={subscriptionType === 'yearly' ? 'font-semibold' : 'text-muted-foreground'}>
+                    <span className={subscriptionType === 'yearly' ? 'font-semibold' : 'text-white/60'}>
                         Yearly
                     </span>
                 </div>
             </div>
 
             {/*Pricing Cards */}
-            <div className='grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl pt-16 px-4'>
+
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-4 max-w-7xl mx-auto pt-16 px-4 '>
                 {plans.map((plan, index) => (
                     <Card
                         key={index}
-                        className={`relative rounded-2xl p-6 bg-linear-to from-background to-muted/20
-                            border border-border/40 shadow-lg transition-all
-                            hover:shadow-2xl hover:-translate-y-1
-                             ${plan.featured ? 'ring-2 ring-primary bg-primary/5 scale-[1.02]' : ''}`}
+                        className={`relative rounded-2xl p-6 bg-white/10 backdrop-blur-md 
+                            border border-white/20 shadow-lg transition-all
+                            hover:shadow-2xl hover:-translate-y-1 
+                             ${plan.featured ? 'ring-2 ring-primary bg-primary/5 scale-[1.01]' : ''}`}
                     >
                         {plan.featured && (
                             <span className='absolute top-4 right-4 text-xs px-2
@@ -117,15 +137,20 @@ export default function PricingPage() {
                             <ul className='mt-6 space-y-3'>
                                 {plan.features.map((feature, idx) => (
                                     <li key={idx} className='flex items-center gap-2 text-sm'>
-                                        <Check className='w-4 h-4 text-primary ' />
+                                        <Check className='w-4 h-4 text-white ' />
                                         {feature}
                                     </li>
                                 ))}
                             </ul>
+                            <button className='w-full mt-6 py-3 
+                                rounded-xl bg-white/20 text-white 
+                                font-semibold hover:bg-white/30 transition cursor-pointer'>
+                                Pay Now
+                            </button>
                         </CardContent>
                     </Card>
                 ))}
             </div>
-        </>
+        </div>
     )
 }

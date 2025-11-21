@@ -1,6 +1,6 @@
 import Banner from '@/components/pages-components/Banner'
 import Image from 'next/image'
-import Gorilla from '../public/assets/super-gorilla.jpg'
+import Gorilla from '@/public/assets/super-gorilla.jpg'
 
 export default function Home() {
   return (
