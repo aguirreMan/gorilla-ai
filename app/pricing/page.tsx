@@ -131,11 +131,15 @@ export default function PricingPage() {
                                             </li>
                                         ))}
                                     </ul>
-                                    <button className='w-full mt-6 py-3 
-                                rounded-xl bg-white/20 text-white 
-                                font-semibold hover:bg-white/30 transition cursor-pointer'>
-                                        Pay Now
-                                    </button>
+                                    {/**Only show the button for cards that are paid plans */}
+                                    {plan.name !== 'Free' && (
+                                        <button className='w-full mt-6 py-3 
+                                        rounded-xl bg-white/20 text-white 
+                                        font-semibold hover:bg-white/30 
+                                        transition cursor-pointer'>
+                                            Pay Now
+                                        </button>
+                                    )}
                                 </CardContent>
                             </Card>
                         ))}
