@@ -1,9 +1,10 @@
-import React from 'react'
+import Imageslider from '@/components/pages-components/Imageslider'
 
-export default function page() {
+export default async function FeaturedImages() {
     return (
-        <div className='mt-32 flex flex-row justify-center'>
+        <div className='mt-32 flex flex-col justify-center items-center gap-4'>
             <h1 className='text-4xl text-green-800'>Creative Art created by Creators!</h1>
+            <Imageslider />
         </div>
     )
 }
