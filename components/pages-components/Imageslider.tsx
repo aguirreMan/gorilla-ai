@@ -27,22 +27,31 @@ export default function Imageslider() {
         setSelectedImageIndex(index)
     }
     return (
-        <Carousel className='w-full max-w-xs'>
-            <CarouselContent>
-                {imagesArray.map((image, index) => (
-                    <CarouselItem key={index}>
-                        <Image
-                            onClick={() => expandImageModal(index)}
-                            src={image}
-                            alt={`Slide ${index + 1}`}
-                            className='w-full h-full cursor-pointer pb-5'
-                        />
-                    </CarouselItem>
-                ))}
-                <Imagemodal />
-            </CarouselContent>
-            <CarouselPrevious className='cursor-pointer' />
-            <CarouselNext className='cursor-pointer' />
-        </Carousel>
+        <>
+            <Carousel className='w-full max-w-xs'>
+                <CarouselContent>
+                    {imagesArray.map((image, index) => (
+                        <CarouselItem key={index}>
+                            <Image
+                                onClick={() => expandImageModal(index)}
+                                src={image}
+                                alt={`Slide ${index + 1}`}
+                                className='w-full h-full cursor-pointer pb-5'
+                            />
+                        </CarouselItem>
+                    ))}
+
+                </CarouselContent>
+                <CarouselPrevious className='cursor-pointer' />
+                <CarouselNext className='cursor-pointer' />
+            </Carousel>
+            <Imagemodal
+                isOpen={openImageModal}
+                onClose={() => setOpenImageModal(false)}
+                selectedImageIndex={selectedImageIndex}
+                imagesArray={imagesArray}
+            />
+        </>
     )
+
 }
