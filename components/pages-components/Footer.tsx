@@ -29,10 +29,12 @@ export default function Footer() {
                 <div className='flex-1 md:flex-initial md:w-48'>
                     <h3 className='text-xl font-semibold mb-4'>Follow Us</h3>
                     <nav className='flex flex-col space-y-2'>
-                        <a href='#' className='hover:text-primary transition'>Twitter</a>
-                        <a href='#' className='hover:text-primary transition'>LinkedIn</a>
-                        <a href='#' className='hover:text-primary transition'>GitHub</a>
+                        <a href='#' className='hover:text-primary transition'>X</a>
+                        <a href='#' className='hover:text-primary transition'>Facebook</a>
+                        <a href='#' className='hover:text-primary transition'>Youtube</a>
                         <a href='#' className='hover:text-primary transition'>Discord</a>
+                        <a href='#' className='hover:text-primary transition'>Instagram</a>
+                        <a href='#' className='hover:text-primary transition'>TikTok</a>
                     </nav>
                 </div>
             </div>

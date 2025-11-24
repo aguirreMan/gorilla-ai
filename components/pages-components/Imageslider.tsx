@@ -13,14 +13,11 @@ import image5 from '@/public/assets/image-5.jpg'
 import Image from 'next/image'
 import Imagemodal from '@/components/pages-components/Imagemodal'
 
-
-
 export default function Imageslider() {
     const imagesArray = [image1, image2, image3, image4, image5]
 
     const [openImageModal, setOpenImageModal] = useState(false)
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null)
-
 
     function expandImageModal(index: number) {
         setOpenImageModal(true)
