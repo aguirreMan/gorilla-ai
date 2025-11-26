@@ -1,6 +1,7 @@
 'use client'
 import { useUser } from '@clerk/nextjs'
 import { ChangeEvent, useState } from 'react'
+//import ImagesettingsSelect from './ImagesettingsSelect'
 import Image from 'next/image'
 
 
@@ -61,6 +62,7 @@ export default function Inputprompt() {
                     rows={6}
                     placeholder='Type your AI prompt here...'
                 />
+                {/**This is where the ImagesettingSelect will go */}
                 <button
                     onClick={submitToOpenAi}
                     disabled={disableGenerateButton}
