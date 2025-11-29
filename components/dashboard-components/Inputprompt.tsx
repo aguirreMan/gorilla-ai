@@ -1,7 +1,8 @@
 'use client'
 import { useUser } from '@clerk/nextjs'
 import { ChangeEvent, useState } from 'react'
-//import ImagesettingsSelect from './ImagesettingsSelect'
+import ImagesettingsSelect from './ImagesettingsSelect'
+import useImageSettings from '@/app/hooks/useImageSettings'
 import Image from 'next/image'
 
 
@@ -10,6 +11,8 @@ export default function Inputprompt() {
     const [userPrompt, setUserPrompt] = useState<string>('')
     const [isGenerating, setIsGenerating] = useState<boolean>(false)
     const [generatedUrl, setGeneratedUrl] = useState<string | null>(null)
+
+    const { model, availableModels, chooseModel, imageSize } = useImageSettings()
 
     function allowUsertoInput(event: ChangeEvent<HTMLTextAreaElement>) {
         setUserPrompt(event.target.value)
@@ -28,8 +31,8 @@ export default function Inputprompt() {
                 },
                 body: JSON.stringify({
                     prompt: userPrompt,
-                    model: 'dall-e-3',
-                    size: '1024x1024'
+                    model: model,
+                    size: imageSize
                 })
             })
             if (!response.ok) {
@@ -63,6 +66,13 @@ export default function Inputprompt() {
                     placeholder='Type your AI prompt here...'
                 />
                 {/**This is where the ImagesettingSelect will go */}
+
+                <ImagesettingsSelect
+                    label={'Model'}
+                    currentValue={model}
+                    options={availableModels}
+                    onChange={chooseModel}
+                />
                 <button
                     onClick={submitToOpenAi}
                     disabled={disableGenerateButton}

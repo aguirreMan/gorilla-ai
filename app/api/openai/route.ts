@@ -69,6 +69,12 @@ async function fetchOpenAi(options: OpenAIImageRequest): Promise<OpenAIImageResp
         },
         body: JSON.stringify(options)
     })
+    //If Open ai rejects the prompt 
+    if (!imageResponse.ok) {
+        const errorData = await imageResponse.json()
+        throw new Error(errorData.error?.message || 'OpenAi request failed')
+    }
+
     const imageData: OpenAIImageResponse = await imageResponse.json()
     return imageData
 }

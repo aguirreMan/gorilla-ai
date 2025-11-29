@@ -13,12 +13,11 @@ const modelSizes: ModelSizeOptions = {
 
 const numberOfImagestoGenerate: NumberOfImagesGenerated = {
     'dalle-2': [1, 2],
-    'dalle-3': [1, 2]
+    'dalle-3': [1]
 }
 
-
 export default function useImageSettings() {
-    const [model, setModel] = useState<ImageModel>('dalle-3')
+    const [model, setModel] = useState<ImageModel>('dalle-2')
     const [imageSize, setImageSize] = useState<string>('1024x1024')
     const [numberOfImages, setNumberOfImages] = useState<number>(1)
 
@@ -41,6 +40,7 @@ export default function useImageSettings() {
         chooseModel,
         chooseImageSize,
         updateNumberofImagesGenerated,
+        availableModels: ['dalle-2', 'dalle-3'] as ImageModel[],
         availableSizes: modelSizes[model],  // Dynamically gives sizes for current model
         availableImageCounts: numberOfImagestoGenerate[model]
     }
