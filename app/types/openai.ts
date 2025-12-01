@@ -1,8 +1,8 @@
 //These are the types for open ai models
 
 export type OpenAIImageRequest = {
-    model: 'dall-e-3' | 'dall-e-2'
-    size?: '1024x1024' | '256x256' | '512x512'
+    model: string
+    size?: string
     n: number
     prompt: string
     response_format?: 'url' | 'b64_json' // Optional, defaults to 'url' if not specified

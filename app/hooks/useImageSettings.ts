@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { ImageModel, ModelsUsed } from '../types/models'
 
 export default function useImageSettings() {
-    const [model, setModel] = useState<ImageModel>('dalle-2')
-    const [imageSize, setImageSize] = useState<string>('1024x1024')
+    const [model, setModel] = useState<ImageModel>('dall-e-2')
+    const [imageSize, setImageSize] = useState<string>('512x512')
     const [numberOfImages, setNumberOfImages] = useState<number>(1)
 
     function chooseModel(newModel: ImageModel) {

@@ -22,6 +22,7 @@ export default function Inputprompt() {
     async function submitToOpenAi() {
         if (disableGenerateButton) return
         setIsGenerating(true)
+        console.log('Sending to API:', { prompt: userPrompt, model, size: imageSize })
 
         try {
             const response = await fetch('/api/openai', {
@@ -48,7 +49,6 @@ export default function Inputprompt() {
             setIsGenerating(false)
         }
     }
-    console.log('Sending to API:', { prompt: userPrompt, model, size: imageSize })
 
     return (
         <>

@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     }
 
     const userOptions: OpenAIImageRequest = {
-        model: userRequest.model ?? 'dall-e-3',
+        model: userRequest.model ?? 'DALL-E-2',
         prompt: userRequest.prompt as string,
         n: userRequest.n ?? 1,
         size: userRequest.size ?? '512x512',
