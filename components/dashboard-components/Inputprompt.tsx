@@ -12,7 +12,7 @@ export default function Inputprompt() {
     const [isGenerating, setIsGenerating] = useState<boolean>(false)
     const [generatedUrl, setGeneratedUrl] = useState<string | null>(null)
 
-    const { model, availableModels, chooseModel, imageSize } = useImageSettings()
+    const { model, availableModels, chooseModel, chooseImageSize, imageSize, availableSizes } = useImageSettings()
 
     function allowUsertoInput(event: ChangeEvent<HTMLTextAreaElement>) {
         setUserPrompt(event.target.value)
@@ -32,7 +32,8 @@ export default function Inputprompt() {
                 body: JSON.stringify({
                     prompt: userPrompt,
                     model: model,
-                    size: imageSize
+                    size: imageSize,
+                    n: 1
                 })
             })
             if (!response.ok) {
@@ -47,12 +48,31 @@ export default function Inputprompt() {
             setIsGenerating(false)
         }
     }
+    console.log('Sending to API:', { prompt: userPrompt, model, size: imageSize })
 
     return (
         <>
             <div className='flex flex-col justify-center items-center mt-0 gap-2'>
-                <h1 className='text-lg text-black font-bold mb-4'>Hi {user?.firstName} what do you want to create today?</h1>
+                <h1 className='text-lg text-black font-bold mb-4'>
+                    Hi {user?.firstName} what do you want to create today?
+                </h1>
             </div>
+
+            <div className='flex gap-4 justify-center items-center mb-4 px-4 max-w-3xl mx-auto'>
+                <ImagesettingsSelect
+                    label='Model'
+                    currentValue={model}
+                    options={availableModels}
+                    onChange={chooseModel}
+                />
+                <ImagesettingsSelect
+                    label='Image size'
+                    currentValue={imageSize}
+                    options={availableSizes}
+                    onChange={chooseImageSize}
+                />
+            </div>
+
             <div className='flex justify-center items-center mt-0 px-4 w-full max-w-3xl mx-auto relative'>
                 <textarea
                     onChange={allowUsertoInput}
@@ -65,14 +85,7 @@ export default function Inputprompt() {
                     rows={6}
                     placeholder='Type your AI prompt here...'
                 />
-                {/**This is where the ImagesettingSelect will go */}
 
-                <ImagesettingsSelect
-                    label={'Model'}
-                    currentValue={model}
-                    options={availableModels}
-                    onChange={chooseModel}
-                />
                 <button
                     onClick={submitToOpenAi}
                     disabled={disableGenerateButton}

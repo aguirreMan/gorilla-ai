@@ -1,3 +1,5 @@
+//These are the types for open ai models
+
 export type OpenAIImageRequest = {
     model: 'dall-e-3' | 'dall-e-2'
     size?: '1024x1024' | '256x256' | '512x512'
