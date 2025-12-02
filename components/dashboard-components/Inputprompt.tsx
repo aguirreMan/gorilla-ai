@@ -1,18 +1,20 @@
 'use client'
 import { useUser } from '@clerk/nextjs'
 import { ChangeEvent, useState } from 'react'
-import ImagesettingsSelect from './ImagesettingsSelect'
-import useImageSettings from '@/app/hooks/useImageSettings'
+//import ImagesettingsSelect from './ImagesettingsSelect'
+//import useImageSettings from '@/app/hooks/useImageSettings'
+import { useImagesContext } from '@/app/context/ImageSettingsProvider'
 import Image from 'next/image'
 
 
 export default function Inputprompt() {
+    const { model, imageSize, numberOfImages } = useImagesContext()
     const { user } = useUser()
     const [userPrompt, setUserPrompt] = useState<string>('')
     const [isGenerating, setIsGenerating] = useState<boolean>(false)
     const [generatedUrl, setGeneratedUrl] = useState<string | null>(null)
 
-    const { model, availableModels, chooseModel, chooseImageSize, imageSize, availableSizes } = useImageSettings()
+    //const { model, availableModels, chooseModel, chooseImageSize, imageSize, availableSizes } = useImageSettings()
 
     function allowUsertoInput(event: ChangeEvent<HTMLTextAreaElement>) {
         setUserPrompt(event.target.value)
@@ -22,7 +24,7 @@ export default function Inputprompt() {
     async function submitToOpenAi() {
         if (disableGenerateButton) return
         setIsGenerating(true)
-        console.log('Sending to API:', { prompt: userPrompt, model, size: imageSize })
+        //console.log('Sending to API:', { prompt: userPrompt, model, size: imageSize })
 
         try {
             const response = await fetch('/api/openai', {
@@ -34,7 +36,7 @@ export default function Inputprompt() {
                     prompt: userPrompt,
                     model: model,
                     size: imageSize,
-                    n: 1
+                    n: numberOfImages
                 })
             })
             if (!response.ok) {
@@ -57,7 +59,7 @@ export default function Inputprompt() {
                     Hi {user?.firstName} what do you want to create today?
                 </h1>
             </div>
-
+            {/* 
             <div className='flex gap-4 justify-center items-center mb-4 px-4 max-w-3xl mx-auto'>
                 <ImagesettingsSelect
                     label='Model'
@@ -72,7 +74,7 @@ export default function Inputprompt() {
                     onChange={chooseImageSize}
                 />
             </div>
-
+            */}
             <div className='flex justify-center items-center mt-0 px-4 w-full max-w-3xl mx-auto relative'>
                 <textarea
                     onChange={allowUsertoInput}

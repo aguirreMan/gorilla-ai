@@ -17,7 +17,7 @@ export default function ImagesettingsSelect<Type extends string>({
 
     return (
         <Select value={currentValue} onValueChange={(value) => onChange(value as Type)}>
-            <SelectTrigger className='w-[20%]'>
+            <SelectTrigger className='w-full bg-white/20'>
                 <SelectValue>{currentValue}</SelectValue>
             </SelectTrigger>
             <SelectContent>

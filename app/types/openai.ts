@@ -22,7 +22,6 @@ export type RequestImage = {
     prompt: string
 }
 
-
 export type UserImageRequest = Partial<Omit<OpenAIImageRequest, 'prompt'>> & {
     prompt: string
 }

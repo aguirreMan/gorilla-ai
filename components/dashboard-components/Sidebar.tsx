@@ -1,22 +1,36 @@
 'use client'
+import { useImagesContext } from '@/app/context/ImageSettingsProvider'
+import ImagesettingsSelect from '@/components/dashboard-components/ImagesettingsSelect'
 import { useUser, useClerk } from '@clerk/nextjs'
+import { Folder } from 'lucide-react'
 
 export default function Sidebar() {
+    const { chooseImageSize, chooseModel, availableModels, model } = useImagesContext()
     const { user } = useUser()
-    const { signOut } = useClerk()
+    // const { signOut } = useClerk()
 
-    async function signOutPage() {
+    /*async function signOutPage() {
         await signOut({ redirectUrl: '/' })
     }
-
+*/
     return (
-        <aside className='pt-8 bg-blue-500 w-[20%] h-screen fixed flex justify-center items-start'>
-            <div className='bg-amber-300 w-[75%] flex flex-col rounded-lg overflow-hidden'>
-                <h2 className='text-2xl font-semibold pt-4 m-2 text-center top-8 mt-0'>{user?.firstName}</h2>
-                <button className='bg-green-500 h-12 cursor-pointer'>Invite Members</button>
-            </div>
-            <div className='mt-24'>
-                <button className='cursor-pointer bg-green-500' onClick={signOutPage}>Sign OUt</button>
+        <aside className='pt-8 bg-linear-to-b from-[#0f1f14] via-[#0b1310] to-black w-[20%] h-screen fixed flex flex-col justify-start p-4'>
+            <div className='flex flex-col h-screen overflow-y-auto'>
+                <div className='w-full mb-4 rounded-2xl bg-black backdrop:blur-2xl cursor-pointer p-2 text-center text-white'>
+                    Hi, {user?.firstName}
+                </div>
+                <div className='flex flex-row cursor-pointer bg-amber-500
+                w-full border-0 h-auto p-2 rounded-md'>
+                    <Folder className='mr-4' /> Library
+                </div>
+                <div className='pt-6'>
+                    <ImagesettingsSelect
+                        label='Model'
+                        currentValue={model}
+                        options={availableModels}
+                        onChange={chooseModel}
+                    />
+                </div>
             </div>
         </aside>
     )
