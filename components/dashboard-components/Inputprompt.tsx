@@ -5,6 +5,8 @@ import { ChangeEvent, useState } from 'react'
 //import useImageSettings from '@/app/hooks/useImageSettings'
 import { useImagesContext } from '@/app/context/ImageSettingsProvider'
 import Image from 'next/image'
+import { Toaster } from '../ui/sonner'
+import { toast } from 'sonner'
 
 
 export default function Inputprompt() {
@@ -40,13 +42,14 @@ export default function Inputprompt() {
                 })
             })
             if (!response.ok) {
-                throw new Error('Failed to generate your image')
+                const errorData = await response.json().catch(() => null)
+                throw new Error(errorData?.error?.message || 'Failed to generate your image')
             }
             const openaiData = await response.json()
             setGeneratedUrl(openaiData.data[0].url)
         } catch (error) {
             console.error('Error generating image:', error)
-            alert('Failed to generate image. Please try again.')
+            toast.error('Please keep message appropiate and creative')
         } finally {
             setIsGenerating(false)
         }

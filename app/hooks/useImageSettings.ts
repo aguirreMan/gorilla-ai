@@ -18,6 +18,7 @@ export default function useImageSettings() {
     }
 
     function updateNumberofImagesGenerated(newNumber: number) {
+        console.log(' Updating numberOfImages to:', newNumber)
         setNumberOfImages(newNumber)
     }
 

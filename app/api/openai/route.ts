@@ -44,10 +44,15 @@ export async function POST(request: Request) {
         return NextResponse.json(openAiData)
     } catch (error: unknown) {
         console.error('Image generation failed', error)
-        return NextResponse.json(
-            { error: 'Failed to generate image' },
-            { status: 500 }
-        )
+
+        if (error && typeof error === 'object' && 'message' in error && 'type' in error) {
+            return NextResponse.json(
+                { error: 'Failed to generate image' },
+                { status: 500 }
+            )
+        }
+
+
     }
 
 }
@@ -72,7 +77,11 @@ async function fetchOpenAi(options: OpenAIImageRequest): Promise<OpenAIImageResp
     //If Open ai rejects the prompt 
     if (!imageResponse.ok) {
         const errorData = await imageResponse.json()
-        throw new Error(errorData.error?.message || 'OpenAi request failed')
+        console.error('OpenAi API error', errorData)
+        throw {
+            message: errorData?.error?.message || 'OpenAI request failed',
+            type: errorData?.error?.type || imageResponse.statusText || 'openai_error',
+        }
     }
 
     const imageData: OpenAIImageResponse = await imageResponse.json()

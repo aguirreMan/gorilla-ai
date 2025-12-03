@@ -6,7 +6,12 @@ import { Folder } from 'lucide-react'
 import ImageNumberSlider from '@/components/dashboard-components/ImageNumberSlider'
 
 export default function Sidebar() {
-    const { chooseImageSize, chooseModel, availableModels, model, availableSizes, imageSize } = useImagesContext()
+    const { chooseImageSize, chooseModel,
+        availableModels, model, availableSizes, imageSize,
+        numberOfImages, updateNumberofImagesGenerated,
+        availableImageCounts } = useImagesContext()
+
+
     const { user } = useUser()
     // const { signOut } = useClerk()
 
@@ -14,6 +19,18 @@ export default function Sidebar() {
         await signOut({ redirectUrl: '/' })
     }
 */
+
+    //Write logic for Number slider
+
+    function getNumberOfImagesToGenerate(value: number) {
+        updateNumberofImagesGenerated(value)
+    }
+    //Numbers of Images Minimum and Maximum to get
+    const minimumNumber = Math.min(...availableImageCounts)
+    const maximumNumber = Math.max(...availableImageCounts)
+    console.log("value:", numberOfImages, "min:", minimumNumber, "max:", maximumNumber)
+
+
     return (
         <aside className='pt-8 bg-linear-to-b from-[#0f1f14] via-[#0b1310] to-black w-[20%] h-screen fixed flex flex-col justify-start p-4'>
             <div className='flex flex-col h-screen overflow-y-auto'>
@@ -40,7 +57,17 @@ export default function Sidebar() {
                         />
                     </div>
                     <div className='pt-6'>
-
+                        <ImageNumberSlider
+                            value={numberOfImages}
+                            min={minimumNumber}
+                            max={maximumNumber}
+                            step={1}
+                            onChange={getNumberOfImagesToGenerate}
+                            disabled={false}
+                        />
+                        <span className='flex justify-center text-white pt-6'>
+                            {numberOfImages}
+                        </span>
                     </div>
                 </div>
             </div>
