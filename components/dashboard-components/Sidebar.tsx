@@ -3,9 +3,10 @@ import { useImagesContext } from '@/app/context/ImageSettingsProvider'
 import ImagesettingsSelect from '@/components/dashboard-components/ImagesettingsSelect'
 import { useUser, useClerk } from '@clerk/nextjs'
 import { Folder } from 'lucide-react'
+import ImageNumberSlider from '@/components/dashboard-components/ImageNumberSlider'
 
 export default function Sidebar() {
-    const { chooseImageSize, chooseModel, availableModels, model } = useImagesContext()
+    const { chooseImageSize, chooseModel, availableModels, model, availableSizes, imageSize } = useImagesContext()
     const { user } = useUser()
     // const { signOut } = useClerk()
 
@@ -30,6 +31,17 @@ export default function Sidebar() {
                         options={availableModels}
                         onChange={chooseModel}
                     />
+                    <div className='pt-6'>
+                        <ImagesettingsSelect
+                            label='Image size'
+                            currentValue={imageSize}
+                            options={availableSizes}
+                            onChange={chooseImageSize}
+                        />
+                    </div>
+                    <div className='pt-6'>
+
+                    </div>
                 </div>
             </div>
         </aside>

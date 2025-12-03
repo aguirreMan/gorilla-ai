@@ -17,14 +17,14 @@ export default function ImagesettingsSelect<Type extends string>({
 
     return (
         <Select value={currentValue} onValueChange={(value) => onChange(value as Type)}>
-            <SelectTrigger className='w-full bg-white/20'>
+            <SelectTrigger className='w-full bg-white/20 cursor-pointer'>
                 <SelectValue>{currentValue}</SelectValue>
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
                     <SelectLabel>{label}</SelectLabel>
                     {options.map(option => (
-                        <SelectItem key={option} value={option}>
+                        <SelectItem className='cursor-pointer' key={option} value={option}>
                             {option}
                         </SelectItem>
                     ))}

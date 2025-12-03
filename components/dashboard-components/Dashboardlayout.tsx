@@ -1,5 +1,5 @@
 'use client'
-import Sidebar from './Sidebar'
+import Sidebar from '@/components/dashboard-components/Sidebar'
 import { ImageSettingsProvider } from '@/app/context/ImageSettingsProvider'
 
 export default function Dashboardlayout({ children }: { children: React.ReactNode }) {
