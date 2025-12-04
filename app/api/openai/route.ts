@@ -4,6 +4,12 @@ import { OpenAIImageResponse, OpenAIImageRequest, UserImageRequest } from '@/app
 
 const apiKey = process.env.OPENAI_IMAGE_API_KEY
 
+interface OpenAiErrorMessage {
+    message: string
+    type: string
+    code: string
+}
+
 export async function POST(request: Request) {
     //We need Clerk to verify that user is legit and is logged in
     const { userId } = await auth()
@@ -42,20 +48,47 @@ export async function POST(request: Request) {
     try {
         const openAiData = await fetchOpenAi(userOptions)
         return NextResponse.json(openAiData)
-    } catch (error: unknown) {
-        console.error('Image generation failed', error)
+    } catch (err: unknown) {
+        console.error('Image generation failed', err)
 
-        if (error && typeof error === 'object' && 'message' in error && 'type' in error) {
+        const errorMessage = err as OpenAiErrorMessage
+        /*Cast Open ai error message for innapropiate content based of the open ai object
+        return
+        OpenAi API error {
+          error: {
+            message: 'Your request was rejected as a result of our safety system. ',
+            type: 'image_generation_user_error',
+            param: null,
+            message: 'Your request was rejected as a result of our safety system. ',
+            type: 'image_generation_user_error',
+            param: null,
+            type: 'image_generation_user_error',
+            param: null,
+            param: null,
+            code: 'content_policy_violation'
+          }
+        */
+
+        if (errorMessage.message?.includes('safety system') ||
+            errorMessage.type === 'image_generation_user_error' ||
+            errorMessage.code === 'content_policy_violation') {
             return NextResponse.json(
-                { error: 'Failed to generate image' },
-                { status: 500 }
+                {
+                    error: 'Your prompt violates content policy. Please try a different prompt.'
+                },
+                { status: 400 }
             )
         }
-
-
     }
 
+    return NextResponse.json(
+        { error: 'Failed to generate image. Please try again.' },
+        { status: 500 }
+    )
 }
+
+
+
 //This function needs to validate that a user enters a prompt
 function validateUserRequest(userRequest: UserImageRequest): string | null {
     if (!userRequest.prompt || userRequest.prompt.trim() === '') {

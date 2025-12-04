@@ -5,7 +5,6 @@ import { ChangeEvent, useState } from 'react'
 //import useImageSettings from '@/app/hooks/useImageSettings'
 import { useImagesContext } from '@/app/context/ImageSettingsProvider'
 import Image from 'next/image'
-import { Toaster } from '../ui/sonner'
 import { toast } from 'sonner'
 
 
@@ -23,10 +22,17 @@ export default function Inputprompt() {
     }
     const disableGenerateButton = userPrompt.trim() === '' || isGenerating
 
+    // Assuming your type definition is correct and accessible:
+    // export type OpenAIImageResponse = {
+    //     data: Array<{
+    //     url?: string
+    //     b64_json?: string
+    //     }>
+    // }
+
     async function submitToOpenAi() {
         if (disableGenerateButton) return
         setIsGenerating(true)
-        //console.log('Sending to API:', { prompt: userPrompt, model, size: imageSize })
 
         try {
             const response = await fetch('/api/openai', {
@@ -42,8 +48,14 @@ export default function Inputprompt() {
                 })
             })
             if (!response.ok) {
-                const errorData = await response.json().catch(() => null)
-                throw new Error(errorData?.error?.message || 'Failed to generate your image')
+                const errorData = await response.json()
+                console.log('Full error from API:', errorData)
+                toast.error(response.status === 400
+                    ? 'Content Policy Violation'
+                    : 'Generation Failed', {
+                    description: errorData.error
+                })
+                return
             }
             const openaiData = await response.json()
             setGeneratedUrl(openaiData.data[0].url)
