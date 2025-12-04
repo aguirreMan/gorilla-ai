@@ -6,6 +6,9 @@ import { ChangeEvent, useState } from 'react'
 import { useImagesContext } from '@/app/context/ImageSettingsProvider'
 import Image from 'next/image'
 import { toast } from 'sonner'
+import { GeneratedImageResult, OpenAIImageUrls } from '@/app/types/openai'
+
+
 
 
 export default function Inputprompt() {
@@ -13,7 +16,7 @@ export default function Inputprompt() {
     const { user } = useUser()
     const [userPrompt, setUserPrompt] = useState<string>('')
     const [isGenerating, setIsGenerating] = useState<boolean>(false)
-    const [generatedUrl, setGeneratedUrl] = useState<string | null>(null)
+    const [generatedUrl, setGeneratedUrl] = useState<string[]>([])
 
     //const { model, availableModels, chooseModel, chooseImageSize, imageSize, availableSizes } = useImageSettings()
 
@@ -22,13 +25,6 @@ export default function Inputprompt() {
     }
     const disableGenerateButton = userPrompt.trim() === '' || isGenerating
 
-    // Assuming your type definition is correct and accessible:
-    // export type OpenAIImageResponse = {
-    //     data: Array<{
-    //     url?: string
-    //     b64_json?: string
-    //     }>
-    // }
 
     async function submitToOpenAi() {
         if (disableGenerateButton) return
@@ -57,8 +53,10 @@ export default function Inputprompt() {
                 })
                 return
             }
-            const openaiData = await response.json()
-            setGeneratedUrl(openaiData.data[0].url)
+            const openaiData: OpenAIImageUrls = await response.json()
+            const urls = openaiData.data.map((img: GeneratedImageResult) => img.url).filter(Boolean) as string[]
+
+            setGeneratedUrl(urls)
         } catch (error) {
             console.error('Error generating image:', error)
             toast.error('Please keep message appropiate and creative')
@@ -128,14 +126,16 @@ export default function Inputprompt() {
             </div>
 
             {/**Display the image */}
-            {generatedUrl && (
-                <div className='mt-12 w-full px-4 max-w-3xl mx-auto'>
-                    <Image src={generatedUrl} alt='generated'
-                        className='rounded-lg shadow-lg mx-auto'
-                        width={1024}
-                        height={1024} />
-                </div>
-            )}
+            {generatedUrl.map((url, index) => (
+                <Image
+                    key={index}
+                    src={url}
+                    alt={`generated-${index}`}
+                    width={512}
+                    height={512}
+                    className='p-4'
+                />
+            ))}
         </>
     )
 }
