@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ImageModel, ModelsUsed } from '@/app/types/models'
+import { ImageModel, ModelsUsed } from '@/types/models'
 
 export default function useImageSettings() {
     const [model, setModel] = useState<ImageModel>('dall-e-2')

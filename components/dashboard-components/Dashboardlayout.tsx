@@ -1,6 +1,6 @@
 'use client'
 import Sidebar from '@/components/dashboard-components/Sidebar'
-import { ImageSettingsProvider } from '@/app/context/ImageSettingsProvider'
+import { ImageSettingsProvider } from '@/context/ImageSettingsProvider'
 import { Toaster } from 'sonner'
 
 export default function Dashboardlayout({ children }: { children: React.ReactNode }) {

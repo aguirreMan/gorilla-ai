@@ -2,7 +2,7 @@
 //InputPrompt components
 
 import { createContext, useContext, ReactNode } from 'react'
-import useImageSettings from '@/app/hooks/useImageSettings'
+import useImageSettings from '@/hooks/useImageSettings'
 
 type ImageSettingsContextType = ReturnType<typeof useImageSettings>
 const ImagesContext = createContext<ImageSettingsContextType | undefined>(undefined)

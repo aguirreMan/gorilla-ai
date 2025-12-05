@@ -2,10 +2,10 @@
 import { ChangeEvent, useState } from 'react'
 //import ImagesettingsSelect from './ImagesettingsSelect'
 //import useImageSettings from '@/app/hooks/useImageSettings'
-import { useImagesContext } from '@/app/context/ImageSettingsProvider'
+import { useImagesContext } from '@/context/ImageSettingsProvider'
 import Image from 'next/image'
 import { toast } from 'sonner'
-import { GeneratedImageResult, OpenAIImageUrls } from '@/app/types/openai'
+import { GeneratedImageResult, OpenAIImageUrls } from '@/types/openai'
 import { Sparkles } from 'lucide-react'
 
 export default function Inputprompt() {
@@ -63,32 +63,14 @@ export default function Inputprompt() {
 
     return (
         <>
-
-            {/* 
-            <div className='flex gap-4 justify-center items-center mb-4 px-4 max-w-3xl mx-auto'>
-                <ImagesettingsSelect
-                    label='Model'
-                    currentValue={model}
-                    options={availableModels}
-                    onChange={chooseModel}
-                />
-                <ImagesettingsSelect
-                    label='Image size'
-                    currentValue={imageSize}
-                    options={availableSizes}
-                    onChange={chooseImageSize}
-                />
-            </div>
-            */}
             <div className='flex justify-center items-center mt-0 px-4 w-full max-w-3xl mx-auto relative'>
                 <textarea
                     onChange={allowUsertoInput}
                     value={userPrompt}
                     disabled={isGenerating}
-                    className='w-full border rounded-full text-white pt-4 pl-4
+                    className='w-full border rounded-3xl text-white pt-4 pl-4
                     text-lg focus:outline-none 
-                    shadow-md resize-none 
-                    transition duration-200 ease-in-out'
+                    shadow-md resize-none'
                     rows={2}
                     placeholder='Type your AI prompt here...'
                 />
@@ -96,7 +78,7 @@ export default function Inputprompt() {
                 <button
                     onClick={submitToOpenAi}
                     disabled={disableGenerateButton}
-                    className={`absolute bottom-4 right-6 px-5 py-2 rounded-full
+                    className={`absolute bottom-4 right-6 px-5 py-2 rounded-3xl
                         shadow-lg 
                         ${disableGenerateButton
                             ? 'bg-linear-to-b from-[#1E5631] via-[#0F3B22] to-[#062B18] cursor-not-allowed opacity-80'

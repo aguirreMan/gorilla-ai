@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { OpenAIImageResponse, OpenAIImageRequest, UserImageRequest } from '@/app/types/openai'
+import { OpenAIImageResponse, OpenAIImageRequest, UserImageRequest } from '@/types/openai'
 
 const apiKey = process.env.OPENAI_IMAGE_API_KEY
 
@@ -11,7 +11,7 @@ interface OpenAiErrorMessage {
 }
 
 export async function POST(request: Request) {
-    //We need Clerk to verify that user is legit and is logged in
+    //We need Clerk to verify that user is authorized and is logged in
     const { userId } = await auth()
     if (!userId) {
         return NextResponse.json(
@@ -31,12 +31,18 @@ export async function POST(request: Request) {
     }
 
     const userOptions: OpenAIImageRequest = {
-        model: userRequest.model ?? 'DALL-E-2',
+        model: userRequest.model ?? 'DALL-E-3',
         prompt: userRequest.prompt as string,
         n: userRequest.n ?? 1,
         size: userRequest.size ?? '512x512',
         response_format: userRequest.response_format ?? 'url'
     }
+
+    if (userOptions.model === 'Dall-E-2' && userOptions.size === '1024x1024' && userOptions.n > 1) {
+        userOptions.n = 1
+
+    }
+
 
     if (!apiKey) {
         return NextResponse.json(
@@ -47,6 +53,7 @@ export async function POST(request: Request) {
 
     try {
         const openAiData = await fetchOpenAi(userOptions)
+
         return NextResponse.json(openAiData)
     } catch (err: unknown) {
         console.error('Image generation failed', err)
@@ -86,8 +93,6 @@ export async function POST(request: Request) {
         { status: 500 }
     )
 }
-
-
 
 //This function needs to validate that a user enters a prompt
 function validateUserRequest(userRequest: UserImageRequest): string | null {

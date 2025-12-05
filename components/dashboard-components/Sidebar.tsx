@@ -1,5 +1,5 @@
 'use client'
-import { useImagesContext } from '@/app/context/ImageSettingsProvider'
+import { useImagesContext } from '@/context/ImageSettingsProvider'
 import ImagesettingsSelect from '@/components/dashboard-components/ImagesettingsSelect'
 import { useUser, useClerk } from '@clerk/nextjs'
 import { Folder } from 'lucide-react'
@@ -31,7 +31,7 @@ export default function Sidebar() {
 
 
     return (
-        <aside className='pt-8 bg-linear-to-b from-[#0f1f14] via-[#0b1310] to-black w-[20%] h-screen fixed flex flex-col justify-start p-4'>
+        <aside className='pt-8 w-[20%] h-screen fixed flex flex-col justify-start p-4'>
             <div className='flex flex-col h-screen overflow-y-auto'>
                 <div className='w-full mb-4 rounded-2xl bg-black backdrop:blur-2xl cursor-pointer p-2 text-center text-white'>
                     Hi, {user?.firstName}
@@ -71,7 +71,7 @@ export default function Sidebar() {
                 </div>
             </div>
 
-            <button onClick={signOutPage} className='bg-white rounded-full cursor-pointer'>SignOUt</button>
+            <button onClick={signOutPage} className='rounded-full py-2 cursor-pointer hover:bg-[#354a37] text-white'>Sign Out</button>
 
         </aside>
     )
