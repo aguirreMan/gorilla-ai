@@ -7,7 +7,7 @@ export default function Dashboardlayout({ children }: { children: React.ReactNod
     return (
         <ImageSettingsProvider>
             <Toaster />
-            <div className='flex min-h-screen bg-linear-to-b from-[#0f1f14] via-[#0b1310] to-black'>
+            <div className='flex min-h-screen bg-linear-to-b from-[#07120D] via-[#0F3B22] to-black'>
                 {/* This is for the sidebar component to take 20%*/}
                 <aside className='w-[20%] fixed h-screen'>
                     <Sidebar />

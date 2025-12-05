@@ -11,14 +11,13 @@ export default function Sidebar() {
         numberOfImages, updateNumberofImagesGenerated,
         availableImageCounts } = useImagesContext()
 
-
     const { user } = useUser()
-    // const { signOut } = useClerk()
+    const { signOut } = useClerk()
 
-    /*async function signOutPage() {
+    async function signOutPage() {
         await signOut({ redirectUrl: '/' })
     }
-*/
+
 
     //Write logic for Number slider
 
@@ -71,6 +70,9 @@ export default function Sidebar() {
                     </div>
                 </div>
             </div>
+
+            <button onClick={signOutPage} className='bg-white rounded-full cursor-pointer'>SignOUt</button>
+
         </aside>
     )
 }
