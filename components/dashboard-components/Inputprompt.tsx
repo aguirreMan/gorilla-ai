@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { toast } from 'sonner'
 import { GeneratedImageResult, OpenAIImageUrls } from '@/types/openai'
 import { Sparkles } from 'lucide-react'
+import { KeyboardEvent } from 'react'
 
 export default function Inputprompt() {
     const { model, imageSize, numberOfImages } = useImagesContext()
@@ -24,7 +25,7 @@ export default function Inputprompt() {
     }
 
     function submitOnEnter(event: KeyboardEvent<HTMLTextAreaElement>) {
-        if (event.key === 'enter' && !event.shiftKey) {
+        if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault()
             submitToOpenAi()
         }
@@ -109,6 +110,7 @@ export default function Inputprompt() {
                     width={512}
                     height={512}
                     className='p-4'
+                    unoptimized
                 />
             ))}
         </>
