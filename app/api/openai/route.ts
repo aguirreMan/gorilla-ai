@@ -38,11 +38,6 @@ export async function POST(request: Request) {
         response_format: userRequest.response_format ?? 'url'
     }
 
-    if (userOptions.model === 'Dall-E-2' && userOptions.size === '1024x1024' && userOptions.n > 1) {
-        userOptions.n = 1
-
-    }
-
 
     if (!apiKey) {
         return NextResponse.json(

@@ -14,13 +14,21 @@ export default function Inputprompt() {
     const [isGenerating, setIsGenerating] = useState<boolean>(false)
     const [generatedUrl, setGeneratedUrl] = useState<string[]>([])
 
-    //const { model, availableModels, chooseModel, chooseImageSize, imageSize, availableSizes } = useImageSettings()
-
     function allowUsertoInput(event: ChangeEvent<HTMLTextAreaElement>) {
         setUserPrompt(event.target.value)
     }
     const disableGenerateButton = userPrompt.trim() === '' || isGenerating
 
+    function clearInputAfterGeneratingImage() {
+        setUserPrompt('')
+    }
+
+    function submitOnEnter(event: KeyboardEvent<HTMLTextAreaElement>) {
+        if (event.key === 'enter' && !event.shiftKey) {
+            event.preventDefault()
+            submitToOpenAi()
+        }
+    }
 
     async function submitToOpenAi() {
         if (disableGenerateButton) return
@@ -58,6 +66,7 @@ export default function Inputprompt() {
             toast.error('Please keep message appropiate and creative')
         } finally {
             setIsGenerating(false)
+            clearInputAfterGeneratingImage()
         }
     }
 
@@ -66,6 +75,7 @@ export default function Inputprompt() {
             <div className='flex justify-center items-center mt-0 px-4 w-full max-w-3xl mx-auto relative'>
                 <textarea
                     onChange={allowUsertoInput}
+                    onKeyDown={submitOnEnter}
                     value={userPrompt}
                     disabled={isGenerating}
                     className='w-full border rounded-3xl text-white pt-4 pl-4
