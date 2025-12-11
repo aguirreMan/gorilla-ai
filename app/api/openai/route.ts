@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs/server'
+import { auth, currentUser } from '@clerk/nextjs/server'
 import { OpenAIImageResponse, OpenAIImageRequest, UserImageRequest } from '@/types/openai'
+import { saveImages } from '@/lib/supabase/saveImages'
 
 const apiKey = process.env.OPENAI_IMAGE_API_KEY
 
@@ -17,6 +18,16 @@ export async function POST(request: Request) {
         return NextResponse.json(
             { error: 'Not authorized' },
             { status: 401 }
+        )
+    }
+
+    const newUser = await currentUser()
+    const email = newUser?.emailAddresses?.[0]?.emailAddress
+
+    if (!email) {
+        return NextResponse.json(
+            { error: 'User email not found. Cannot synchronize user record.' },
+            { status: 400 }
         )
     }
 
@@ -47,7 +58,7 @@ export async function POST(request: Request) {
     }
 
     try {
-        const openAiData = await fetchOpenAi(userOptions)
+        const openAiData = await fetchOpenAi(userId, userEmail, userOptions)
 
         return NextResponse.json(openAiData)
     } catch (err: unknown) {
@@ -98,7 +109,7 @@ function validateUserRequest(userRequest: UserImageRequest): string | null {
 }
 
 //This function will fetch and call open ai endpoint
-async function fetchOpenAi(options: OpenAIImageRequest): Promise<OpenAIImageResponse> {
+async function fetchOpenAi(userId: string, userEmail: string, options: OpenAIImageRequest): Promise<OpenAIImageResponse> {
     const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
         method: 'POST',
         headers: {
@@ -118,5 +129,24 @@ async function fetchOpenAi(options: OpenAIImageRequest): Promise<OpenAIImageResp
     }
 
     const imageData: OpenAIImageResponse = await imageResponse.json()
-    return imageData
+
+    const savedImages = await Promise.all(
+        imageData.data.map(async (image) => {
+            if (!image.url) {
+                throw new Error('No URL in the api response')
+            }
+            return await saveImages({
+                userId,
+                userEmail,
+                prompt: options.prompt,
+                imageUrl: image.url,
+                model: options.model,
+                size: options.size!,
+                creditsUsed: 1
+            })
+        })
+    )
+    return {
+        data: savedImages.map(savedImg => ({ url: savedImg.url }))
+    }
 }

@@ -1,7 +1,9 @@
 import { supabaseServer } from './supabaseServer'
+import { ensureUserExists } from './ensureUserExists'
 
 interface SaveImagesProps {
     userId: string
+    userEmail: string
     prompt: string
     imageUrl: string
     model: string
@@ -11,11 +13,14 @@ interface SaveImagesProps {
 
 export async function saveImages({
     userId,
+    userEmail,
     prompt,
     imageUrl,
     model,
     size,
     creditsUsed }: SaveImagesProps) {
+
+    await ensureUserExists(userId, userEmail)
 
     const imageResponse = await fetch(imageUrl)
 

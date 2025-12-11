@@ -2,7 +2,7 @@
 
 export type OpenAIImageRequest = {
     model: string
-    size?: string
+    size: string
     n: number
     prompt: string
     response_format?: 'url' | 'b64_json' // Optional, defaults to 'url' if not specified
