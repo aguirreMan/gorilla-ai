@@ -45,7 +45,7 @@ export async function POST(request: Request) {
         model: userRequest.model ?? 'DALL-E-3',
         prompt: userRequest.prompt as string,
         n: userRequest.n ?? 1,
-        size: userRequest.size ?? '512x512',
+        size: userRequest.size ?? '1024x1024',
         response_format: userRequest.response_format ?? 'url'
     }
 
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     }
 
     try {
-        const openAiData = await fetchOpenAi(userId, userEmail, userOptions)
+        const openAiData = await fetchOpenAi(userId, email, userOptions)
 
         return NextResponse.json(openAiData)
     } catch (err: unknown) {
