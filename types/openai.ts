@@ -18,13 +18,13 @@ export type OpenAIImageResponse = {
 }
 
 export type GeneratedImageResult = {
-    url?: string;
-    b64_json?: string;
+    url?: string
+    b64_json?: string
 }
 
 export type OpenAIImageUrls = {
-    data: GeneratedImageResult[];
-};
+    data: GeneratedImageResult[]
+}
 
 //This is what the user sends to open ai just a prompt of an image they want
 export type RequestImage = {
