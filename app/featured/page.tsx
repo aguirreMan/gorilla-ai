@@ -1,6 +1,6 @@
 import Imageslider from '@/components/pages-components/Imageslider'
 
-export default async function FeaturedImages() {
+export default function FeaturedImages() {
     return (
         <div className='min-h-screen  relative flex flex-col justify-center items-center
          gap-4 bg-linear-to-b from-[#0f1f14] via-[#0b1310] to-black'>

@@ -21,17 +21,17 @@ export default function ImagecreationModal({
             <div className='bg-[#111] p-4 rounded-xl w-[90%] max-w-2xl text-white relative'>
                 <button
                     onClick={onClose}
-                    className="absolute right-3 top-3 text-gray-400 hover:text-white"
+                    className='absolute right-3 top-3 text-gray-400 hover:text-white'
                 >
                     X
                 </button>
                 {loading && (
-                    <div className="py-10 text-center text-xl">
+                    <div className='py-10 text-center text-xl'>
                         Generating image...
                     </div>
                 )}
                 {!loading && images.length > 0 && (
-                    <div className="grid grid-cols-1 gap-4">
+                    <div className='grid grid-cols-1 gap-4'>
                         {images.map((url, index) => (
                             <Image
                                 key={index}
