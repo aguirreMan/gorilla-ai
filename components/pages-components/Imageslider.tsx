@@ -13,6 +13,7 @@ import image5 from '@/public/assets/image-5.jpg'
 import image6 from '@/public/assets/image-6.jpg'
 import Image from 'next/image'
 import Imagemodal from '@/components/pages-components/Imagemodal'
+import { ChevronRight, ChevronLeft } from 'lucide-react'
 
 export default function Imageslider() {
     const imagesArray = [image1, image2, image3, image6, image4, image5]
@@ -26,34 +27,49 @@ export default function Imageslider() {
     }
     return (
         <>
-            <div className='relative w-full max-w-4xl mx-auto'>
+            <div className='relative w-full overflow-hidden group'>
                 <Carousel className='w-full'
                     opts={{
-                        align: 'center',
+                        align: 'start',
                         loop: true,
                         slidesToScroll: 1,
-                        dragFree: false
+                        dragFree: true
                     }}
-
                 >
-                    <CarouselContent>
+                    <CarouselContent className='-ml-2 md:-ml-4 pb-4 px-12 md:px-16'>
                         {imagesArray.map((image, index) => (
-                            <CarouselItem key={index}
-                                className='relative shrink-0 w-[300px] md:w-[350px] mx-2'
+                            <CarouselItem
+                                key={index}
+                                className='pl-2 md:pl-4 basis-1/2 sm:basis-1/3 
+                                md:basis-1/4 lg:basis-1/5 xl:basis-1/6'
                             >
-                                <Image
-                                    onClick={() => expandImageModal(index)}
-                                    src={image}
-                                    alt={`Slide ${index + 1}`}
-                                    className='w-full rounded-lg cursor-pointer pb-5'
-                                    style={{ objectFit: 'cover' }}
-                                />
+                                <div className='relative aspect-2/3 w-full overflow-hidden 
+                                rounded-lg transition-transform duration-200 hover:scale-110 hover:z-10'>
+                                    <Image
+                                        onClick={() => expandImageModal(index)}
+                                        src={image}
+                                        alt={`Slide ${index + 1}`}
+                                        fill
+                                        className=' cursor-pointer object-cover'
+                                    />
+                                </div>
                             </CarouselItem>
                         ))}
 
                     </CarouselContent>
-                    <CarouselPrevious className='cursor-pointer' />
-                    <CarouselNext className='cursor-pointer' />
+                    <CarouselPrevious
+                        className='absolute left-0 top-0 h-full w-12 md:w-16 rounded-none bg-black/50 
+                        hover:bg-black/80 border-0 opacity-0 group-hover:opacity-100 transition-opacity 
+                        duration-300 z-10 cursor-pointer pointer-events-auto'>
+                        <ChevronLeft className='h-8 w-8 md:h-12 md:w-12 text-white' />
+                    </CarouselPrevious>
+                    <CarouselNext
+                        className='absolute right-0 top-0 h-full w-12 md:w-16 rounded-none bg-black/50 
+                        hover:bg-black/80 border-0 opacity-0 group-hover:opacity-100 transition-opacity 
+                        duration-300 z-10 cursor-pointer'
+                    >
+                        <ChevronRight className='h-8 w-8 md:h-12 md:w-12 text-white' />
+                    </CarouselNext>
                 </Carousel>
                 <Imagemodal
                     isOpen={openImageModal}
@@ -64,5 +80,4 @@ export default function Imageslider() {
             </div>
         </>
     )
-
 }
