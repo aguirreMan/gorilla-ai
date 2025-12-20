@@ -11,6 +11,19 @@ interface SaveImagesProps {
     creditsUsed: number
 }
 
+//This is the data that is in my Supabase rows
+export interface SupabaseGenerationsData {
+    id: string,
+    user_id: string
+    prompt: string
+    image_url: string
+    model: string
+    size: string
+    credits_used: number
+    created_at: string
+    metaData?: unknown   /// This is for later use not for mvp project
+}
+
 export async function saveImages({
     userId,
     userEmail,
@@ -18,7 +31,7 @@ export async function saveImages({
     imageUrl,
     model,
     size,
-    creditsUsed }: SaveImagesProps) {
+    creditsUsed }: SaveImagesProps): Promise<SupabaseGenerationsData & { url: string }> {
 
     await ensureUserExists(userId, userEmail)
 
@@ -71,6 +84,6 @@ export async function saveImages({
 
     return {
         url: publicUrl,
-        id: data.id
+        ...data
     }
 }

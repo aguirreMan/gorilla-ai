@@ -33,7 +33,7 @@ export default function Imageslider() {
                         align: 'start',
                         loop: true,
                         slidesToScroll: 1,
-                        dragFree: true
+                        dragFree: false
                     }}
                 >
                     <CarouselContent className='-ml-2 md:-ml-4 pb-4 px-12 md:px-16'>
