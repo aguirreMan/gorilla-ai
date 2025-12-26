@@ -135,7 +135,7 @@ async function fetchOpenAi(userId: string, userEmail: string, options: OpenAIIma
             if (!image.url) {
                 throw new Error('No URL in the api response')
             }
-            return await saveImages({
+            const saved = await saveImages({
                 userId,
                 userEmail,
                 prompt: options.prompt,
@@ -144,7 +144,13 @@ async function fetchOpenAi(userId: string, userEmail: string, options: OpenAIIma
                 size: options.size!,
                 creditsUsed: 1
             })
+            console.log('Saved image Data', saved)
+            console.log('URL value:', saved.url)
+            console.log('URL type:', typeof saved.url)
+
+            return saved
         })
+
     )
     return {
         data: savedImages.map(savedImg => ({ url: savedImg.url }))

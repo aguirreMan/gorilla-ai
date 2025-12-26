@@ -9,6 +9,7 @@ export interface ImageNumberSliderProps {
     step: number
 }
 
+
 export default function ImageNumberSlider({ value, min, max, onChange, disabled }: ImageNumberSliderProps) {
     return (
         <div className='pt-6 w-[50%] ml-8 flex justify-center items-center cursor-pointer'>

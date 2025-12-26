@@ -21,7 +21,7 @@ export interface SupabaseGenerationsData {
     size: string
     credits_used: number
     created_at: string
-    metaData?: unknown   /// This is for later use not for mvp project
+    metaData?: unknown   /// This is for later use 
 }
 
 export async function saveImages({

@@ -7,7 +7,7 @@ import Dashboardlayout from '@/components/dashboard-components/Dashboardlayout'
 import Dashboardnav from '@/components/dashboard-components/Dashboardnav'
 import Inputprompt from '@/components/dashboard-components/Inputprompt'
 import ImagecreationModal from '@/components/dashboard-components/ImagecreationModal'
-import { OpenAIImageUrls } from '@/types/openai'
+import { SupabaseGenerationsData } from '@/lib/supabase/saveImages'
 
 export default function DashboardPage() {
     const { isSignedIn, isLoaded } = useUser()
@@ -15,7 +15,7 @@ export default function DashboardPage() {
 
     const [openModal, setOpenModal] = useState(false)
     const [isGenerating, setIsGenerating] = useState(false)
-    const [createdImages, setCreatedImages] = useState<string[]>([])
+    const [createdImages, setCreatedImages] = useState<(SupabaseGenerationsData & { url: string })[]>([])
 
     useEffect(() => {
         if (isLoaded && !isSignedIn) {
@@ -51,12 +51,9 @@ export default function DashboardPage() {
                 return
             }
 
-            const data = json as OpenAIImageUrls
-            const urls = data.data
-                .map((img) => img.url)
-                .filter((url): url is string => Boolean(url))
+            const data = json as { data: (SupabaseGenerationsData & { url: string })[] }
 
-            setCreatedImages(urls)
+            setCreatedImages(data.data)
 
         } catch (error) {
             console.error('Network error:', error)
