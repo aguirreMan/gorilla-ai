@@ -18,7 +18,6 @@ export default function Sidebar() {
         await signOut({ redirectUrl: '/' })
     }
 
-
     //Write logic for Number slider
 
     function getNumberOfImagesToGenerate(value: number) {
@@ -27,7 +26,7 @@ export default function Sidebar() {
     //Numbers of Images Minimum and Maximum to get
     const minimumNumber = Math.min(...availableImageCounts)
     const maximumNumber = Math.max(...availableImageCounts)
-    console.log("value:", numberOfImages, "min:", minimumNumber, "max:", maximumNumber)
+
 
 
     return (
