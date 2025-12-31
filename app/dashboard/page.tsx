@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import Dashboardlayout from '@/components/dashboard-components/Dashboardlayout'
 import Dashboardnav from '@/components/dashboard-components/Dashboardnav'
 import Inputprompt from '@/components/dashboard-components/Inputprompt'
 import ImagecreationModal from '@/components/dashboard-components/ImagecreationModal'
@@ -54,6 +53,9 @@ export default function DashboardPage() {
             const data = json as { data: (SupabaseGenerationsData & { url: string })[] }
 
             setCreatedImages(data.data)
+            toast.success('Image generated', {
+                description: 'Added to your gallery',
+            })
 
         } catch (error) {
             console.error('Network error:', error)
@@ -68,7 +70,7 @@ export default function DashboardPage() {
     if (!isSignedIn) return null
 
     return (
-        <Dashboardlayout>
+        <>
             <Dashboardnav />
             <div className='pt-16'>
                 <Inputprompt
@@ -83,6 +85,6 @@ export default function DashboardPage() {
                 images={createdImages}
                 onClose={() => setOpenModal(false)}
             />
-        </Dashboardlayout>
+        </>
     )
 }

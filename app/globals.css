@@ -119,3 +119,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+:root {
+  --sonner-radius: 14px;
+  --sonner-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+
+  --sonner-bg: oklch(0.18 0.04 160);
+  --sonner-border: oklch(1 0 0 / 8%);
+  --sonner-text: oklch(0.98 0.01 160);
+
+  --sonner-success: oklch(0.72 0.2 145);
+  --sonner-error: oklch(0.65 0.25 27);
+  --sonner-warning: oklch(0.78 0.18 85);
+}
