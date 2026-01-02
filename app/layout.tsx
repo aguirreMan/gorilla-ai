@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Toaster } from 'sonner'
+import ReactQueryProvider from '@/providers/QueryProvider'
 
 
 const geistSans = Geist({
@@ -27,19 +28,22 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <Toaster
-        position='top-center'
-        toastOptions={{
-          duration: 4000,
-        }}
-        richColors
-        closeButton
-      />
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}>
-          {children}
+          <ReactQueryProvider>
+            <Toaster
+              position='top-center'
+              toastOptions={{
+                duration: 4000,
+              }}
+              richColors
+              closeButton
+            />
+            {children}
+          </ReactQueryProvider>
         </body>
       </html>
+
     </ClerkProvider>
   )
 }

@@ -128,7 +128,7 @@
   --sonner-border: oklch(1 0 0 / 8%);
   --sonner-text: oklch(0.98 0.01 160);
 
-  --sonner-success: oklch(0.72 0.2 145);
-  --sonner-error: oklch(0.65 0.25 27);
-  --sonner-warning: oklch(0.78 0.18 85);
+  --sonner-success: oklch(53.758% 0.15739 147.578);
+  --sonner-error: oklch(47.952% 0.19093 27.878);
+  --sonner-warning: oklch(96.801% 0.21064 109.779);
 }

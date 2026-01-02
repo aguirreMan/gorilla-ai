@@ -38,7 +38,7 @@ export async function saveImages({
     const imageResponse = await fetch(imageUrl)
 
     if (!imageResponse.ok) {
-        throw new Error(`Failed to download image from external URL: ${imageResponse.status} ${imageResponse.statusText}`);
+        throw new Error(`Failed to download image from external URL: ${imageResponse.status} ${imageResponse.statusText}`)
     }
 
     const imageBlob = await imageResponse.blob()
