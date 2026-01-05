@@ -7,9 +7,7 @@ export default function AuthLayout({
 }) {
     return (
         <ClerkProvider>
-            <div className='min-h-screen flex items-center justify-center bg-linear-to-b from-[#07120D] via-[#0F3B22] to-black'>
-                {children}
-            </div>
+            {children}
         </ClerkProvider>
     )
 }
