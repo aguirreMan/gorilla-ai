@@ -1,12 +1,13 @@
+//This Marketing Navbar contains zero clerk components 
+
 'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { IoMdClose } from 'react-icons/io'
 import { GiHamburgerMenu } from 'react-icons/gi'
 
-export default function Navbar() {
+export default function NavbarMarketing() {
     const [openNav, setOpenNav] = useState<boolean>(false)
 
     function toggleNav() {
@@ -37,19 +38,12 @@ export default function Navbar() {
                         <li className='cursor-pointer px-4 py-2 rounded-lg text-gray-700 hover:text-green-700 bg-gray-100 font-medium transition'>Contact</li>
                     </Link>
 
-                    <SignedOut>
-                        <li>
-                            <SignInButton mode='modal'>
-                                <button className='px-4 py-2 rounded-lg cursor-pointer bg-gray-100 text-gray-700 hover:text-green-700 font-semibold transition'>
-                                    Launch App
-                                </button>
-                            </SignInButton>
+
+                    <Link href='/sign-in'>
+                        <li className='px-4 py-2 rounded-lg cursor-pointer bg-gray-100 text-gray-700 hover:text-green-700 font-semibold transition'>
+                            Launch App
                         </li>
-                    </SignedOut>
-                    <SignedIn>
-                        <li><Link href='/dashboard'>Dashboard</Link></li>
-                        <li><UserButton /></li>
-                    </SignedIn>
+                    </Link>
                 </ul>
 
                 {/* Hamburger Button */}
@@ -68,9 +62,9 @@ export default function Navbar() {
                         className='flex flex-col gap-6 items-center'
                         onClick={(event) => event.stopPropagation()}
                     >
-                        <Link href='/features' onClick={toggleNav}>
+                        <Link href='/featured' onClick={toggleNav}>
                             <span className='cursor-pointer text-gray-700 hover:text-green-700 font-medium transition text-xl'>
-                                Features
+                                Featured
                             </span>
                         </Link>
                         <Link href='/pricing' onClick={toggleNav}>
@@ -89,21 +83,11 @@ export default function Navbar() {
                             </span>
                         </Link>
 
-                        <SignedOut>
-                            <SignInButton mode='modal'>
-                                <button className='px-6 py-3 rounded-lg cursor-pointer text-gray-700 hover:text-green-700 font-semibold transition hover:bg-gray-100 text-xl'>
-                                    Launch App
-                                </button>
-                            </SignInButton>
-                        </SignedOut>
-                        <SignedIn>
-                            <Link href='/dashboard' onClick={toggleNav}>
-                                <span className='cursor-pointer text-gray-700 hover:text-green-700 font-medium transition text-xl'>
-                                    Dashboard
-                                </span>
-                            </Link>
-                            <UserButton />
-                        </SignedIn>
+                        <Link href='/sign-in' onClick={toggleNav}>
+                            <span className='cursor-pointer text-gray-700 hover:text-green-700 font-medium transition text-xl'>
+                                Sign In
+                            </span>
+                        </Link>
                     </nav>
                 </div>
             )}

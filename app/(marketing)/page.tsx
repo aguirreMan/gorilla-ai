@@ -1,7 +1,7 @@
 import Banner from '@/components/pages-components/Banner'
 import Image from 'next/image'
 import Gorilla from '@/public/assets/super-gorilla.jpg'
-import { SignUpButton } from '@clerk/nextjs'
+import Link from 'next/link'
 
 export default function Home() {
   return (
@@ -25,13 +25,13 @@ export default function Home() {
           <p className='max-w-xl text-3xl text-white text-center mt-4'>
             Leverage AI with powerful tools<br /> to create your dream projects
           </p>
-          <SignUpButton mode='modal'>
+          <Link href='/sign-up'>
             <button className='mt-8 px-6 py-3 rounded-xl 
           text-zinc-100 bg-white/20 cursor-pointer hover:bg-white/30
            transition font-semibold'>
               Start Creating
             </button>
-          </SignUpButton>
+          </Link>
         </div>
 
         {/* Banner - On Top of content */}
