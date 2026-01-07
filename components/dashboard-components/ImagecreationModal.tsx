@@ -46,7 +46,6 @@ export default function ImagecreationModal({
                                 width={500}
                                 alt='generated image'
                                 className='rounded-lg object-cover'
-                                unoptimized
                             />
                         ))}
                     </div>
