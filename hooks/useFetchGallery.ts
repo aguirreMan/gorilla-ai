@@ -1,3 +1,5 @@
+//Hook to fetch user gallery images from supabase
+
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/supabaseClient'
 import { SupabaseGenerationsData } from '@/lib/supabase/saveImages'
@@ -15,12 +17,17 @@ export function useFetchGallery(userId: string | undefined) {
             const dataFrom = pageParam * imagesPerPage
             const dataTo = dataFrom + imagesPerPage - 1
 
+            console.log('🔍 Querying with userId:', userId)
+
             const { data, error, count } = await supabase
                 .from('generations')
                 .select('*', { count: 'exact' })
                 .eq('user_id', userId)
                 .order('created_at', { ascending: false })
                 .range(dataFrom, dataTo)
+
+            console.log('📊 Query result:', { data, error, count }) // DEBUG
+
 
             if (error) {
                 console.error('Gallery fetched failed', error.message)

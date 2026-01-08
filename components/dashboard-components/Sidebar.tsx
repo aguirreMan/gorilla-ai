@@ -4,6 +4,7 @@ import ImagesettingsSelect from '@/components/dashboard-components/Imagesettings
 import { useUser, useClerk } from '@clerk/nextjs'
 import { Folder } from 'lucide-react'
 import ImageNumberSlider from '@/components/dashboard-components/ImageNumberSlider'
+import Link from 'next/link'
 
 export default function Sidebar() {
     const { chooseImageSize, chooseModel,
@@ -35,10 +36,12 @@ export default function Sidebar() {
                 <div className='w-full mb-4 rounded-2xl bg-black backdrop:blur-2xl cursor-pointer p-2 text-center text-white'>
                     Hi, {user?.firstName}
                 </div>
-                <div className='flex flex-row cursor-pointer bg-amber-500
+                <Link href='/dashboard/gallery'>
+                    <div className='flex flex-row cursor-pointer bg-amber-500
                 w-full border-0 h-auto p-2 rounded-md'>
-                    <Folder className='mr-4' /> Library
-                </div>
+                        <Folder className='mr-4' /> Library
+                    </div>
+                </Link>
                 <div className='pt-6'>
                     <ImagesettingsSelect
                         label='Model'
