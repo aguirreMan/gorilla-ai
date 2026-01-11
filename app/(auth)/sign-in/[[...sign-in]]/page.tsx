@@ -21,7 +21,7 @@ export default function SignInPage() {
                         variables: {
                             colorPrimary: '#15803d',
                             colorBackground: '#0F1712',
-                            colorInputBackground: '#07120D',
+                            colorInputBackground: '#ffffff',
                             colorInputForeground: '#ffffff',
                         },
                         elements: {
@@ -32,7 +32,7 @@ export default function SignInPage() {
                             footerActionLink: 'text-green-500 hover:text-green-400',
                         }
                     }}
-                    signUpUrl='/sign-up'
+                    signUpUrl='/sign-in'
                 />
             </div>
         </div>
