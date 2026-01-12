@@ -26,13 +26,13 @@ export default function SignUpPage() {
             </div>
 
             {/* Right column is Clerk component */}
-            <div className='flex items-center justify-center bg-[#07120D]'>
+            <div className='flex items-center justify-center bg-[#111610]'>
                 <SignUp
                     appearance={{
                         theme: shadcn,
                         variables: {
-                            colorPrimary: '#15803d',
-                            colorBackground: '#1d402a',
+                            colorPrimary: '#282E25',
+                            colorBackground: '#111610',
                         },
                     }}
                     signInUrl='/sign-in'

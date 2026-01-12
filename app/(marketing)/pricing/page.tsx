@@ -2,8 +2,10 @@
 
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
+import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { Check } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 
 type PaymentType = 'yearly' | 'monthly'
@@ -61,13 +63,13 @@ export default function PricingPage() {
     return (
         <>
             {/**Header and toggle */}
-            <div className='min-h-screen bg-linear-to-b from-[#0f1f14] via-[#0b1310] to-black text-white relative'>
+            <div className='min-h-screen bg-jungle text-foreground relative'>
                 <div className='relative flex flex-col items-center pt-32 px-4'>
                     <h1 className='text-4xl sm:text-4xl font-bold tracking-tight 
                     text-center leading-tight'>
                         Unlock the power of Gorilla AI
                     </h1>
-                    <p className='text-lg sm:text-lg text-white/80 mt-6 text-center max-w-2xl'>
+                    <p className='text-lg sm:text-lg text-muted-foreground mt-6 text-center max-w-2xl'>
                         Choose the plan that fits your workflow. No hidden fees. Cancel anytime.
                     </p>
                     {/*Toggle switch*/}
@@ -80,8 +82,10 @@ export default function PricingPage() {
                             checked={subscriptionType === 'yearly'}
                             onCheckedChange={toggleSubscriptionPlans}
                             className='
-                            data-[state=checked]:bg-[#22c55e]
-                            data-[state=unchecked]:bg-white/30 cursor-pointer'
+                             border border-border cursor-pointer
+                            data-[state=checked]:bg-primary
+                            data-[state=unchecked]:bg-card
+                            [&>span]:bg-foreground'
                         />
                         <span className={subscriptionType === 'yearly' ? 'font-semibold' : 'text-white/60'}>
                             Yearly
@@ -95,10 +99,12 @@ export default function PricingPage() {
                         {plans.map((plan, index) => (
                             <Card
                                 key={index}
-                                className={`relative rounded-2xl p-6 bg-white/10 backdrop-blur-md 
-                            border border-white/20 shadow-lg transition-all
-                            hover:shadow-2xl hover:-translate-y-1 
-                             ${plan.featured ? 'ring-2 ring-primary bg-primary/5 scale-[1.02]' : ''}`}
+                                className={cn(
+                                    'relative rounded-2xl p-6 transition-all',
+                                    'bg-card text-card-foreground',
+                                    'border shadow-lg hover:shadow-2xl hover:-translate-y-1',
+                                    plan.featured && 'ring-2 ring-primary scale-[1.02]'
+                                )}
                             >
                                 {plan.featured && (
                                     <span className='absolute top-4 right-4 text-xs px-2
@@ -126,19 +132,16 @@ export default function PricingPage() {
                                     <ul className='mt-6 space-y-3'>
                                         {plan.features.map((feature, idx) => (
                                             <li key={idx} className='flex items-center gap-2 text-sm'>
-                                                <Check className='w-4 h-4 text-white ' />
+                                                <Check className='w-6 h-6 text-primary ' />
                                                 {feature}
                                             </li>
                                         ))}
                                     </ul>
                                     {/**Only show the button for cards that are paid plans */}
                                     {plan.name !== 'Free' && (
-                                        <button className='w-full mt-6 py-3 
-                                        rounded-xl bg-white/20 text-white 
-                                        font-semibold hover:bg-white/30 
-                                        transition cursor-pointer'>
+                                        <Button className='w-full mt-6 py-3 cursor-pointer '>
                                             Pay Now
-                                        </button>
+                                        </Button>
                                     )}
                                 </CardContent>
                             </Card>
