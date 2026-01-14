@@ -1,4 +1,4 @@
-import { redis } from '@/lib/upstash/upstash-test'
+import { redis } from '@/lib/upstash/rateLimit'
 
 export async function GET() {
     await redis.set('ping', 'pong', { ex: 10 })
