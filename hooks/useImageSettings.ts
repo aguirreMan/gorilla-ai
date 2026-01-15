@@ -7,7 +7,7 @@ export default function useImageSettings() {
     const [numberOfImages, setNumberOfImages] = useState<number>(1)
 
     function chooseModel(newModel: ImageModel) {
-        const newConfig = ModelsUsed[newModel]
+        const newConfig = ModelsUsed[newModel].uiData
         setModel(newModel)
         setImageSize(newConfig.sizes[0])
         setNumberOfImages(newConfig.imageCount[0])
@@ -32,7 +32,7 @@ export default function useImageSettings() {
         chooseImageSize,
         updateNumberofImagesGenerated,
         availableModels: Object.keys(ModelsUsed) as ImageModel[],
-        availableSizes: currentModelConfig.sizes,  // Dynamically gives sizes for current model
-        availableImageCounts: currentModelConfig.imageCount
+        availableSizes: currentModelConfig.uiData.sizes,  // Dynamically gives sizes for current model
+        availableImageCounts: currentModelConfig.uiData.imageCount
     }
 }

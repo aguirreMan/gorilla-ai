@@ -1,5 +1,7 @@
 import { type UserCredits } from '@/types/supabaseTypes'
 import { supabase } from '../supabase/supabaseClient'
+import { ImageModel } from '@/types/models'
+import { pricingCreditsUsed } from './pricing'
 
 const dailyGorillaCoins = 10
 
@@ -26,7 +28,7 @@ export async function refreshUserCredits(userId: string) {
     const { creditsRemaining, creditsReset } = await getUserCredits(userId)
 
     if (creditsReset < todayMidnightUTC) {
-        // 4. Reset credits to daily allowance
+        //Reset credits back to daily allowance 
         const { data, error } = await supabase
             .from('users')
             .update({
@@ -54,13 +56,39 @@ export async function refreshUserCredits(userId: string) {
     }
 }
 
-//UpdateUserCredits Function goes here
+export async function deductCredits(userId: string, amount: number) {
+    const { creditsRemaining } = await refreshUserCredits(userId)
 
-/*export async function canAffordtoGenerateImage(userId: string, modelId: ImageModelId, num: number) {
-    //const { credits } = await updatedUserCredits()
-    //const costToGenerate = getRequiredCredits(modelId, num) // This from the types
+    if (creditsRemaining < amount) {
+        throw new Error('insufficeint funds')
+    }
+    const newCreditsRemaining = creditsRemaining - amount
+
+    const { data, error } = await supabase
+        .from('users')
+        .update({
+            credits_remaining: newCreditsRemaining
+        })
+        .eq('id', userId)
+        .select('credits_remaining, credits_reset_at')
+        .single()
+
+    if (error || !data) {
+        throw new Error('Failed to deduct credits')
+    }
+
+    return {
+        creditsRemaining: data.credits_remaining,
+        creditsReset: new Date(data.credits_reset_at)
+    }
 }
 
-/*export async function deductCredits(userId: string, amount: number) {
-
-} */
+export async function canAffordToGenerate(
+    userId: string,
+    modelId: ImageModel,
+    num: number
+): Promise<boolean> {
+    const { creditsRemaining } = await refreshUserCredits(userId)
+    const priceToGenerateImage = pricingCreditsUsed(modelId, num)
+    return creditsRemaining >= priceToGenerateImage
+}
