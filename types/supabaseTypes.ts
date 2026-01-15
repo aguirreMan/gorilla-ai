@@ -4,3 +4,4 @@ export interface UserCredits {
     creditsRemaining: number
     creditsReset: Date
 }
+
