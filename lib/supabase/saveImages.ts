@@ -1,28 +1,6 @@
 import { supabaseServer } from './supabaseServer'
 import { ensureUserExists } from './ensureUserExists'
-
-interface SaveImagesProps {
-    userId: string
-    userEmail: string
-    prompt: string
-    imageUrl: string
-    model: string
-    size: string
-    creditsUsed: number
-}
-
-//This is the data that is in my Supabase rows
-export interface SupabaseGenerationsData {
-    id: string,
-    user_id: string
-    prompt: string
-    image_url: string
-    model: string
-    size: string
-    credits_used: number
-    created_at: string
-    metaData?: unknown   /// This is for later use 
-}
+import { SaveImagesProps, SupabaseGenerationsData } from '@/types/supabaseTypes'
 
 export async function saveImages({
     userId,

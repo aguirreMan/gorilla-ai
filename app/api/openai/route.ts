@@ -4,7 +4,8 @@ import { OpenAIImageResponse, OpenAIImageRequest, UserImageRequest } from '@/typ
 import { saveImages } from '@/lib/supabase/saveImages'
 import { imageGenerationRateLimiting } from '@/lib/upstash/rateLimit'
 import { ImageModel, ModelsUsed } from '@/types/models'
-import { refreshUserCredits } from '@/lib/pricing/credits'
+import { deductCredits, refreshUserCredits } from '@/lib/pricing/credits'
+import { pricingCreditsUsed } from '@/lib/pricing/pricing'
 
 const apiKey = process.env.OPENAI_IMAGE_API_KEY
 
@@ -33,7 +34,6 @@ export async function POST(request: Request) {
             { status: 400 }
         )
     }
-
     //ADd Upstash Rate limiting here 
     const {
         success,
@@ -46,8 +46,6 @@ export async function POST(request: Request) {
         'X-RateLimit-Remaining': remaining.toString(),
         'X-RateLimit-Reset': reset.toString(),
     }
-
-    const { creditsRemaining, creditsReset, didReset } = await refreshUserCredits(userId)
 
     if (!success) {
         return NextResponse.json(
@@ -77,6 +75,27 @@ export async function POST(request: Request) {
         response_format: userRequest.response_format ?? 'url'
     }
 
+    const { creditsRemaining } = await refreshUserCredits(userId)
+
+    const modelId: ImageModel = userOptions.model
+    const imageCount = userOptions.n
+
+    const costOfImage = pricingCreditsUsed(modelId, imageCount)
+
+    if (creditsRemaining < costOfImage) {
+        return NextResponse.json(
+            {
+                error: 'Insufficient Gorilla Coins',
+                required: costOfImage,
+                available: creditsRemaining,
+                message: 'You need more coins, Upgrade to a paid plan for more'
+            },
+            {
+                status: 402,
+                headers: rateLimitHeaders
+            }
+        )
+    }
 
     if (!apiKey) {
         return NextResponse.json(
@@ -87,6 +106,8 @@ export async function POST(request: Request) {
 
     try {
         const openAiData = await fetchOpenAi(userId, email, userOptions)
+
+        await deductCredits(userId, costOfImage)
 
         return NextResponse.json(openAiData, {
             status: 200,
@@ -137,7 +158,6 @@ export async function POST(request: Request) {
     )
 }
 
-//This function needs to validate that a user enters a prompt
 function validateUserRequest(userRequest: UserImageRequest): string | null {
     if (!userRequest.prompt || userRequest.prompt.trim() === '') {
         return 'A prompt is required'
