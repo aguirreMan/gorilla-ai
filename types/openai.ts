@@ -1,7 +1,7 @@
 //These are the types for open ai models
 
 export type OpenAIImageRequest = {
-    model: string
+    model: 'dall-e-2' | 'dall-e-3'
     size: string
     n: number
     prompt: string

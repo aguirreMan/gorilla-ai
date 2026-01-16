@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server'
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { OpenAIImageResponse, OpenAIImageRequest, UserImageRequest } from '@/types/openai'
 import { saveImages } from '@/lib/supabase/saveImages'
+import { imageGenerationRateLimiting } from '@/lib/upstash/rateLimit'
+import { ImageModel, ModelsUsed } from '@/types/models'
+import { refreshUserCredits } from '@/lib/pricing/credits'
 
 const apiKey = process.env.OPENAI_IMAGE_API_KEY
 
@@ -31,6 +34,31 @@ export async function POST(request: Request) {
         )
     }
 
+    //ADd Upstash Rate limiting here 
+    const {
+        success,
+        limit,
+        remaining,
+        reset } = await imageGenerationRateLimiting.limit(`user:${userId}`)
+
+    const rateLimitHeaders = {
+        'X-RateLimit-Limit': limit.toString(),
+        'X-RateLimit-Remaining': remaining.toString(),
+        'X-RateLimit-Reset': reset.toString(),
+    }
+
+    const { creditsRemaining, creditsReset, didReset } = await refreshUserCredits(userId)
+
+    if (!success) {
+        return NextResponse.json(
+            { error: 'Too many Image Generations slow down please' },
+            {
+                status: 429,
+                headers: rateLimitHeaders
+            }
+        )
+    }
+
     const userRequest: UserImageRequest = await request.json()
 
     const validationError = validateUserRequest(userRequest)
@@ -42,7 +70,7 @@ export async function POST(request: Request) {
     }
 
     const userOptions: OpenAIImageRequest = {
-        model: userRequest.model ?? 'DALL-E-3',
+        model: userRequest.model ?? 'dall-e-3',
         prompt: userRequest.prompt as string,
         n: userRequest.n ?? 1,
         size: userRequest.size ?? '1024x1024',
@@ -60,7 +88,10 @@ export async function POST(request: Request) {
     try {
         const openAiData = await fetchOpenAi(userId, email, userOptions)
 
-        return NextResponse.json(openAiData)
+        return NextResponse.json(openAiData, {
+            status: 200,
+            headers: rateLimitHeaders
+        })
     } catch (err: unknown) {
         console.error('Image generation failed', err)
 
@@ -89,14 +120,20 @@ export async function POST(request: Request) {
                 {
                     error: 'Your prompt violates content policy. Please try a different prompt.'
                 },
-                { status: 400 }
+                {
+                    status: 400,
+                    headers: rateLimitHeaders
+                }
             )
         }
     }
 
     return NextResponse.json(
         { error: 'Failed to generate image. Please try again.' },
-        { status: 500 }
+        {
+            status: 500,
+            headers: rateLimitHeaders
+        }
     )
 }
 
@@ -135,6 +172,9 @@ async function fetchOpenAi(userId: string, userEmail: string, options: OpenAIIma
             if (!image.url) {
                 throw new Error('No URL in the api response')
             }
+            const modelId: ImageModel = options.model
+
+
             const saved = await saveImages({
                 userId,
                 userEmail,
@@ -142,11 +182,11 @@ async function fetchOpenAi(userId: string, userEmail: string, options: OpenAIIma
                 imageUrl: image.url,
                 model: options.model,
                 size: options.size!,
-                creditsUsed: 1
+                creditsUsed: ModelsUsed[modelId].billingData.creditsUsed
             })
-            console.log('Saved image Data', saved)
-            console.log('URL value:', saved.url)
-            console.log('URL type:', typeof saved.url)
+            //console.log('Saved image Data', saved)
+            //console.log('URL value:', saved.url)
+            //console.log('URL type:', typeof saved.url)
 
             return saved
         })
