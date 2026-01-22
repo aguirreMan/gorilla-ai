@@ -1,7 +1,7 @@
 import { SignUp } from '@clerk/nextjs'
 import { shadcn } from '@clerk/themes'
 import Image from 'next/image'
-import GorillaAuth from '@/public/assets/gorilla-night.jpg'
+import GorillaFlux from '@/public/assets/gorilla-flux.jpg'
 
 export default function SignUpPage() {
     return (
@@ -10,33 +10,42 @@ export default function SignUpPage() {
             {/* Left Image */}
             <div className='relative hidden md:block'>
                 <Image
-                    src={GorillaAuth}
+                    src={GorillaFlux}
                     alt='Gorilla AI'
                     fill
                     className='object-cover'
                     priority
                 />
 
-                {/* Overlay Text over Image */}
-                <div className='absolute inset-0 z-10 flex items-center justify-center'>
-                    <h1 className='text-white text-4xl font-bold text-center px-8'>
+                {/* Gradient layer */}
+                <div className='absolute inset-0 bg-linear-to-t from-black/70 via-black/30 to-transparent' />
+                {/* Text overlay*/}
+
+                <div className='absolute inset-0 z-10 flex items-center justify-center px-10'>
+                    <h1 className='text-foreground text-4xl font-semibold tracking-tight text-center max-w-md'>
                         Unleash the power of Gorilla AI
                     </h1>
                 </div>
             </div>
 
             {/* Right column is Clerk component */}
-            <div className='flex items-center justify-center bg-[#111610]'>
-                <SignUp
-                    appearance={{
-                        theme: shadcn,
-                        variables: {
-                            colorPrimary: '#282E25',
-                            colorBackground: '#111610',
-                        },
-                    }}
-                    signInUrl='/sign-in'
-                />
+            <div className='flex items-center justify-center bg-background'>
+                <div className='w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-lg'>
+                    <SignUp
+                        appearance={{
+                            theme: shadcn,
+                            variables: {
+                                colorPrimary: 'var(--primary)',
+                                colorBackground: 'var(--background)',
+                                colorText: 'var(--foreground)',
+                                colorInputBackground: 'var(--input)',
+                                colorInputText: 'var(--foreground)',
+                                colorBorder: 'var(--border)'
+                            },
+                        }}
+                        signInUrl='/sign-in'
+                    />
+                </div>
             </div>
 
         </div>

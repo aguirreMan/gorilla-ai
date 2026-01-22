@@ -1,39 +1,51 @@
 import { SignIn } from '@clerk/nextjs'
 import { shadcn } from '@clerk/themes'
+import Image from 'next/image'
+import GorillaFlux from '@/public/assets/gorilla-flux.jpg'
 
 export default function SignInPage() {
     return (
-        <div className='min-h-screen grid grid-cols-1 md:grid-cols-2 bg-[#07120D]'>
-            {/**Left column */}
-            <div className='hidden md:flex flex flex-col justify-center px-12 text-white'>
-                <h1 className='text-4xl font-bold mb-4'>
-                    Welcome back
-                </h1>
-                <p className='text-white/70 max-w-md'>
-                    Generate AI images, manage your gallery, and control your creations.
-                </p>
-            </div>
-            {/**Right Column clerk component here */}
-            <div className='flex items-center justify-center'>
-                <SignIn
-                    appearance={{
-                        theme: shadcn,
-                        variables: {
-                            colorPrimary: '#15803d',
-                            colorBackground: '#0F1712',
-                            colorInputBackground: '#ffffff',
-                            colorInputForeground: '#ffffff',
-                        },
-                        elements: {
-                            card: 'shadow-2xl border border-green-900/20',
-                            headerTitle: 'text-white',
-                            footer: 'bg-green-400',
-                            footerActionText: 'text-white/60',
-                            footerActionLink: 'text-green-500 hover:text-green-400',
-                        }
-                    }}
-                    signUpUrl='/sign-in'
+        <div className='min-h-screen grid grid-cols-1 md:grid-cols-2'>
+
+            {/* Left Image */}
+            <div className='relative hidden md:block'>
+                <Image
+                    src={GorillaFlux}
+                    alt='Gorilla AI'
+                    fill
+                    className='object-cover'
+                    priority
                 />
+
+                {/* Gradient layer */}
+                <div className='absolute inset-0 bg-linear-to-t from-black/70 via-black/30 to-transparent' />
+
+                {/* Text overlay*/}
+                <div className='absolute inset-0 z-10 flex items-center justify-center px-10'>
+                    <h1 className='text-foreground text-4xl font-semibold tracking-tight text-center max-w-md'>
+                        Unleash the power of Gorilla AI
+                    </h1>
+                </div>
+            </div>
+
+            {/**Right Column clerk component here */}
+            <div className='flex items-center justify-center bg-background'>
+                <div className='w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-lg'>
+                    <SignIn
+                        appearance={{
+                            theme: shadcn,
+                            variables: {
+                                colorPrimary: 'var(--primary)',
+                                colorBackground: 'var(--background)',
+                                colorText: 'var(--foreground)',
+                                colorInputBackground: 'var(--input)',
+                                colorInputText: 'var(--foreground)',
+                                colorBorder: 'var(--border)'
+                            },
+                        }}
+                        signUpUrl='/sign-in'
+                    />
+                </div>
             </div>
         </div>
     )

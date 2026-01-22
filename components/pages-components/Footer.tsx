@@ -1,6 +1,6 @@
 export default function Footer() {
     return (
-        <footer className='bg-[#167a37] text-white py-12 px-6'>
+        <footer className='bg-background border-border text-muted py-12 px-6'>
             <div className='max-w-7xl mx-auto flex flex-col md:flex-row gap-8 justify-center'>
 
                 {/* About Column */}
@@ -39,7 +39,7 @@ export default function Footer() {
                 </div>
             </div>
 
-            <p className='text-center text-sm text-white/60 mt-12'>
+            <p className='text-center text-sm text-foreground mt-12'>
                 &copy; {new Date().getFullYear()} Gorilla AI. All rights reserved.
             </p>
         </footer>

@@ -1,10 +1,7 @@
-//Hook to fetch user gallery images from supabase
+//Hook to fetch user gallery images from gallery api no longer supabase
 
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { supabase } from '@/lib/supabase/supabaseClient'
-import { SupabaseGenerationsData } from '@/lib/supabase/saveImages'
-
-const imagesPerPage = 12
+import { SupabaseGenerationsData } from '@/types/supabaseTypes'
 
 export function useFetchGallery(userId: string | undefined) {
     return useInfiniteQuery({
@@ -14,28 +11,19 @@ export function useFetchGallery(userId: string | undefined) {
         queryFn: async ({ pageParam = 0 }) => {
             if (!userId) return { data: [], hasMore: false }
 
-            const dataFrom = pageParam * imagesPerPage
-            const dataTo = dataFrom + imagesPerPage - 1
+            console.log(' Querying with userId:', userId)
 
-            console.log('🔍 Querying with userId:', userId)
+            const response = await fetch(`/api/gallery?page=${pageParam}`)
 
-            const { data, error, count } = await supabase
-                .from('generations')
-                .select('*', { count: 'exact' })
-                .eq('user_id', userId)
-                .order('created_at', { ascending: false })
-                .range(dataFrom, dataTo)
-
-            console.log('📊 Query result:', { data, error, count }) // DEBUG
-
-
-            if (error) {
-                console.error('Gallery fetched failed', error.message)
-                throw error
+            if (!response.ok) {
+                throw new Error('Failed to fetch your gallery')
             }
+
+            const galleryResults = await response.json()
+
             return {
-                data: data as SupabaseGenerationsData[],
-                hasMore: (count ?? 0) > dataTo + 1
+                data: galleryResults.data as SupabaseGenerationsData[],
+                hasMore: galleryResults.hasMore
             }
         },
         getNextPageParam: (lastPage, allPages) => {

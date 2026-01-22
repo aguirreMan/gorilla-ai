@@ -6,9 +6,11 @@ import { useInView } from 'react-intersection-observer'
 import Image from 'next/image'
 import { useFetchGallery } from '@/hooks/useFetchGallery'
 import { Loader2 } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function GalleryPage() {
-    const { user } = useUser()
+    const { user, isLoaded } = useUser()
+
 
     const {
         data,
@@ -17,7 +19,7 @@ export default function GalleryPage() {
         isFetchingNextPage,
         isLoading,
         isError
-    } = useFetchGallery(user?.id)
+    } = useFetchGallery(isLoaded ? user?.id : undefined)
 
 
     const { ref, inView } = useInView({
@@ -26,15 +28,24 @@ export default function GalleryPage() {
     })
 
     useEffect(() => {
+        if (!isLoaded) return
         if (inView && hasNextPage && !isFetchingNextPage) {
             fetchNextPage()
         }
-    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage])
+    }, [isLoaded, inView, hasNextPage, isFetchingNextPage, fetchNextPage])
+
+    if (!isLoaded) {
+        return (
+            <div className='flex items-center justify-center'>
+                <Skeleton />
+            </div>
+        )
+    }
 
     if (isLoading) {
         return (
             <div className='flex items-center justify-center min-h-screen'>
-                <Loader2 className='w-8 h-8 animate-spin text-green-700' />
+                <Skeleton />
             </div>
         )
     }

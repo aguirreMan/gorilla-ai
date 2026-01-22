@@ -1,12 +1,13 @@
 import { type UserCredits } from '@/types/supabaseTypes'
-import { supabase } from '../supabase/supabaseClient'
+import { supabaseServer } from '../supabase/supabaseServer'
+
 import { ImageModel } from '@/types/models'
 import { pricingCreditsUsed } from './pricing'
 
 const dailyGorillaCoins = 10
 
 export default async function getUserCredits(userId: string): Promise<UserCredits> {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
         .from('users')
         .select('credits_remaining, credits_reset_at')
         .eq('id', userId)
@@ -29,7 +30,7 @@ export async function refreshUserCredits(userId: string) {
 
     if (creditsReset < todayMidnightUTC) {
         //Reset credits back to daily allowance 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseServer
             .from('users')
             .update({
                 credits_remaining: dailyGorillaCoins,
@@ -64,7 +65,7 @@ export async function deductCredits(userId: string, amount: number) {
     }
     const newCreditsRemaining = creditsRemaining - amount
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
         .from('users')
         .update({
             credits_remaining: newCreditsRemaining

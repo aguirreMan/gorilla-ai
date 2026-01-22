@@ -5,6 +5,7 @@ export interface SupabaseGenerationsData {
     user_id: string
     prompt: string
     image_url: string
+    image_path?: string | null
     model: string
     size: string
     credits_used: number

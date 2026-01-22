@@ -48,6 +48,7 @@ export async function saveImages({
             user_id: userId,
             prompt: prompt,
             image_url: publicUrl,
+            image_path: fileName,
             model: model,
             size: size,
             credits_used: creditsUsed
