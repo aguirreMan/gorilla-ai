@@ -2,6 +2,7 @@ import MarketingModal from '@/components/pages-components/MarketingModal'
 import Image from 'next/image'
 import Gorilla from '@/public/assets/super-gorilla.jpg'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 
 export default function Home() {
   return (
@@ -21,17 +22,14 @@ export default function Home() {
 
         {/* Hero Content - Behind Banner */}
         <div className='absolute bottom-[50vh] left-0 right-0 inset-0 z-10 flex flex-col items-center justify-center px-6'>
-          <h1 className='text-[#167a37] text-6xl font-bold text-center'>Power up your creativity</h1>
-          <p className='max-w-xl text-3xl text-white text-center mt-4'>
-            Leverage AI with powerful tools<br /> to create your dream projects
+          <h1 className='text-primary text-5xl md:text-6xl font-semibold tracking-tight'>Power up your creativity</h1>
+          <p className='max-w-xl text-3xl text-muted-foreground text-center mt-4'>
+            Create stunning visuals with AI,
+            backed by true digital ownership.
           </p>
-          <Link href='/sign-up'>
-            <button className='mt-8 px-6 py-3 rounded-xl 
-          text-zinc-100 bg-white/20 cursor-pointer hover:bg-white/30
-           transition font-semibold'>
-              Start Creating
-            </button>
-          </Link>
+          <Button size='lg' asChild>
+            <Link href='/sign-up'>Start Creating</Link>
+          </Button>
         </div>
 
         {/* Banner - On Top of content */}
