@@ -1,4 +1,4 @@
-import Banner from '@/components/pages-components/Banner'
+import MarketingModal from '@/components/pages-components/MarketingModal'
 import Image from 'next/image'
 import Gorilla from '@/public/assets/super-gorilla.jpg'
 import Link from 'next/link'
@@ -36,7 +36,7 @@ export default function Home() {
 
         {/* Banner - On Top of content */}
         <div className='relative z-20'>
-          <Banner />
+          <MarketingModal />
         </div>
       </div>
     </>

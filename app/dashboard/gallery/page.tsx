@@ -11,7 +11,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 export default function GalleryPage() {
     const { user, isLoaded } = useUser()
 
-
     const {
         data,
         fetchNextPage,
