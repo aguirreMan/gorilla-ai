@@ -17,7 +17,7 @@ export default function ImageNumberSlider({
     disabled }: ImageNumberSliderProps) {
 
     return (
-        <div className='pt-6 w-[50%] ml-8 flex justify-center items-center cursor-pointer'>
+        <div className='flex w-full flex-col gap-2'>
             <Slider
                 value={[value]}
                 min={min}
@@ -25,8 +25,14 @@ export default function ImageNumberSlider({
                 step={1}
                 onValueChange={(value) => onChange(value[0])}
                 disabled={disabled}
-                className='[&_[data-slot=slider-track]]:bg-green-500 
-[&_[data-slot=slider-range]]:bg-neutral-800'
+                className='
+                `**:data-[slot=slider-track]:bg-background`
+          `**:data-[slot=slider-range]:bg-primary`
+          `**:data-[slot=slider-thumb]:border-border`
+          `**:data-[slot=slider-thumb]:bg-background`
+          `**:data-[slot=slider-thumb]:ring-offset-background`
+          `focus-visible:**:data-[slot=slider-thumb]:ring-2`
+          `focus-visible:**:data-[slot=slider-thumb]:ring-ring`'
             />
         </div>
     )

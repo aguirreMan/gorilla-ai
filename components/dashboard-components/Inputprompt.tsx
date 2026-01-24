@@ -2,15 +2,22 @@
 import { useState, KeyboardEvent } from 'react'
 import { useImagesContext } from '@/context/ImageSettingsProvider'
 import { Sparkles } from 'lucide-react'
+import { Button } from '../ui/button'
+import { Textarea } from '../ui/textarea'
 
 interface InputPromptProps {
-    onGenerate: (params: { prompt: string; model: string; size: string; n: number }) => void
+    onGenerate: (params: {
+        prompt: string
+        model: string
+        size: string
+        n: number
+    }) => void
     isGenerating: boolean
 }
 
 export default function Inputprompt({ onGenerate, isGenerating }: InputPromptProps) {
     const { model, imageSize, numberOfImages } = useImagesContext()
-    const [userPrompt, setUserPrompt] = useState<string>('')
+    const [userPrompt, setUserPrompt] = useState('')
 
     const disableGenerateButton = userPrompt.trim() === '' || isGenerating
 
@@ -35,28 +42,29 @@ export default function Inputprompt({ onGenerate, isGenerating }: InputPromptPro
     }
 
     return (
-        <div className='flex justify-center items-center mt-0 px-4 w-full max-w-3xl mx-auto relative'>
-            <textarea
+        <div className='relative mx-auto w-full max-w-3xl'>
+            <Textarea
                 onChange={(e) => setUserPrompt(e.target.value)}
                 onKeyDown={submitOnEnter}
                 value={userPrompt}
                 disabled={isGenerating}
-                className='w-full border rounded-3xl text-white pt-4 pl-4
-                    text-lg focus:outline-none shadow-md resize-none'
-                rows={2}
+                rows={3}
                 placeholder='Type your AI prompt here...'
+                className='pr-24 text-base resize-none'
             />
 
-            <button
+            <Button
                 onClick={handleSubmit}
                 disabled={disableGenerateButton}
-                className={`absolute bottom-4 right-6 px-5 py-2 rounded-3xl shadow-lg 
-                    ${disableGenerateButton
-                        ? 'bg-linear-to-b from-[#1E5631] via-[#0F3B22] to-[#062B18] cursor-not-allowed opacity-80'
-                        : 'bg-linear-to-b from-[#00FF8C] via-[#0F4C2E] to-[#00FF8C] hover:opacity-90 cursor-pointer'
-                    }`}>
-                {isGenerating ? 'Generating...' : <Sparkles className='h-auto w-full text-white' />}
-            </button>
+                size='icon-lg'
+                className='absolute bottom-3 right-3 h-10 w-16 rounded-full'>
+
+                {isGenerating ? (
+                    <span className='text-xs'>...</span>
+                ) : (
+                    <Sparkles className='h-4 w-4' />
+                )}
+            </Button>
         </div>
     )
 }

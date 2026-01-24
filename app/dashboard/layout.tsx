@@ -23,12 +23,12 @@ export default function Dashboardlayout({
                     closeButton
                 />
                 <ImageSettingsProvider>
-                    <div className='flex min-h-screen bg-linear-to-b from-[#07120D] via-[#0F3B22] to-black'>
-                        {/* This is for the sidebar component to take 20%*/}
-                        <aside className='w-[20%] fixed h-screen'>
+                    <div className='flex min-h-screen bg-background'>
+                        {/**Side Bar component */}
+                        <aside className='fixed inset-y-0 left-0 w-72 border-r border-border bg-card'>
                             <Sidebar />
                         </aside>
-                        <main className='flex-1 ml-[20%] pt-16'>
+                        <main className='flex-1 ml-72 py-6 px-8'>
                             {children}
                         </main>
                     </div>

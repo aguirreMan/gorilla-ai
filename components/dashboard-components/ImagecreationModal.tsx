@@ -1,9 +1,10 @@
 'use client'
 import Image from 'next/image'
-import { SupabaseGenerationsData } from '@/lib/supabase/saveImages'
+import { SupabaseGenerationsData } from '@/types/supabaseTypes'
 import {
     Dialog,
     DialogContent,
+    DialogHeader,
     DialogTitle
 } from '@/components/ui/dialog'
 
@@ -23,30 +24,37 @@ export default function ImagecreationModal({
 
     return (
         <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
-            <DialogContent
-                className='bg-[#111] text-white max-w-3xl p-0 overflow-hidden'>
-                <DialogTitle>
-                    Image Generation Result
-                </DialogTitle>
+            <DialogContent className='max-w-4xl'>
+                <DialogHeader>
+                    <DialogTitle className='text-lg font-medium'>
+                        Generated Images
+                    </DialogTitle>
+                </DialogHeader>
 
                 {/* Loading State */}
                 {loading && (
-                    <div className="py-10 text-center text-lg">
-                        Generating image...
+                    <div className='flex h-64 items-center justify-center text-sm text-mute-foreground'>
+                        Generating images...
                     </div>
                 )}
-                {/* Image area */}
+
+                {/* Image results area */}
+
                 {!loading && images.length > 0 && (
                     <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                         {images.map((image, index) => (
-                            <Image
+                            <div
                                 key={index}
-                                src={image.url}
-                                height={500}
-                                width={500}
-                                alt='generated image'
-                                className='rounded-lg object-cover'
-                            />
+                                className='relative aspect-square overflow-hidden
+                            rounded-lg border border-border bg-muted'
+                            >
+                                <Image
+                                    src={image.url}
+                                    alt='generated image'
+                                    fill
+                                    className='object-cover'
+                                />
+                            </div>
                         ))}
                     </div>
                 )}

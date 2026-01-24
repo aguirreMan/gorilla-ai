@@ -1,14 +1,14 @@
 'use client'
+import { Button } from '../ui/button'
 
 export default function Dashboardnav() {
-
     return (
-        <nav className='h-18 flex justify-end items-center px-6
-        fixed top-0 left-[20%] right-0 z-10 shadow-md border-0 outline-0'>
-            <div className='flex gap-4'>
-                <button className='bg-blue-800 text-white py-2 rounded hover:bg-blue-700 transition cursor-pointer px-6'>
+        <nav className='fixed top-0 right-0 left-72 z-10 h-16 border-b border-border
+        bg-background/80 backdrop-blur'>
+            <div className='flex h-full items-center justify-end px-6'>
+                <Button size='sm'>
                     Upgrade
-                </button>
+                </Button>
 
             </div>
         </nav>

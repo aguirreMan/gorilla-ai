@@ -33,26 +33,19 @@ export default function GalleryPage() {
         }
     }, [isLoaded, inView, hasNextPage, isFetchingNextPage, fetchNextPage])
 
-    if (!isLoaded) {
+    if (!isLoaded || isLoading) {
         return (
-            <div className='flex items-center justify-center'>
-                <Skeleton />
-            </div>
-        )
-    }
-
-    if (isLoading) {
-        return (
-            <div className='flex items-center justify-center min-h-screen'>
-                <Skeleton />
+            <div className='flex min-h-[60vh] items-center justify-center'>
+                <Skeleton className='h-48 w-48' />
             </div>
         )
     }
 
     if (isError) {
         return (
-            <div className='flex items-center justify-center min-h-screen'>
-                <p className='text-red-500'>Error loading gallery</p>
+            <div className='flex min-h-[60vh] items-center justify-center text-sm 
+            text-muted-foreground'>
+                Failed to load gallery.
             </div>
         )
     }
@@ -61,30 +54,34 @@ export default function GalleryPage() {
 
     if (allImages.length === 0) {
         return (
-            <div className='flex flex-col items-center justify-center min-h-screen'>
-                <h2 className='text-2xl font-bold text-green-700'>No images yet</h2>
-                <p className='text-gray-400 mt-2'>Start creating!</p>
+            <div className='flex min-h-[60vh] flex-col items-center justify-center text-center'>
+                <h2 className='text-lg font-medium text-foreground'>
+                    No images yet
+                </h2>
+                <p className='mt-2 text-sm text-muted-foreground'>
+                    Generate your first image to see it here.
+                </p>
             </div>
         )
     }
 
     return (
-        <div className='mx-auto px-6 py-8'>
-            <h1 className='text-3xl font-bold text-green-700 mb-8'>Gallery</h1>
+        <div className='mx-auto px-6 py-6'>
+            <h1 className='mb-6 text-lg font-medium text-foreground'>Gallery</h1>
 
             {/* Responsive Grid */}
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
                 {allImages.map(image => (
                     <div
                         key={image.id}
-                        className='relative aspect-square overflow-hidden rounded-lg 
-                        bg-gray-900 hover:ring-2 hover:ring-green-700 transition'
+                        className='group relative aspect-square overflow-hidden rounded-lg
+                        border border-border bg-muted transition'
                     >
                         <Image
                             src={image.image_url}
                             alt={image.prompt || 'Generated image'}
                             fill
-                            className='object-cover'
+                            className='object-cover transition-transform group-hover:scale-[1.02]'
                             sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw'
                         />
                     </div>
@@ -94,10 +91,10 @@ export default function GalleryPage() {
             {/* Infinite scroll trigger */}
             <div ref={ref} className='py-8 flex justify-center'>
                 {isFetchingNextPage && (
-                    <Loader2 className='w-6 h-6 animate-spin text-green-700' />
+                    <Loader2 className='w-6 h-6 animate-spin text-muted-foreground' />
                 )}
                 {!hasNextPage && allImages.length > 0 && (
-                    <p className='text-gray-500'>You reached the end</p>
+                    <p className='text-md text-muted-foreground'>You reached the end</p>
                 )}
             </div>
         </div>

@@ -1,6 +1,11 @@
 import {
-    Select, SelectContent, SelectTrigger,
-    SelectValue, SelectLabel, SelectGroup, SelectItem
+    Select,
+    SelectContent,
+    SelectTrigger,
+    SelectValue,
+    SelectLabel,
+    SelectGroup,
+    SelectItem
 } from '@/components/ui/select'
 
 
@@ -16,20 +21,33 @@ export default function ImagesettingsSelect<Type extends string>({
     label, currentValue, options, onChange }: ImagesettingsSelectProps<Type>) {
 
     return (
-        <Select value={currentValue} onValueChange={(value) => onChange(value as Type)}>
-            <SelectTrigger className='w-full bg-white/20 cursor-pointer'>
-                <SelectValue>{currentValue}</SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-                <SelectGroup>
-                    <SelectLabel>{label}</SelectLabel>
-                    {options.map(option => (
-                        <SelectItem className='cursor-pointer' key={option} value={option}>
-                            {option}
-                        </SelectItem>
-                    ))}
-                </SelectGroup>
-            </SelectContent>
-        </Select>
+        <div className='flex flex-col gap-2'>
+            {/**label  */}
+            <span className='text-sm font-medium text-muted-foreground'>
+                {label}
+            </span>
+
+            <Select
+                value={currentValue}
+                onValueChange={(value) => onChange(value as Type)}>
+                <SelectTrigger className='w-full'>
+                    <SelectValue placeholder={`Select ${label.toLowerCase()}`} />
+                </SelectTrigger>
+
+                <SelectContent className='z-50'>
+                    <div className='fixed inset-0 bg-black/40 backdrop-blur-sm' />
+                    <div className='relative z-100'>
+                        <SelectGroup>
+                            <SelectLabel>{label}</SelectLabel>
+                            {options.map((option) => (
+                                <SelectItem key={option} value={option}>
+                                    {option}
+                                </SelectItem>
+                            ))}
+                        </SelectGroup>
+                    </div>
+                </SelectContent>
+            </Select>
+        </div>
     )
 }
