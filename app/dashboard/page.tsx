@@ -6,11 +6,14 @@ import { toast } from 'sonner'
 import Dashboardnav from '@/components/dashboard-components/Dashboardnav'
 import Inputprompt from '@/components/dashboard-components/Inputprompt'
 import ImagecreationModal from '@/components/dashboard-components/ImagecreationModal'
-import { SupabaseGenerationsData } from '@/lib/supabase/saveImages'
+import { SupabaseGenerationsData } from '@/types/supabaseTypes'
+
 
 export default function DashboardPage() {
     const { isSignedIn, isLoaded } = useUser()
     const router = useRouter()
+
+
 
     const [openModal, setOpenModal] = useState(false)
     const [isGenerating, setIsGenerating] = useState(false)

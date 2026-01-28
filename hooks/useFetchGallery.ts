@@ -11,7 +11,7 @@ export function useFetchGallery(userId: string | undefined) {
         queryFn: async ({ pageParam = 0 }) => {
             if (!userId) return { data: [], hasMore: false }
 
-            console.log(' Querying with userId:', userId)
+            //console.log(' Querying with userId:', userId)
 
             const response = await fetch(`/api/gallery?page=${pageParam}`)
 
