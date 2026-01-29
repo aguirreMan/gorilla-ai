@@ -38,7 +38,7 @@ export default function Sidebar() {
                 Hi, <span className='text-foreground'>{user?.firstName}</span>
             </div>
             {/**Navigation section */}
-            <Link href='/dashboard/gallery'
+            <Link href='/gallery'
                 className='mb-6 flex items-center gap-2 rounded-md px-3 py-2 text-sm
             text-muted-foreground hover:bg-muted hover:text-foreground transition'>
                 <Folder className='h-4 w-4' />
