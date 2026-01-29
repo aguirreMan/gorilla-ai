@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { useFetchGallery } from '@/hooks/useFetchGallery'
 import { Loader2 } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useRouter } from 'next/navigation'
 
 export default function GalleryPage() {
     const { user, isLoaded } = useUser()
@@ -25,6 +26,7 @@ export default function GalleryPage() {
         rootMargin: '200px',
         threshold: 0,
     })
+    const router = useRouter()
 
     useEffect(() => {
         if (!isLoaded) return
@@ -74,6 +76,7 @@ export default function GalleryPage() {
                 {allImages.map(image => (
                     <div
                         key={image.id}
+                        onClick={() => router.push(`/gallery/${image.id}`)}
                         className='group relative aspect-square overflow-hidden rounded-lg
                         border border-border bg-muted transition'
                     >
