@@ -13,8 +13,6 @@ export default function DashboardPage() {
     const { isSignedIn, isLoaded } = useUser()
     const router = useRouter()
 
-
-
     const [openModal, setOpenModal] = useState(false)
     const [isGenerating, setIsGenerating] = useState(false)
     const [createdImages, setCreatedImages] = useState<(SupabaseGenerationsData & { url: string })[]>([])
