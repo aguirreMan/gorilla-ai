@@ -6,7 +6,7 @@ import { useFetchGallery } from '@/hooks/useFetchGallery'
 import { useSelectGalleryImage } from '@/hooks/useSelectGalleryImage'
 import ImageDrawer from '@/components/gallery/ImageDrawer'
 
-export default function ImageDataPage({ params }: {
+export default function GalleryImageRoute({ params }: {
     params: Promise<{ imageId: string }>
 }) {
 

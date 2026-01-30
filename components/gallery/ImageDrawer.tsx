@@ -1,7 +1,6 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-
 import {
     Drawer,
     DrawerContent,
@@ -21,8 +20,6 @@ interface ImageDrawerProps {
 
 export default function ImageDrawer({ image, isLoading, isError }: ImageDrawerProps) {
     const router = useRouter()
-    const isSearching = isLoading && !image
-
 
     function closeImageDrawer() {
         router.push('/gallery')
@@ -39,15 +36,15 @@ export default function ImageDrawer({ image, isLoading, isError }: ImageDrawerPr
                     </DrawerHeader>
                     <div className='p-6'>
                         {/**Loading state */}
-                        {isSearching && (
+                        {isLoading && (
                             <div className='flex flex-col items-center justify-center py-16 space-y-4'>
                                 <Loader2 className='w-10 h-10 animate-spin text-shadow-foreground' />
-                                <p className='text-foreground'>Locating your {image}</p>
+                                <p className='text-foreground'>Loading image ...</p>
                             </div>
                         )}
 
                         {/**Error State */}
-                        {(isError) && (
+                        {isError && (
                             <div className='flex flex-col items-center justify-center py-16 text-center'>
                                 <AlertCircle className='w-12 h-12 mb-4' />
                                 <h3 className='text-xl font-semibold'>Your image is not found</h3>
@@ -62,7 +59,7 @@ export default function ImageDrawer({ image, isLoading, isError }: ImageDrawerPr
                         )}
 
                         {/**Success States */}
-                        {image && !isSearching && !isError && (
+                        {image && !isLoading && !isError && (
                             <AiGeneratedImageCard image={image} />
                         )}
 
