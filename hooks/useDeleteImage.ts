@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
 
 export function useDeleteImage(userId: string | undefined) {
     const queryClient = useQueryClient()
+    const router = useRouter()
 
     return useMutation({
         mutationFn: async (imageId: string) => {
@@ -24,6 +26,9 @@ export function useDeleteImage(userId: string | undefined) {
         onError: (error: Error) => {
             console.error('delete error:', error)
             toast.error(error.message || 'Failed to delete image')
+        },
+        onSettled: () => {
+            router.replace('/gallery')
         }
     })
 }

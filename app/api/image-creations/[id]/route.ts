@@ -2,7 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { NextResponse, NextRequest } from 'next/server'
 import { supabaseServer } from '@/lib/supabase/supabaseServer'
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const { userId } = await auth()
     if (!userId) {
         return NextResponse.json(
@@ -10,7 +10,8 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
             { status: 401 }
         )
     }
-    const id = params.id
+    const resolvePromiseParams = await params
+    const id = resolvePromiseParams.id
 
     //Fetch image record
     const { data: image, error: fetchError } = await supabaseServer
