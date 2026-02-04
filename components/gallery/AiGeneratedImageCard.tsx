@@ -28,16 +28,16 @@ export function AiGeneratedImageCard({ image }: AiGeneratedImageCardProps) {
     const { downLoadImage, isDownLoading } = useDownloadImage()
 
     return (
-        <Card className='overflow-hidden'>
+        <Card className='overflow-hidden w-full bg-background border-none'>
             <CardContent className='flex flex-col md:flex-row gap-6 p-6'>
                 {/**Image to render 80% on laptops/computers */}
-                <div className='w-full md:w-4/5'>
-                    <div className='relative w-full aspect-square'>
+                <div className='md:w-4/5'>
+                    <div className='relative w-full max-h-[60vh] aspect-square'>
                         <Image
                             src={image.image_url}
                             alt={image.prompt}
                             fill
-                            className='object-cover rounded-lg'
+                            className='object-contain rounded-b-lg'
                             sizes='(max-width: 768px) 100vw, 80vw'
                         />
                     </div>
@@ -78,7 +78,7 @@ export function AiGeneratedImageCard({ image }: AiGeneratedImageCardProps) {
                 <div className='mt-auto flex flex-col gap-2'>
                     <Button onClick={() => downLoadImage(image.image_url, image.prompt)}
                         variant='outline'
-                        className='w-full'
+                        className='w-full bg-primary'
                         disabled={isDownLoading}
                     >
                         {isDownLoading ? (
