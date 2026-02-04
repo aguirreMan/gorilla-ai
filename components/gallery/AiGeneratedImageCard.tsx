@@ -2,7 +2,7 @@ import { SupabaseGenerationsData } from '@/types/supabaseTypes'
 import { useDeleteImage } from '@/hooks/useDeleteImage'
 import { useUser } from '@clerk/nextjs'
 import Image from 'next/image'
-import { Trash2, Download } from 'lucide-react'
+import { Trash2, Download, Loader2 } from 'lucide-react'
 import { Button } from '../ui/button'
 import { Card, CardContent } from '../ui/card'
 import {
@@ -16,6 +16,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle
 } from '../ui/alert-dialog'
+import { useDownloadImage } from '@/hooks/useDownloadImage'
 
 interface AiGeneratedImageCardProps {
     image: SupabaseGenerationsData
@@ -24,6 +25,7 @@ interface AiGeneratedImageCardProps {
 export function AiGeneratedImageCard({ image }: AiGeneratedImageCardProps) {
     const { user } = useUser()
     const { mutate: deleteImage, isPending } = useDeleteImage(user?.id)
+    const { downLoadImage, isDownLoading } = useDownloadImage()
 
     return (
         <Card className='overflow-hidden'>
@@ -74,9 +76,17 @@ export function AiGeneratedImageCard({ image }: AiGeneratedImageCardProps) {
 
                 {/**Action buttons delete download*/}
                 <div className='mt-auto flex flex-col gap-2'>
-                    <Button variant='outline' className='w-full'>
-                        <Download className='w-4 h-4 mr-2' />
-                        Download
+                    <Button onClick={() => downLoadImage(image.image_url, image.prompt)}
+                        variant='outline'
+                        className='w-full'
+                        disabled={isDownLoading}
+                    >
+                        {isDownLoading ? (
+                            <Loader2 className='w-4 h-4 mr-2 animate-spin' />
+                        ) : (
+                            <Download className='w-4 h-4 mr-2' />
+                        )}
+                        {isDownLoading ? 'Downloading' : 'Download'}
                     </Button>
 
                     <AlertDialog>
