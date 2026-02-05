@@ -29,8 +29,6 @@ export default function Sidebar() {
     const minimumNumber = Math.min(...availableImageCounts)
     const maximumNumber = Math.max(...availableImageCounts)
 
-
-
     return (
         <aside className='h-full flex flex-col bg-card px-4 py-6'>
             {/* User */}
