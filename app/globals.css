@@ -41,6 +41,8 @@
   --border: #282E25;
   --input: #282E25;
   --ring: #19304C;
+  --destructive: #691C1F;
+
 
 
 
@@ -67,6 +69,8 @@
   --color-border: var(--border);
 
   --color-primary: var(--primary);
+
+ --color-destructive: #691C1F;
 }
 
 @layer base {

@@ -7,9 +7,11 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
+import { Skeleton } from '../ui/skeleton'
 import { Button } from '@/components/ui/button'
-import { Loader2, AlertCircle, ArrowLeft } from 'lucide-react'
+import { AlertCircle, ArrowLeft } from 'lucide-react'
 import { AiGeneratedImageCard } from '@/components/gallery/AiGeneratedImageCard'
+import { ImageCardStats } from './ImageCardStats'
 import { SupabaseGenerationsData } from '@/types/supabaseTypes'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 
@@ -37,23 +39,19 @@ export default function ImageDrawer({
         if (!open) closeImageDrawer()
       }}
     >
-      <DrawerContent className='max-h-[90vh]'>
-        <div className='w-full overflow-y-auto'>
+      <DrawerContent className='max-h-[80vh] overflow-hidden'>
+        <div className='w-full h-full flex flex-col'>
           <DrawerHeader>
             <VisuallyHidden asChild>
               <DrawerTitle className='flex items-center gap-2'>
-                {image?.prompt ?? 'Image Details'}
+                {image?.prompt}
               </DrawerTitle>
             </VisuallyHidden>
           </DrawerHeader>
-          <div className='p-6'>
-            {/**Loading state */}
-            {isLoading && (
-              <div className='flex flex-col items-center justify-center py-16 space-y-4'>
-                <Loader2 className='w-10 h-10 animate-spin text-shadow-foreground' />
-                <p className='text-foreground'>Loading image ...</p>
-              </div>
-            )}
+
+           {/**Loading state */}
+          <div className='p-4 flex-1 overflow-hidden'>
+            {isLoading && <DrawerSkeleton />}
 
             {/**Error State */}
             {isError && (
@@ -74,11 +72,43 @@ export default function ImageDrawer({
 
             {/**Success States */}
             {image && !isLoading && !isError && (
-              <AiGeneratedImageCard image={image} />
+              <DrawerSuccessState image={image} />
             )}
           </div>
         </div>
       </DrawerContent>
     </Drawer>
+  )
+}
+
+function DrawerSuccessState({ image }: { image: SupabaseGenerationsData }) {
+  return (
+    <div className='flex flex-col lg:flex-row gap-6 h-full'>
+      <div className='lg:w-3/4 flex justify-center items-start'>
+        <AiGeneratedImageCard
+          src={image.image_url}
+          alt={image.prompt}
+          />
+      </div>
+      <div className='lg:w-1/4 w-full h-full overflow-y-auto'>
+        <ImageCardStats image={image} />
+      </div>
+
+    </div>
+  )
+}
+
+function DrawerSkeleton() {
+  return (
+    <div className='flex flex-col lg:flex-row gap-6'>
+      <div className='flex-1'>
+        <Skeleton className='w-full aspect-square rounded-lg' />
+      </div>
+      <div className='w-full lg:max-w-sm flex flex-col gap-4'>
+        <Skeleton className='h-10 w-full' />
+        <Skeleton className='h-40 w-full' />
+        <Skeleton className='h-12 w-full' />
+      </div>
+    </div>
   )
 }
