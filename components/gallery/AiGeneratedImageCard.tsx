@@ -10,7 +10,7 @@ export function AiGeneratedImageCard({src, alt}: AiGeneratedImageCardProps) {
   return (
         <Card className='w-full bg-background transition-shadow border-none hover:shadow-lg'>
             <CardContent className='p-0 '>
-                  <div className='relative w-full h-[90vh]'>
+                  <div className='relative w-full aspect-square max-h-[90vh]'>
                       <Image
                           src={src}
                           alt={alt}

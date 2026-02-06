@@ -43,7 +43,30 @@
   --ring: #19304C;
   --destructive: #691C1F;
 
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
 
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+     background-color: var(--muted);
+  }
+
+  /* ===== Firefox ===== */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
 
 
   /* sonner */
@@ -84,6 +107,8 @@
     color: var(--foreground);
   }
 }
+
+
 
 
 @layer utilities {

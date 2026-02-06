@@ -31,7 +31,7 @@ export function ImageCardStats({image}: ImageCardStatsProps) {
       <CardHeader>
         <CardTitle className='text-center text-primary text-3xl'>Image Stats</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className='pb-6'>
         <div className='mt-2 flex flex-col justify-center'>
         <h2 className='font-bold mt-3  text-muted-foreground uppercase'>Prompt</h2>
           <p className='text-sm line-clamp-3'>{image.prompt}</p>
@@ -51,7 +51,7 @@ export function ImageCardStats({image}: ImageCardStatsProps) {
             <p className='text-sm'>{image.created_at}</p>
         </div>
         {/*Actions go here */}
-        <div className='mt-4 border-t flex flex-col gap-2 '>
+        <div className='mt-4 border-t flex flex-col gap-2 pt-4 '>
           <Button onClick={() => downLoadImage(image.image_url, image.prompt)}
             variant='outline'
             className='w-full bg-primary mt-2 mb-2'

@@ -38,19 +38,19 @@ export default function ImageDrawer({
         if (!open) closeImageDrawer()
       }}
     >
-      <DrawerContent className='overflow-y-auto h-[90vh]'>
-        <div className='w-full flex flex-col'>
+      <DrawerContent className='max-h-screen'>
+        <div className='w-full max-h-[calc(100vh-2rem)] overflow-y-auto p-4'>
           <VisuallyHidden>
             <DrawerTitle>{image?.prompt}</DrawerTitle>
           </VisuallyHidden>
 
            {/**Loading state */}
-          <div className='p-4 flex-1'>
+          <div className='p-4 min-h-full'>
             {isLoading && <DrawerSkeleton />}
 
             {/**Error State */}
             {isError && (
-              <div className='flex flex-col items-center justify-center py-16 text-center'>
+              <div className='flex flex-col flex-1 items-center justify-center py-16 text-center'>
                 <AlertCircle className='w-12 h-12 mb-4' />
                 <h3 className='text-xl font-semibold'>
                   Your image is not found
@@ -78,17 +78,16 @@ export default function ImageDrawer({
 
 function DrawerSuccessState({ image }: { image: SupabaseGenerationsData }) {
   return (
-    <div className='flex flex-col lg:flex-row gap-6 p-4'>
-      <div className='flex flex-3 justify-center items-start'>
+    <div className='flex flex-col lg:flex-row gap-6 w-full h-full'>
+      <div className='lg:flex-3 min-w-0'>
         <AiGeneratedImageCard
           src={image.image_url}
           alt={image.prompt}
           />
       </div>
-      <div className='flex-1'>
+      <div className='lg:shrink-0 lg:overflow-y-auto lg:max-h-[calc(100vh-4rem)]'>
         <ImageCardStats image={image} />
       </div>
-
     </div>
   )
 }
