@@ -8,10 +8,9 @@ interface AiGeneratedImageCardProps {
 
 export function AiGeneratedImageCard({src, alt}: AiGeneratedImageCardProps) {
   return (
-        <Card className='w-full bg-background border-none transition-shadow hover:shadow-lg'>
-            <CardContent className='p-4 md:p-6'>
-                  <div className='relative w-full max-h-[70vh] aspect-square rounded-lg bg-muted/30
-                    p-2 overflow-hidden'>
+        <Card className='w-full bg-background transition-shadow border-none hover:shadow-lg'>
+            <CardContent className='p-0 '>
+                  <div className='relative w-full h-[90vh]'>
                       <Image
                           src={src}
                           alt={alt}

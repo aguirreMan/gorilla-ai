@@ -27,7 +27,7 @@ export function ImageCardStats({image}: ImageCardStatsProps) {
   const { downLoadImage, isDownLoading } = useDownloadImage()
 
   return (
-    <Card className='flex flex-col gap-4'>
+    <Card className='flex flex-col gap-3'>
       <CardHeader>
         <CardTitle className='text-center text-primary text-3xl'>Image Stats</CardTitle>
       </CardHeader>

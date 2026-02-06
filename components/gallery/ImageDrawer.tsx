@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import {
   Drawer,
   DrawerContent,
-  DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer'
 import { Skeleton } from '../ui/skeleton'
@@ -39,18 +38,14 @@ export default function ImageDrawer({
         if (!open) closeImageDrawer()
       }}
     >
-      <DrawerContent className='max-h-[80vh] overflow-hidden'>
-        <div className='w-full h-full flex flex-col'>
-          <DrawerHeader>
-            <VisuallyHidden asChild>
-              <DrawerTitle className='flex items-center gap-2'>
-                {image?.prompt}
-              </DrawerTitle>
-            </VisuallyHidden>
-          </DrawerHeader>
+      <DrawerContent className='overflow-y-auto h-[90vh]'>
+        <div className='w-full flex flex-col'>
+          <VisuallyHidden>
+            <DrawerTitle>{image?.prompt}</DrawerTitle>
+          </VisuallyHidden>
 
            {/**Loading state */}
-          <div className='p-4 flex-1 overflow-hidden'>
+          <div className='p-4 flex-1'>
             {isLoading && <DrawerSkeleton />}
 
             {/**Error State */}
@@ -83,14 +78,14 @@ export default function ImageDrawer({
 
 function DrawerSuccessState({ image }: { image: SupabaseGenerationsData }) {
   return (
-    <div className='flex flex-col lg:flex-row gap-6 h-full'>
-      <div className='lg:w-3/4 flex justify-center items-start'>
+    <div className='flex flex-col lg:flex-row gap-6 p-4'>
+      <div className='flex flex-3 justify-center items-start'>
         <AiGeneratedImageCard
           src={image.image_url}
           alt={image.prompt}
           />
       </div>
-      <div className='lg:w-1/4 w-full h-full overflow-y-auto'>
+      <div className='flex-1'>
         <ImageCardStats image={image} />
       </div>
 
