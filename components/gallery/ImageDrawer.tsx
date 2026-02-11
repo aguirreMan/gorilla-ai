@@ -1,5 +1,5 @@
 'use client'
-
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Drawer,
@@ -25,7 +25,13 @@ export default function ImageDrawer({
   isLoading,
   isError,
 }: ImageDrawerProps) {
+
+  const [fullScreenImageViewer, setFullScreenImageViewer] = useState(false)
   const router = useRouter()
+
+  function renderFullScreenImageViewer() {
+    setFullScreenImageViewer(true)
+  }
 
   function closeImageDrawer() {
     router.push('/gallery')
@@ -67,28 +73,24 @@ export default function ImageDrawer({
 
             {/**Success States */}
             {image && !isLoading && !isError && (
-              <DrawerSuccessState image={image} />
-            )}
+              <div className='flex flex-col lg:flex-row gap-6 w-full h-full'>
+                <div className='lg:flex-3 min-w-0'>
+                  <AiGeneratedImageCard
+                    src={image.image_url}
+                    alt={image.prompt}
+                    onClick={renderFullScreenImageViewer}
+                  />
+                </div>
+                <div className='lg:shrink-0 lg:overflow-y-auto lg:max-h-[calc(100vh-4rem)]'>
+                  <ImageCardStats image={image} />
+                </div>
+              </div>
+           )}
           </div>
         </div>
       </DrawerContent>
     </Drawer>
-  )
-}
-
-function DrawerSuccessState({ image }: { image: SupabaseGenerationsData }) {
-  return (
-    <div className='flex flex-col lg:flex-row gap-6 w-full h-full'>
-      <div className='lg:flex-3 min-w-0'>
-        <AiGeneratedImageCard
-          src={image.image_url}
-          alt={image.prompt}
-          />
-      </div>
-      <div className='lg:shrink-0 lg:overflow-y-auto lg:max-h-[calc(100vh-4rem)]'>
-        <ImageCardStats image={image} />
-      </div>
-    </div>
+    // render fullScreenImageViewer
   )
 }
 
