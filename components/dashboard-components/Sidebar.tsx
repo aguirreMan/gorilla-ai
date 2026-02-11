@@ -1,6 +1,17 @@
 'use client'
+
+import type React from 'react'
+import dynamic from 'next/dynamic'
+import { ImagesettingsSelectProps } from '@/components/dashboard-components/ImagesettingsSelect'
+
+// NOTE: dynamic() erases generics; explicit generic signature preserves inference
+
+const ImagesettingsSelect = dynamic(
+  () => import('@/components/dashboard-components/ImagesettingsSelect'),
+  { ssr: false }
+) as <T extends string>(props: ImagesettingsSelectProps<T>) => React.ReactElement
+
 import { useImagesContext } from '@/context/ImageSettingsProvider'
-import ImagesettingsSelect from '@/components/dashboard-components/ImagesettingsSelect'
 import { useUser, useClerk } from '@clerk/nextjs'
 import { Folder } from 'lucide-react'
 import ImageNumberSlider from '@/components/dashboard-components/ImageNumberSlider'

@@ -45,8 +45,8 @@ export default function NavbarMarketing() {
                     <Link href='/pricing'>
                         <li className='cursor-pointer text-md text-muted-foreground hover:text-foreground transition'>Pricing</li>
                     </Link>
-                    <Link href='/research'>
-                        <li className='cursor-pointer text-md text-muted-foreground hover:text-foreground transition'>Research</li>
+                    <Link href='/about'>
+                        <li className='cursor-pointer text-md text-muted-foreground hover:text-foreground transition'>About</li>
                     </Link>
                     <Link href='/contact'>
                         <li className='cursor-pointer text-md text-muted-foreground hover:text-foreground transition'>Contact</li>

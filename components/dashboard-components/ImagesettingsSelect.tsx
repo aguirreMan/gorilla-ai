@@ -9,14 +9,14 @@ import {
 } from '@/components/ui/select'
 
 
-interface ImagesettingsSelectProps<Type extends string> {
+export interface ImagesettingsSelectProps<Type extends string> {
     label: string
     currentValue: Type
     options: Type[]
     onChange: (newValue: Type) => void
 }
 
-//Make this a generic component 
+//Make this a generic component
 export default function ImagesettingsSelect<Type extends string>({
     label, currentValue, options, onChange }: ImagesettingsSelectProps<Type>) {
 
