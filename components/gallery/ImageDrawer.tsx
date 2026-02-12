@@ -13,6 +13,8 @@ import { AiGeneratedImageCard } from '@/components/gallery/AiGeneratedImageCard'
 import { ImageCardStats } from './ImageCardStats'
 import { SupabaseGenerationsData } from '@/types/supabaseTypes'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
+import PortalOverlay from './PortalOverlay'
+import FullScreenImageViewer from './FullScreenImageViewer'
 
 interface ImageDrawerProps {
   image: SupabaseGenerationsData | null
@@ -38,10 +40,11 @@ export default function ImageDrawer({
   }
 
   return (
+    <>
     <Drawer
       open
       onOpenChange={(open) => {
-        if (!open) closeImageDrawer()
+        if (!open && !fullScreenImageViewer) closeImageDrawer()
       }}
     >
       <DrawerContent className='max-h-screen'>
@@ -90,7 +93,20 @@ export default function ImageDrawer({
         </div>
       </DrawerContent>
     </Drawer>
-    // render fullScreenImageViewer
+
+    <PortalOverlay
+      isOpen={fullScreenImageViewer}
+        onClose={() => setFullScreenImageViewer(false)}
+      >
+        {image && (
+          <FullScreenImageViewer
+            src={image.image_url}
+            alt={image.prompt}
+            onClose={() => setFullScreenImageViewer(false)}
+            />
+        )}
+      </PortalOverlay>
+      </>
   )
 }
 
