@@ -1,6 +1,7 @@
 'use client'
 
 import Sidebar from '@/components/dashboard-components/Sidebar'
+import Dashboardnav from '@/components/dashboard-components/Dashboardnav'
 import { ImageSettingsProvider } from '@/context/ImageSettingsProvider'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Toaster } from 'sonner'
@@ -28,9 +29,12 @@ export default function Dashboardlayout({
                         <aside className='fixed inset-y-0 left-0 w-72 border-r border-border bg-card'>
                             <Sidebar />
                         </aside>
-                        <main className='flex-1 ml-72 py-6 px-8'>
+                        <div className='flex-1 ml-72'>
+                          <Dashboardnav />
+                          <main className='py-6 px-8'>
                             {children}
-                        </main>
+                          </main>
+                        </div>
                     </div>
                 </ImageSettingsProvider>
             </ReactQueryProvider>

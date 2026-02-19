@@ -24,8 +24,9 @@
   --popover-foreground: #F5F7F6;
 
   /* Brand power */
-  --primary: #19304C;
+  --primary: #4D7B93;
   --primary-foreground: #F5F7F6;
+  --primary-heading: #3B4133;
 
   /* Secondary / muted */
   --secondary: #323B20;
@@ -33,7 +34,7 @@
   --muted: #1D1E16;
   --muted-foreground: #A1A6A3;
 
-  /* Accent (same as primary for now) */
+
   --accent: #19304C;
   --accent-foreground: #F5F7F6;
 

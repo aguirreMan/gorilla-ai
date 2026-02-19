@@ -87,9 +87,8 @@ export async function deductCredits(userId: string, amount: number) {
 export async function canAffordToGenerate(
     userId: string,
     modelId: ImageModel,
-    num: number
 ): Promise<boolean> {
     const { creditsRemaining } = await refreshUserCredits(userId)
-    const priceToGenerateImage = pricingCreditsUsed(modelId, num)
+    const priceToGenerateImage = pricingCreditsUsed(modelId)
     return creditsRemaining >= priceToGenerateImage
 }

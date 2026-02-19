@@ -23,11 +23,11 @@ export default function Home() {
         {/* Hero Content - Behind Banner */}
         <div className='absolute bottom-[50vh] left-0 right-0 inset-0 z-10 flex flex-col items-center justify-center px-6'>
           <h1 className='text-primary text-5xl md:text-6xl font-semibold tracking-tight'>Power up your creativity</h1>
-          <p className='max-w-xl text-3xl text-muted-foreground text-center mt-4'>
+          <p className='max-w-xl text-3xl text-muted-foreground text-center mt-6'>
             Create stunning visuals with AI,
             backed by true digital ownership.
           </p>
-          <Button size='lg' asChild>
+          <Button className='mt-4' size='lg' asChild>
             <Link href='/sign-up'>Start Creating</Link>
           </Button>
         </div>
@@ -39,4 +39,4 @@ export default function Home() {
       </div>
     </>
   )
-} 
+}

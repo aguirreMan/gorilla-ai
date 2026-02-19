@@ -33,5 +33,4 @@ export const ModelsUsed = {
     }
 } as const satisfies Record<string, FullModelConfig>
 
-
 export type ImageModel = keyof typeof ModelsUsed
