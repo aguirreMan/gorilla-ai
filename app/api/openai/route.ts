@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth, currentUser } from '@clerk/nextjs/server'
-import { OpenAIImageResponse, OpenAIImageRequest, UserImageRequest } from '@/types/openai'
+import { OpenAIImageResponse, OpenAIImageRequest, UserImageRequest, OpenAiErrorMessage } from '@/types/openai'
 import { saveImages } from '@/lib/supabase/saveImages'
 import { imageGenerationRateLimiting } from '@/lib/upstash/rateLimit'
 import { ImageModel, ModelsUsed } from '@/types/models'
@@ -8,12 +8,6 @@ import { deductCredits, refreshUserCredits } from '@/lib/pricing/credits'
 import { pricingCreditsUsed } from '@/lib/pricing/pricing'
 
 const apiKey = process.env.OPENAI_IMAGE_API_KEY
-
-interface OpenAiErrorMessage {
-    message: string
-    type: string
-    code: string
-}
 
 export async function POST(request: Request) {
     //We need Clerk to verify that user is authorized and is logged in
@@ -34,7 +28,7 @@ export async function POST(request: Request) {
             { status: 400 }
         )
     }
-    //ADd Upstash Rate limiting here 
+    //ADd Upstash Rate limiting here
     const {
         success,
         limit,
@@ -70,7 +64,6 @@ export async function POST(request: Request) {
     const userOptions: OpenAIImageRequest = {
         model: userRequest.model ?? 'dall-e-3',
         prompt: userRequest.prompt as string,
-        n: userRequest.n ?? 1,
         size: userRequest.size ?? '1024x1024',
         response_format: userRequest.response_format ?? 'url'
     }
@@ -78,9 +71,9 @@ export async function POST(request: Request) {
     const { creditsRemaining } = await refreshUserCredits(userId)
 
     const modelId: ImageModel = userOptions.model
-    const imageCount = userOptions.n
 
-    const costOfImage = pricingCreditsUsed(modelId, imageCount)
+
+    const costOfImage = pricingCreditsUsed(modelId, 1)
 
     if (creditsRemaining < costOfImage) {
         return NextResponse.json(
@@ -117,22 +110,6 @@ export async function POST(request: Request) {
         console.error('Image generation failed', err)
 
         const errorMessage = err as OpenAiErrorMessage
-        /*Cast Open ai error message for innapropiate content based of the open ai object
-        return
-        OpenAi API error {
-          error: {
-            message: 'Your request was rejected as a result of our safety system. ',
-            type: 'image_generation_user_error',
-            param: null,
-            message: 'Your request was rejected as a result of our safety system. ',
-            type: 'image_generation_user_error',
-            param: null,
-            type: 'image_generation_user_error',
-            param: null,
-            param: null,
-            code: 'content_policy_violation'
-          }
-        */
 
         if (errorMessage.message?.includes('safety system') ||
             errorMessage.type === 'image_generation_user_error' ||
@@ -165,7 +142,7 @@ function validateUserRequest(userRequest: UserImageRequest): string | null {
     return null
 }
 
-//This function will fetch and call open ai endpoint
+//Fetch open ai endpoint
 async function fetchOpenAi(userId: string, userEmail: string, options: OpenAIImageRequest): Promise<OpenAIImageResponse> {
     const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
         method: 'POST',
@@ -175,7 +152,7 @@ async function fetchOpenAi(userId: string, userEmail: string, options: OpenAIIma
         },
         body: JSON.stringify(options)
     })
-    //If Open ai rejects the prompt 
+    //If Open ai rejects the prompt
     if (!imageResponse.ok) {
         const errorData = await imageResponse.json()
         console.error('OpenAi API error', errorData)
@@ -194,7 +171,6 @@ async function fetchOpenAi(userId: string, userEmail: string, options: OpenAIIma
             }
             const modelId: ImageModel = options.model
 
-
             const saved = await saveImages({
                 userId,
                 userEmail,
@@ -204,10 +180,6 @@ async function fetchOpenAi(userId: string, userEmail: string, options: OpenAIIma
                 size: options.size!,
                 creditsUsed: ModelsUsed[modelId].billingData.creditsUsed
             })
-            //console.log('Saved image Data', saved)
-            //console.log('URL value:', saved.url)
-            //console.log('URL type:', typeof saved.url)
-
             return saved
         })
 

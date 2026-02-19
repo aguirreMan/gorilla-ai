@@ -1,7 +1,6 @@
 interface ModelsConfig {
     displayName: string
     sizes: string[]
-    imageCount: number[]
 }
 
 interface PricingConfig {
@@ -17,8 +16,7 @@ export const ModelsUsed = {
     'dall-e-2': {
         uiData: {
             displayName: 'DALL-E 2',
-            sizes: ['1024x1024', '256x256', '512x512'],
-            imageCount: [1, 2]
+            sizes: ['1024x1024', '256x256', '512x512']
         },
         billingData: {
             creditsUsed: 1
@@ -27,8 +25,7 @@ export const ModelsUsed = {
     'dall-e-3': {
         uiData: {
             displayName: 'DALL-E 3',
-            sizes: ['1024x1024', '1792x1024', '1024x1792'],
-            imageCount: [1]
+            sizes: ['1024x1024', '1792x1024', '1024x1792']
         },
         billingData: {
             creditsUsed: 2

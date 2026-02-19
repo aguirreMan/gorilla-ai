@@ -4,8 +4,6 @@ import type React from 'react'
 import dynamic from 'next/dynamic'
 import { ImagesettingsSelectProps } from '@/components/dashboard-components/ImagesettingsSelect'
 
-// NOTE: dynamic() erases generics; explicit generic signature preserves inference
-
 const ImagesettingsSelect = dynamic(
   () => import('@/components/dashboard-components/ImagesettingsSelect'),
   { ssr: false }
@@ -14,15 +12,12 @@ const ImagesettingsSelect = dynamic(
 import { useImagesContext } from '@/context/ImageSettingsProvider'
 import { useUser, useClerk } from '@clerk/nextjs'
 import { Folder } from 'lucide-react'
-import ImageNumberSlider from '@/components/dashboard-components/ImageNumberSlider'
 import Link from 'next/link'
 import { Button } from '../ui/button'
 
 export default function Sidebar() {
     const { chooseImageSize, chooseModel,
-        availableModels, model, availableSizes, imageSize,
-        numberOfImages, updateNumberofImagesGenerated,
-        availableImageCounts } = useImagesContext()
+        availableModels, model, availableSizes, imageSize, } = useImagesContext()
 
     const { user } = useUser()
     const { signOut } = useClerk()
@@ -30,15 +25,6 @@ export default function Sidebar() {
     async function signOutPage() {
         await signOut({ redirectUrl: '/' })
     }
-
-    //Write logic for Number slider
-
-    function getNumberOfImagesToGenerate(value: number) {
-        updateNumberofImagesGenerated(value)
-    }
-    //Numbers of Images Minimum and Maximum to get
-    const minimumNumber = Math.min(...availableImageCounts)
-    const maximumNumber = Math.max(...availableImageCounts)
 
     return (
         <aside className='h-full flex flex-col bg-card px-4 py-6'>
@@ -70,19 +56,6 @@ export default function Sidebar() {
                     onChange={chooseImageSize}
                 />
 
-                <div>
-                    <ImageNumberSlider
-                        value={numberOfImages}
-                        min={minimumNumber}
-                        max={maximumNumber}
-                        step={1}
-                        onChange={getNumberOfImagesToGenerate}
-                        disabled={false}
-                    />
-                    <p className='mt-2 text-center text-sm text-muted-foreground'>
-                        {numberOfImages} images
-                    </p>
-                </div>
             </div>
             {/**Sign out component  */}
             <Button

@@ -6,7 +6,7 @@ import { pricingCreditsUsed } from './pricing'
 
 const dailyGorillaCoins = 10
 
-export default async function getUserCredits(userId: string): Promise<UserCredits> {
+export async function getUserCredits(userId: string): Promise<UserCredits> {
     const { data, error } = await supabaseServer
         .from('users')
         .select('credits_remaining, credits_reset_at')
@@ -29,7 +29,7 @@ export async function refreshUserCredits(userId: string) {
     const { creditsRemaining, creditsReset } = await getUserCredits(userId)
 
     if (creditsReset < todayMidnightUTC) {
-        //Reset credits back to daily allowance 
+        //Reset credits back to daily allowance
         const { data, error } = await supabaseServer
             .from('users')
             .update({
