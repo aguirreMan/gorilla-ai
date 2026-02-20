@@ -62,13 +62,15 @@ export default function Inputprompt({ onGenerate, isGenerating }: InputPromptPro
       onClick={handleSubmit}
       disabled={disableGenerateButton}
       size='icon-lg'
-      className='absolute bottom-3 right-3 h-10 w-16 rounded-full'>
+      className='absolute bottom-3 right-3 h-10 w-24 rounded-full'>
 
       {isGenerating ? (
         <span className='text-xs'>...</span>
           ) : (
-            <Sparkles className='h-4 w-4' />
-
+            <div className='flex  items-center justify-center gap-4'>
+                <Sparkles className='h-3 w-4' />
+                <span className='text-[10px]'>{costOfImage} coins</span>
+           </div>
       )}
     </Button>
     </div>
