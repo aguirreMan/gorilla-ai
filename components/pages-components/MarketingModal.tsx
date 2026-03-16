@@ -36,11 +36,10 @@ export default function MarketingModal() {
             <DialogContent className='sm:max-w-md'>
                 <DialogHeader>
                     <DialogTitle className='text-xl font-semibold text-foreground flex flex-row justify-center'>
-                        Gorilla Coin is coming soon
+                        Gorilla Ai is coming soon
                     </DialogTitle>
                     <DialogDescription className='mt-4'>
-                        Generate Images and videos on your own term save them sell
-                        them all accessible on the blockchain
+                      Use the power of Gorilla Ai your intelligent ai agent
                     </DialogDescription>
                 </DialogHeader>
                 <div className='mt-6 flex justify-end gap-3'>

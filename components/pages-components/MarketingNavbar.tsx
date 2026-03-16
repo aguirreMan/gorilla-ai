@@ -7,25 +7,25 @@ import { GiHamburgerMenu } from 'react-icons/gi'
 import { Button } from '../ui/button'
 
 export default function NavbarMarketing() {
-    const [openNav, setOpenNav] = useState<boolean>(false)
+    const [openNav, setOpenNav] = useState(false)
 
     function toggleNav() {
-        setOpenNav(!openNav)
+      setOpenNav(!openNav)
     }
 
     useEffect(() => {
-        const mediaQuery = window.matchMedia('(min-width: 768px)')
+      const mediaQuery = window.matchMedia('(min-width: 768px)')
 
-        function resizeNavigationOnBreakPoint() {
-            if (mediaQuery.matches) {
-                setOpenNav(false)
-            }
+      function resizeNavigationOnBreakPoint() {
+        if (mediaQuery.matches) {
+          setOpenNav(false)
         }
-        mediaQuery.addEventListener('change', resizeNavigationOnBreakPoint)
+      }
+      mediaQuery.addEventListener('change', resizeNavigationOnBreakPoint)
 
-        return () => {
-            mediaQuery.removeEventListener('change', resizeNavigationOnBreakPoint)
-        }
+      return () => {
+        mediaQuery.removeEventListener('change', resizeNavigationOnBreakPoint)
+      }
     }, [])
 
     return (
