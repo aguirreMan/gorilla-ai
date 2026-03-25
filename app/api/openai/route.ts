@@ -73,7 +73,7 @@ export async function POST(request: Request) {
     const modelId: ImageModel = userOptions.model
 
 
-    const costOfImage = pricingCreditsUsed(modelId, 1)
+    const costOfImage = pricingCreditsUsed(modelId)
 
     if (creditsRemaining < costOfImage) {
         return NextResponse.json(

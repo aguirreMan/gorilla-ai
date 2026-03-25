@@ -10,61 +10,61 @@ import { SupabaseGenerationsData } from '@/types/supabaseTypes'
 
 
 export default function DashboardPage() {
-    const { isSignedIn, isLoaded } = useUser()
-    const router = useRouter()
+  const { isSignedIn, isLoaded } = useUser()
+  const router = useRouter()
 
-    const [openModal, setOpenModal] = useState(false)
-    const [isGenerating, setIsGenerating] = useState(false)
-    const [createdImages, setCreatedImages] = useState<(SupabaseGenerationsData & { url: string })[]>([])
+  const [openModal, setOpenModal] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [createdImages, setCreatedImages] = useState<(SupabaseGenerationsData & { url: string })[]>([])
 
-    useEffect(() => {
-        if (isLoaded && !isSignedIn) {
-            router.replace('/sign-in')
-        }
-    }, [isLoaded, isSignedIn, router])
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.replace('/sign-in')
+    }
+  }, [isLoaded, isSignedIn, router])
 
-    async function generateImages({ prompt, model, size, n }: {
-        prompt: string
-        model: string
-        size: string
-        n: number
-    }) {
-        setOpenModal(true)
-        setIsGenerating(true)
-        setCreatedImages([])
+  async function generateImages({ prompt, model, size }: {
+    prompt: string
+    model: string
+    size: string
+  }) {
+    setOpenModal(true)
+    setIsGenerating(true)
+    setCreatedImages([])
 
-        try {
-            const response = await fetch('/api/openai', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt, model, size, n })
-            })
-            const json = await response.json() as unknown
+    try {
+      const response = await fetch('/api/openai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt, model, size })
+    })
 
-            if (!response.ok) {
-                const errorData = json as { error?: string }
-                toast.error(
-                    response.status === 400 ? 'Content Policy Violation' : 'Generation Failed',
-                    { description: errorData.error }
-                )
-                setOpenModal(false)  // Close modal on error
-                return
-            }
+      const json = await response.json() as unknown
 
-            const data = json as { data: (SupabaseGenerationsData & { url: string })[] }
+      if (!response.ok) {
+        const errorData = json as { error?: string }
+        toast.error(
+          response.status === 400 ? 'Content Policy Violation' : 'Generation Failed',
+          { description: errorData.error }
+        )
+        setOpenModal(false)  // Close modal on error
+        return
+      }
 
-            setCreatedImages(data.data)
-            toast.success('Image generated', {
-                description: 'Added to your gallery',
-            })
+        const data = json as { data: (SupabaseGenerationsData & { url: string })[] }
 
-        } catch (error) {
-            console.error('Network error:', error)
-            toast.error('Network error. Please try again.')
-            setOpenModal(false)
-        } finally {
-            setIsGenerating(false)
-        }
+        setCreatedImages(data.data)
+        toast.success('Image generated', {
+          description: 'Added to your gallery',
+        })
+
+      } catch (error) {
+        console.error('Network error:', error)
+        toast.error('Network error. Please try again.')
+        setOpenModal(false)
+      } finally {
+        setIsGenerating(false)
+      }
     }
 
     if (!isLoaded) return <div>Loading...</div>
