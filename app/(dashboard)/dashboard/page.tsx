@@ -1,91 +1,37 @@
 'use client'
-import { useEffect, useState } from 'react'
 import { useUser } from '@clerk/nextjs'
-import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
+import Link from 'next/link'
 import Dashboardnav from '@/components/dashboard-components/Dashboardnav'
-import Inputprompt from '@/components/dashboard-components/Inputprompt'
-import ImagecreationModal from '@/components/dashboard-components/ImagecreationModal'
-import { SupabaseGenerationsData } from '@/types/supabaseTypes'
-
+import UniversalChat from '@/components/dashboard-components/UniversalChat'
+import { Badge } from '@/components/ui/badge'
 
 export default function DashboardPage() {
   const { isSignedIn, isLoaded } = useUser()
-  const router = useRouter()
+  if (!isLoaded) return <div>Loading...</div>
+  if (!isSignedIn) return null
 
-  const [openModal, setOpenModal] = useState(false)
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [createdImages, setCreatedImages] = useState<(SupabaseGenerationsData & { url: string })[]>([])
-
-  useEffect(() => {
-    if (isLoaded && !isSignedIn) {
-      router.replace('/sign-in')
-    }
-  }, [isLoaded, isSignedIn, router])
-
-  async function generateImages({ prompt, model, size }: {
-    prompt: string
-    model: string
-    size: string
-  }) {
-    setOpenModal(true)
-    setIsGenerating(true)
-    setCreatedImages([])
-
-    try {
-      const response = await fetch('/api/openai', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt, model, size })
-    })
-
-      const json = await response.json() as unknown
-
-      if (!response.ok) {
-        const errorData = json as { error?: string }
-        toast.error(
-          response.status === 400 ? 'Content Policy Violation' : 'Generation Failed',
-          { description: errorData.error }
-        )
-        setOpenModal(false)  // Close modal on error
-        return
-      }
-
-        const data = json as { data: (SupabaseGenerationsData & { url: string })[] }
-
-        setCreatedImages(data.data)
-        toast.success('Image generated', {
-          description: 'Added to your gallery',
-        })
-
-      } catch (error) {
-        console.error('Network error:', error)
-        toast.error('Network error. Please try again.')
-        setOpenModal(false)
-      } finally {
-        setIsGenerating(false)
-      }
-    }
-
-    if (!isLoaded) return <div>Loading...</div>
-    if (!isSignedIn) return null
-
-    return (
-        <>
-            <Dashboardnav />
-            <div className='pt-16'>
-                <Inputprompt
-                    onGenerate={generateImages}
-                    isGenerating={isGenerating}
-                />
-            </div>
-
-            <ImagecreationModal
-                open={openModal}
-                loading={isGenerating}
-                images={createdImages}
-                onClose={() => setOpenModal(false)}
-            />
-        </>
-    )
+  return (
+    <>
+    <Dashboardnav />
+      <div className='pt-16'>
+        <UniversalChat />
+        <div className='mt-8 flex flex-row flex-wrap items-center justify-center gap-4'>
+          <Link href='/images'>
+            <Badge className='px-5 py-2 bg-[#1D2416] text-[#8CAF6A] border border-[#2E3B20] hover:bg-[#232C1A] hover:border-[#4a6030] cursor-pointer' variant='outline'>
+              <span>Images</span>
+            </Badge>
+          </Link>
+          <Badge className='px-5 py-2 bg-[#162232] text-[#7EB8D4] border border-[#1E3A5C] shadow-[0_0_10px_rgba(77,123,147,0.2)] hover:bg-[#1A2B40] hover:shadow-[0_0_14px_rgba(77,123,147,0.35)] cursor-pointer' variant='outline'>
+            <span>Research</span>
+          </Badge>
+          <Badge className='px-5 py-2 bg-[#1D2416] text-[#8CAF6A] border border-[#2E3B20] hover:bg-[#232C1A] hover:border-[#4a6030] cursor-pointer' variant='outline'>
+            <span>Code</span>
+          </Badge>
+          <Badge className='px-5 py-2 bg-[#162232] text-[#7EB8D4] border border-[#1E3A5C] shadow-[0_0_10px_rgba(77,123,147,0.2)] hover:bg-[#1A2B40] hover:shadow-[0_0_14px_rgba(77,123,147,0.35)] cursor-pointer' variant='outline'>
+            <span>Analyze</span>
+          </Badge>
+        </div>
+      </div>
+    </>
+  )
 }
