@@ -27,9 +27,9 @@ export default function PricingPage() {
             price: '$0',
             featured: false,
             features: [
-                '5 generations per week',
-                'Basic image generation',
-                'Standard quality images'
+              '5 AI-generated visual aids per week',
+               'Core subject explanations',
+               'Basic knowledge check quizzes',
             ]
         },
         {
@@ -38,11 +38,11 @@ export default function PricingPage() {
             yearlyPlan: '$85',
             featured: true,
             features: [
-                'Unlimited generations',
-                'Edit images',
-                'Access to our premier models',
-                'Different model options',
-                'High quality images'
+              'Unlimited AI visual generation',
+              'Advanced Socratic learning mode',
+              'Access to premier AI models',
+              'Personalized learning style profiles',
+              'Deep concept breakdowns',
             ]
         },
         {
@@ -65,7 +65,7 @@ export default function PricingPage() {
             {/**Header and toggle */}
             <div className='min-h-screen bg-jungle text-foreground relative'>
                 <div className='relative flex flex-col items-center pt-32 px-4'>
-                    <h1 className='text-4xl sm:text-4xl font-bold tracking-tight 
+                    <h1 className='text-4xl sm:text-4xl font-bold tracking-tight
                     text-center leading-tight'>
                         Unlock the power of Gorilla AI
                     </h1>
