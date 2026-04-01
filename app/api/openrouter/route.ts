@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { OpenRouterRequest, OpenRouterResponse } from '@/types/openrouter'
+import { OpenRouterRequest } from '@/types/openrouter'
 import { chatGenerationRateLimiting } from '@/lib/upstash/chatLimit'
 
 export async function POST(request: NextRequest) {
@@ -22,12 +22,16 @@ export async function POST(request: NextRequest) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
     },
-    body: JSON.stringify({ model, messages }),
+    body: JSON.stringify({ model, messages, stream: true }),
   })
   if (!response.ok) {
     const errorData = await response.text()
     return new Response(errorData, {status: response.status})
   }
-  const data: OpenRouterResponse = await response.json()
-  return new Response(JSON.stringify(data), { status: 200 })
+  return new Response(response.body, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/event-stream',
+    },
+  })
 }

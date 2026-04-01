@@ -1,46 +1,113 @@
 'use client'
-
 import { useUser } from '@clerk/nextjs'
 import { useState } from 'react'
-import Link from 'next/link'
 import Dashboardnav from '@/components/dashboard-components/Dashboardnav'
 import UniversalChat from '@/components/dashboard-components/UniversalChat'
-import { Badge } from '@/components/ui/badge'
+import UniversalSidebar, { Conversation } from '@/components/dashboard-components/UniversalSidebar'
+import MessageBox, { Message } from '@/components/dashboard-components/MessageBox'
 
+// Local state shape — swap for Supabase later
+interface ConversationStore {
+  [id: string]: Message[]
+}
+
+function generateId() {
+  return Math.random().toString(36).substring(2, 10)
+}
+
+function generateTitle(message: string) {
+  return message.length > 40 ? message.substring(0, 40) + '...' : message
+}
 
 export default function DashboardPage() {
   const { isSignedIn, isLoaded } = useUser()
   const [isLoading, setIsLoading] = useState(false)
-  const [response, setResponse] = useState('')
+
+  const [conversations, setConversations] = useState<Conversation[]>([])
+  const [conversationStore, setConversationStore] = useState<ConversationStore>({})
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
+
+  const activeMessages = activeConversationId
+    ? conversationStore[activeConversationId] ?? []
+    : []
+
+  function handleNewChat() {
+    const id = generateId()
+    const newConvo: Conversation = {
+      id,
+      title: 'New Chat',
+      created_at: new Date(),
+    }
+    setConversations((prev) => [newConvo, ...prev])
+    setConversationStore((prev) => ({ ...prev, [id]: [] }))
+    setActiveConversationId(id)
+  }
+
+  function handleSelectConversation(id: string) {
+    setActiveConversationId(id)
+  }
+
+  function handleDeleteConversation(id: string) {
+    setConversations((prev) => prev.filter((c) => c.id !== id))
+    setConversationStore((prev) => {
+      const next = { ...prev }
+      delete next[id]
+      return next
+    })
+    if (activeConversationId === id) setActiveConversationId(null)
+  }
 
   async function submitToOpenRouter(message: string) {
+    // Auto-create a conversation if none is active
+    let convoId = activeConversationId
+    if (!convoId) {
+      convoId = generateId()
+      const newConvo: Conversation = {
+        id: convoId,
+        title: generateTitle(message),
+        created_at: new Date(),
+      }
+      setConversations((prev) => [newConvo, ...prev])
+      setConversationStore((prev) => ({ ...prev, [convoId!]: [] }))
+      setActiveConversationId(convoId)
+    }
+
+    const currentMessages = conversationStore[convoId] ?? []
+    const userMessage: Message = { role: 'user', content: message }
+    const updatedMessages = [...currentMessages, userMessage]
+
+    // Update title on first message
+    setConversations((prev) =>
+      prev.map((c) =>
+        c.id === convoId && c.title === 'New Chat'
+          ? { ...c, title: generateTitle(message) }
+          : c
+      )
+    )
+
+    setConversationStore((prev) => ({ ...prev, [convoId!]: updatedMessages }))
     setIsLoading(true)
 
     try {
-      const res = await fetch('/api/openrouter', {
+      const response = await fetch('/api/openrouter', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'openrouter/auto',
-          messages: [{ role: 'user', content: message }],
-          stream: false
+          messages: updatedMessages,
         }),
       })
-      console.log('OpenRouter status:', res.status)
-
-      const data = await res.json()
-
-      console.log(data)
-
-      const reply =
-        data?.choices?.[0]?.message?.content || 'No response'
-
-      setResponse(reply)
-    } catch (err) {
-      console.error(err)
-      setResponse('Something went wrong')
+      const data = await response.json()
+      const assistantMessage: Message = {
+        role: 'assistant',
+        content: data.choices[0].message.content,
+      }
+      setConversationStore((prev) => ({
+        ...prev,
+        [convoId!]: [...updatedMessages, assistantMessage],
+      }))
+    } catch (error) {
+      console.error(error)
     } finally {
       setIsLoading(false)
     }
@@ -50,27 +117,28 @@ export default function DashboardPage() {
   if (!isSignedIn) return null
 
   return (
-    <>
-    <Dashboardnav />
-      <div className='pt-16'>
-        <UniversalChat onSend={submitToOpenRouter} isLoading={isLoading} />
-        <div className='mt-8 flex flex-row flex-wrap items-center justify-center gap-4'>
-          <Link href='/images'>
-            <Badge className='px-5 py-2 bg-[#1D2416] text-[#8CAF6A] border border-[#2E3B20] hover:bg-[#232C1A] hover:border-[#4a6030] cursor-pointer' variant='outline'>
-              <span>Images</span>
-            </Badge>
-          </Link>
-          <Badge className='px-5 py-2 bg-[#162232] text-[#7EB8D4] border border-[#1E3A5C] shadow-[0_0_10px_rgba(77,123,147,0.2)] hover:bg-[#1A2B40] hover:shadow-[0_0_14px_rgba(77,123,147,0.35)] cursor-pointer' variant='outline'>
-            <span>Research</span>
-          </Badge>
-          <Badge className='px-5 py-2 bg-[#1D2416] text-[#8CAF6A] border border-[#2E3B20] hover:bg-[#232C1A] hover:border-[#4a6030] cursor-pointer' variant='outline'>
-            <span>Code</span>
-          </Badge>
-          <Badge className='px-5 py-2 bg-[#162232] text-[#7EB8D4] border border-[#1E3A5C] shadow-[0_0_10px_rgba(77,123,147,0.2)] hover:bg-[#1A2B40] hover:shadow-[0_0_14px_rgba(77,123,147,0.35)] cursor-pointer' variant='outline'>
-            <span>Analyze</span>
-          </Badge>
+    <div className="flex h-screen overflow-hidden">
+      <UniversalSidebar
+        conversations={conversations}
+        activeConversationId={activeConversationId}
+        onSelectConversation={handleSelectConversation}
+        onNewChat={handleNewChat}
+        onDeleteConversation={handleDeleteConversation}
+      />
+
+      {/* Main area */}
+      <div className="flex flex-col flex-1 overflow-hidden">
+        <Dashboardnav />
+        <div className="flex flex-col flex-1 overflow-hidden pt-16">
+          <MessageBox messages={activeMessages} isLoading={isLoading} />
+          <div
+            className="px-4 py-3 border-t"
+            style={{ borderColor: 'var(--border)' }}
+          >
+            <UniversalChat onSend={submitToOpenRouter} isLoading={isLoading} />
+          </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
