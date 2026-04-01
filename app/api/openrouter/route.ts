@@ -1,7 +1,20 @@
 import { NextRequest } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
 import { OpenRouterRequest, OpenRouterResponse } from '@/types/openrouter'
+import { chatGenerationRateLimiting } from '@/lib/upstash/chatLimit'
 
 export async function POST(request: NextRequest) {
+  const { userId } = await auth()
+  if (!userId) {
+    return new Response(JSON.stringify({ error: 'Unauthorized user' }), { status: 401 })
+  }
+
+  const { success } = await chatGenerationRateLimiting.limit(userId)
+
+  if (!success) {
+    return new Response(JSON.stringify({ error: 'Rate limit exceeded' }), { status: 429 })
+  }
+
   const { model, messages }: OpenRouterRequest = await request.json()
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
