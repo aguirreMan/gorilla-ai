@@ -11,6 +11,14 @@ interface ConversationStore {
   [id: string]: Message[]
 }
 
+interface StreamingResponse {
+  choices?: {
+    delta?: {
+      content?: string
+    }
+  }[]
+}
+
 function generateId() {
   return Math.random().toString(36).substring(2, 10)
 }
@@ -58,8 +66,8 @@ export default function DashboardPage() {
   }
 
   async function submitToOpenRouter(message: string) {
-    // Auto-create a conversation if none is active
     let convoId = activeConversationId
+
     if (!convoId) {
       convoId = generateId()
       const newConvo: Conversation = {
@@ -76,15 +84,6 @@ export default function DashboardPage() {
     const userMessage: Message = { role: 'user', content: message }
     const updatedMessages = [...currentMessages, userMessage]
 
-    // Update title on first message
-    setConversations((prev) =>
-      prev.map((c) =>
-        c.id === convoId && c.title === 'New Chat'
-          ? { ...c, title: generateTitle(message) }
-          : c
-      )
-    )
-
     setConversationStore((prev) => ({ ...prev, [convoId!]: updatedMessages }))
     setIsLoading(true)
 
@@ -97,15 +96,60 @@ export default function DashboardPage() {
           messages: updatedMessages,
         }),
       })
-      const data = await response.json()
+
+      const reader = response.body?.getReader()
+      const decoder = new TextDecoder()
+
       const assistantMessage: Message = {
         role: 'assistant',
-        content: data.choices[0].message.content,
+        content: '',
       }
+
       setConversationStore((prev) => ({
         ...prev,
         [convoId!]: [...updatedMessages, assistantMessage],
       }))
+
+      let done = false
+
+      while (!done) {
+        const result = await reader?.read()
+        done = result?.done ?? true
+
+        const chunk = decoder.decode(result?.value || new Uint8Array())
+
+        const lines = chunk.split('\n')
+
+        for (const line of lines) {
+          if (line.startsWith('data:')) {
+            const json = line.replace('data: ', '').trim()
+
+            if (json === '[DONE]') return
+
+            try {
+              const parsed: StreamingResponse = JSON.parse(json)
+              const content = parsed.choices?.[0]?.delta?.content
+
+              if (content) {
+                setConversationStore((prev) => {
+                  const convo = prev[convoId!] ?? []
+                  const last = convo[convo.length - 1]
+
+                  if (!last) return prev
+
+                  return {
+                    ...prev,
+                    [convoId!]: [
+                      ...convo.slice(0, -1),
+                      { ...last, content: last.content + content },
+                    ],
+                  }
+                })
+              }
+            } catch {}
+          }
+        }
+      }
     } catch (error) {
       console.error(error)
     } finally {
