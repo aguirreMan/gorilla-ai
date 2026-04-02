@@ -2,11 +2,8 @@
 import { useEffect, useRef } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Message } from '../../types/chatTypes'
 
-export interface Message {
-  role: 'user' | 'assistant'
-  content: string
-}
 
 interface MessageBoxProps {
   messages: Message[]

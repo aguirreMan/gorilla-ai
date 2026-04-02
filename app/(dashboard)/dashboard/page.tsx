@@ -4,20 +4,9 @@ import { useState } from 'react'
 import Dashboardnav from '@/components/dashboard-components/Dashboardnav'
 import UniversalChat from '@/components/dashboard-components/UniversalChat'
 import UniversalSidebar, { Conversation } from '@/components/dashboard-components/UniversalSidebar'
-import MessageBox, { Message } from '@/components/dashboard-components/MessageBox'
+import MessageBox from '@/components/dashboard-components/MessageBox'
+import { Message, ConversationStore, StreamingResponse } from '@/types/chatTypes'
 
-// Local state shape — swap for Supabase later
-interface ConversationStore {
-  [id: string]: Message[]
-}
-
-interface StreamingResponse {
-  choices?: {
-    delta?: {
-      content?: string
-    }
-  }[]
-}
 
 function generateId() {
   return Math.random().toString(36).substring(2, 10)

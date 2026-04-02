@@ -1,7 +1,7 @@
 'use client'
 import { Button } from '../ui/button'
 import Link from 'next/link'
-import { useUserCredits } from '@/hooks/useUserCredits'
+import { useUserCredits } from '@/hooks/images/useUserCredits'
 import { Coins } from 'lucide-react'
 
 

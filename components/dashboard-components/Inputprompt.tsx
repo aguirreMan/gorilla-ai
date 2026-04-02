@@ -5,7 +5,7 @@ import { Sparkles } from 'lucide-react'
 import { Button } from '../ui/button'
 import { Textarea } from '../ui/textarea'
 import { pricingCreditsUsed } from '@/lib/pricing/pricing'
-import { useUserCredits } from '@/hooks/useUserCredits'
+import { useUserCredits } from '@/hooks/images/useUserCredits'
 
 interface InputPromptProps {
     onGenerate: (params: {

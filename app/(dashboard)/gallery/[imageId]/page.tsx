@@ -2,8 +2,8 @@
 
 import { use } from 'react'
 import { useUser } from '@clerk/nextjs'
-import { useFetchGallery } from '@/hooks/useFetchGallery'
-import { useSelectGalleryImage } from '@/hooks/useSelectGalleryImage'
+import { useFetchGallery } from '@/hooks/images/useFetchGallery'
+import { useSelectGalleryImage } from '@/hooks/images/useSelectGalleryImage'
 import ImageDrawer from '@/components/gallery/ImageDrawer'
 
 export default function GalleryImageRoute({ params }: {

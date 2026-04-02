@@ -1,8 +1,8 @@
-//Creating Context for passing my useImageSettings hook accessible to sidebar and 
+//Creating Context for passing my useImageSettings hook accessible to sidebar and
 //InputPrompt components
 
 import { createContext, useContext, ReactNode } from 'react'
-import useImageSettings from '@/hooks/useImageSettings'
+import useImageSettings from '@/hooks/images/useImageSettings'
 
 type ImageSettingsContextType = ReturnType<typeof useImageSettings>
 const ImagesContext = createContext<ImageSettingsContextType | undefined>(undefined)

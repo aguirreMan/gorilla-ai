@@ -9,8 +9,6 @@ interface PortalOverlayProps {
 }
 
 export default function PortalOverlay({ isOpen, children, onClose }: PortalOverlayProps){
-
-
   useEffect(() => {
     function handleEscKeyboardPress(event: KeyboardEvent) {
       if (event.key === 'Escape') {
