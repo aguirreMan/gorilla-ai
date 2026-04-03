@@ -16,8 +16,15 @@ export interface StreamingResponse {
   }[]
 }
 
+export interface Conversation {
+  id: string
+  title: string
+  created_at: Date
+}
+
 export interface Chatstate {
-  conversations: ConversationStore
+  conversations: Conversation[]
+  conversationStore: ConversationStore
   selectedChat: string | null
   isLoading: boolean
 }

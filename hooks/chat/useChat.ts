@@ -1,28 +1,32 @@
-import { useReducer } from 'react'
-import { Message, ConversationStore, Chatstate } from '@/types/chatTypes'
+//import { useReducer } from 'react'
+import {  Chatstate, Conversation } from '@/types/chatTypes'
 
 export type ChatActions =
- | { type: 'NEW_CHAT'; payload: { id: string;  title: string} }
+ | { type: 'NEW_CHAT'; payload: Conversation }
  | { type: 'SELECT_CHAT'; payload: string }
  | { type: 'DELETE_CHAT'; payload: string }
- | { type: 'ADD_USER_MESSAGE'; payload: { id: string; message: Message } }
+ | { type: 'ADD_USER_MESSAGE'; payload: { id: string; message: string } }
  | { type: 'ADD_ASSISTANT_MESSAGE'; payload: { id: string } }
  | { type: 'STREAM_MESSAGE'; payload: { id: string; content: string } }
  | { type: 'SET_LOADING'; payload: boolean }
 
 
-function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
+export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
   switch (action.type) {
     case 'NEW_CHAT':
       return {
         ...state,
-        conversations: {
+        conversations: [
           ...state.conversations,
-          [action.payload.id]: {
+          {
             id: action.payload.id,
             title: action.payload.title,
-            messages: [],
+            created_at: action.payload.created_at,
           },
+        ],
+        conversationStore: {
+          ...state.conversationStore,
+          [action.payload.id]: [],
         },
         selectedChat: action.payload.id,
       }
@@ -32,53 +36,50 @@ function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
         selectedChat: action.payload,
       }
     case 'DELETE_CHAT':
-      const { [action.payload]: deleted, ...rest } = state.conversations
+      const newStore = { ...state.conversationStore }
+      delete newStore[action.payload]
       return {
         ...state,
-        conversations: rest,
-        selectedChat: null,
+        conversations: state.conversations.filter((conversation) => conversation.id !== action.payload),
+        conversationStore: newStore,
+        selectedChat: state.selectedChat === action.payload ? null : state.selectedChat,
       }
     case 'ADD_USER_MESSAGE':
       return {
         ...state,
-        conversations: {
-          ...state.conversations,
-          [action.payload.id]: {
-            ...state.conversations[action.payload.id],
-            messages: [
-              ...state.conversations[action.payload.id].messages,
-              { ...action.payload.message, role: 'user' },
-            ],
-          },
+        conversationStore: {
+          ...state.conversationStore,
+          [action.payload.id]: [
+            ...(state.conversationStore[action.payload.id] ?? []),
+            { role: 'user', content: action.payload.message },
+          ],
         },
       }
     case 'ADD_ASSISTANT_MESSAGE':
       return {
         ...state,
-        conversations: {
-          ...state.conversations,
-          [action.payload.id]: {
-            ...state.conversations[action.payload.id],
-            messages: [
-              ...state.conversations[action.payload.id].messages,
-              { role: 'assistant', content: '' },
-            ],
-          },
+        conversationStore: {
+          ...state.conversationStore,
+          [action.payload.id]: [
+            ...(state.conversationStore[action.payload.id] ?? []),
+            {role: 'assistant', content: ''}
+          ],
         },
       }
-    case 'STREAM_MESSAGE':
-      return {
-        ...state,
-        conversations: {
-          ...state.conversations,
-          [action.payload.id]: {
-            ...state.conversations[action.payload.id],
-            messages: [
-              ...state.conversations[action.payload.id].messages.slice(0, -1),
-              { ...state.conversations[action.payload.id].messages.slice(-1)[0], content: action.payload.content },
+      case 'STREAM_MESSAGE': {
+        const convo = state.conversationStore[action.payload.id] ?? []
+        const last = convo[convo.length - 1]
+        if (!last) return state
+        return {
+          ...state,
+          conversationStore: {
+            ...state.conversationStore,
+            [action.payload.id]: [
+              ...convo.slice(0, -1),
+              { ...last, content: last.content + action.payload.content },
             ],
           },
-        },
+        }
       }
     case 'SET_LOADING':
       return {
@@ -88,13 +89,4 @@ function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
     default:
       return state
   }
-}
-
-export function useChat() {
-  const [state, dispatch] = useReducer(chatReducer, {
-    conversations: {},
-    selectedChat: null,
-    isLoading: false,
-  })
-  return { state, dispatch }
 }
