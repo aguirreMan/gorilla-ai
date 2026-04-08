@@ -1,5 +1,5 @@
-import { useDeleteImage } from '@/hooks/useDeleteImage'
-import { useDownloadImage } from '@/hooks/useDownloadImage'
+import { useDeleteImage } from '@/hooks/images/useDeleteImage'
+import { useDownloadImage } from '@/hooks/images/useDownloadImage'
 import { useUser } from '@clerk/nextjs'
 import { SupabaseGenerationsData } from '@/types/supabaseTypes'
 import { Button } from '../ui/button'
@@ -21,7 +21,7 @@ interface ImageCardStatsProps {
   image: SupabaseGenerationsData
 }
 
-export function ImageCardStats({image}: ImageCardStatsProps) {
+export default function ImageCardStats({image}: ImageCardStatsProps) {
   const { user } = useUser()
   const { mutate: deleteImage, isPending } = useDeleteImage(user?.id)
   const { downLoadImage, isDownLoading } = useDownloadImage()

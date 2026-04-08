@@ -4,7 +4,7 @@ import { useUser } from '@clerk/nextjs'
 import { useEffect } from 'react'
 import { useInView } from 'react-intersection-observer'
 import Image from 'next/image'
-import { useFetchGallery } from '@/hooks/useFetchGallery'
+import { useFetchGallery } from '@/hooks/images/useFetchGallery'
 import { Loader2 } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useRouter } from 'next/navigation'
@@ -45,7 +45,7 @@ export default function GalleryPage() {
 
     if (isError) {
         return (
-            <div className='flex min-h-[60vh] items-center justify-center text-sm 
+            <div className='flex min-h-[60vh] items-center justify-center text-sm
             text-muted-foreground'>
                 Failed to load gallery.
             </div>

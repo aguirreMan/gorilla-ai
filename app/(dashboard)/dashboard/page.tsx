@@ -3,9 +3,9 @@ import { useUser } from '@clerk/nextjs'
 import { useState } from 'react'
 import Dashboardnav from '@/components/dashboard-components/Dashboardnav'
 import UniversalChat from '@/components/dashboard-components/UniversalChat'
-import UniversalSidebar, { Conversation } from '@/components/dashboard-components/UniversalSidebar'
+import UniversalSidebar from '@/components/dashboard-components/UniversalSidebar'
 import MessageBox from '@/components/dashboard-components/MessageBox'
-import { Message, ConversationStore, StreamingResponse } from '@/types/chatTypes'
+import { Message, ConversationStore, StreamingResponse, Conversation } from '@/types/chatTypes'
 
 
 function generateId() {

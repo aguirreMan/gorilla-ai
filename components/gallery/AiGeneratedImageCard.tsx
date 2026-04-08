@@ -7,7 +7,7 @@ export interface AiGeneratedImageCardProps {
   onClick: () => void
 }
 
-export function AiGeneratedImageCard({src, alt, onClick}: AiGeneratedImageCardProps) {
+export default function AiGeneratedImageCard({src, alt, onClick}: AiGeneratedImageCardProps) {
   return (
     <Card className='w-full bg-background transition-shadow border-none hover:shadow-lg'>
       <CardContent className='p-0 '>
