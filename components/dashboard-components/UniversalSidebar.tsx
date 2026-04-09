@@ -26,7 +26,7 @@ export default function UniversalSidebar({
 
   const { signOut } = useClerk()
 
-  async function signOutPage() {
+  async function redirectSignOut() {
      await signOut({ redirectUrl: '/' })
   }
 
@@ -106,7 +106,7 @@ export default function UniversalSidebar({
       <div className='p-3 mt-auto'>
         <Button
           variant='ghost'
-          onClick={() => signOutPage()}
+          onClick={redirectSignOut}
           className='w-full justify-start gap-2 text-sm text-muted-foreground border border-border hover:text-destructive hover:bg-destructive/10'
         >
           Sign out

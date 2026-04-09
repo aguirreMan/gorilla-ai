@@ -33,7 +33,7 @@ export default function DashboardPage() {
     const newConvo: Conversation = {
       id,
       title: 'New Chat',
-      created_at: new Date(),
+      created_at: 'New Chat'
     }
     setConversations((prev) => [newConvo, ...prev])
     setConversationStore((prev) => ({ ...prev, [id]: [] }))

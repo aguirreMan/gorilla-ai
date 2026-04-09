@@ -19,7 +19,7 @@ export interface StreamingResponse {
 export interface Conversation {
   id: string
   title: string
-  created_at: Date
+  created_at: string
 }
 
 export interface Chatstate {
