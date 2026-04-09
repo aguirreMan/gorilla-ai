@@ -10,6 +10,10 @@ export function useChat() {
     isLoading: false,
   })
 
+  const activeMessages = state.selectedChat
+    ? state.conversationStore[state.selectedChat] ?? []
+    : []
+
   function createNewChat() {
     const newChat: Conversation = {
       id: crypto.randomUUID().toString(),
@@ -42,6 +46,10 @@ export function useChat() {
       dispatch({ type: 'NEW_CHAT', payload: generateNewChat })
       conversationId = generateNewChat.id
     }
+
+    const currentMessages = state.conversationStore[conversationId] ?? []
+
+    const updateMessages = [...currentMessages, { role: 'user' as const, content: message }]
     // user message
     dispatch({ type: 'ADD_USER_MESSAGE', payload: { id: conversationId, message } })
 
@@ -53,8 +61,11 @@ export function useChat() {
       const response = await fetch('/api/openrouter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify(
+          { model: 'openrouter/auto', messages: updateMessages }),
       })
+
+      if (!response.body) throw new Error('No response body')
 
       const reader = response.body?.getReader()
       const decoder = new TextDecoder()
@@ -64,13 +75,16 @@ export function useChat() {
         const messageResult = await reader?.read()
         done = messageResult?.done ?? true
 
-        const chunk = decoder.decode(messageResult?.value)
+        const chunk = decoder.decode(messageResult?.value ?? new Uint8Array())
         const lines = chunk.split('\n')
 
         for (const line of lines) {
           if(line.startsWith('data:')) {
             const json = line.slice(5).trim()
-            if(json === '[DONE]') break
+            if (json === '[DONE]') {
+              done = true
+              break
+            }
             const parsedMessage: StreamingResponse = JSON.parse(json)
             const content = parsedMessage.choices?.[0]?.delta?.content
 
@@ -89,5 +103,14 @@ export function useChat() {
   }
 
 
-  return { state, createNewChat, selectCurrentChat, deleteChat, userSendsMessage }
+  return {
+    conversations: state.conversations,
+    selectedChat: state.selectedChat,
+    messages: activeMessages,
+    isLoading: state.isLoading,
+    createNewChat,
+    selectCurrentChat,
+    deleteChat,
+    sendMessage: userSendsMessage,
+  }
 }

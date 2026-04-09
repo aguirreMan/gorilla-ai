@@ -16,12 +16,12 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
       return {
         ...state,
         conversations: [
-          ...state.conversations,
           {
             id: action.payload.id,
             title: action.payload.title,
             created_at: action.payload.created_at,
           },
+          ...state.conversations,
         ],
         conversationStore: {
           ...state.conversationStore,
