@@ -6,6 +6,7 @@ export type ChatActions =
  | { type: 'DELETE_CHAT'; payload: string }
  | { type: 'ADD_USER_MESSAGE'; payload: { id: string; message: string } }
  | { type: 'ADD_ASSISTANT_MESSAGE'; payload: { id: string } }
+  | { type: 'SET_LAST_ERROR_MESSAGE'; payload: { id: string;  error: string} }
  | { type: 'STREAM_MESSAGE'; payload: { id: string; content: string } }
  | { type: 'SET_LOADING'; payload: boolean }
 
@@ -65,10 +66,26 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
           ],
         },
       }
-      case 'STREAM_MESSAGE': {
+    case 'SET_LAST_ERROR_MESSAGE':
+      const conversation = state.conversationStore[action.payload.id] ?? []
+
+      if (conversation.length === 0) return state
+
+      const lastConversation = conversation[conversation.length - 1]
+      return {
+        ...state,
+        conversationStore: {
+          ...state.conversationStore,
+          [action.payload.id]: [
+            ...conversation.slice(0, -1),
+            { ...lastConversation, content: action.payload.error },
+          ],
+        },
+      }
+    case 'STREAM_MESSAGE': {
         const convo = state.conversationStore[action.payload.id] ?? []
         const last = convo[convo.length - 1]
-        if (!last) return state
+        if (!last || last.role !== 'assistant') return state
         return {
           ...state,
           conversationStore: {

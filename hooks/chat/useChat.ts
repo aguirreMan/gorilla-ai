@@ -65,6 +65,8 @@ export function useChat() {
           { model: 'openrouter/auto', messages: updateMessages }),
       })
 
+      if (!response.ok) throw new Error('Failed to connect to the ai service')
+
       if (!response.body) throw new Error('No response body')
 
       const reader = response.body?.getReader()
@@ -97,6 +99,10 @@ export function useChat() {
 
     } catch (error) {
       console.error(error)
+      dispatch({
+        type: 'SET_LAST_ERROR_MESSAGE',
+        payload: { id: conversationId, error: error instanceof Error ? error.message : String(error) }
+      })
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false })
     }
