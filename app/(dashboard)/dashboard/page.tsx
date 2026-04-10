@@ -19,6 +19,8 @@ export default function DashboardPage() {
     deleteChat,
     sendMessage } = useChat()
 
+  //console.log('greptile reviw')
+
   if (!isLoaded) return <div>Loading...</div>
   if (!isSignedIn) return null
 
