@@ -1,4 +1,4 @@
-    import {  Chatstate, Conversation } from '@/types/chatTypes'
+    import { Chatstate, Conversation } from '@/types/chatTypes'
 
 export type ChatActions =
  | { type: 'NEW_CHAT'; payload: Conversation }
@@ -6,7 +6,7 @@ export type ChatActions =
  | { type: 'DELETE_CHAT'; payload: string }
  | { type: 'ADD_USER_MESSAGE'; payload: { id: string; message: string } }
  | { type: 'ADD_ASSISTANT_MESSAGE'; payload: { id: string } }
-  | { type: 'SET_LAST_ERROR_MESSAGE'; payload: { id: string;  error: string} }
+ | { type: 'SET_LAST_ERROR_MESSAGE'; payload: { id: string;  error: string} }
  | { type: 'STREAM_MESSAGE'; payload: { id: string; content: string } }
  | { type: 'SET_LOADING'; payload: boolean }
 
@@ -72,6 +72,8 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
       if (conversation.length === 0) return state
 
       const lastConversation = conversation[conversation.length - 1]
+
+      if (lastConversation.role !== 'assistant') return state
       return {
         ...state,
         conversationStore: {

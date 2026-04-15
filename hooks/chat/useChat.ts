@@ -35,6 +35,7 @@ export function useChat() {
   }
 
   async function userSendsMessage(message: string) {
+    if(state.isLoading ) return
     let conversationId = state.selectedChat
 
     if (!conversationId) {
