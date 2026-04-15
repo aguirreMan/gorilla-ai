@@ -1,4 +1,4 @@
-import {  Chatstate, Conversation } from '@/types/chatTypes'
+    import {  Chatstate, Conversation } from '@/types/chatTypes'
 
 export type ChatActions =
  | { type: 'NEW_CHAT'; payload: Conversation }
