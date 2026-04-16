@@ -72,14 +72,18 @@ export function useChat() {
 
       const reader = response.body?.getReader()
       const decoder = new TextDecoder()
-
+      let buffer = ''
       let done = false
+
       while (!done) {
         const messageResult = await reader?.read()
         done = messageResult?.done ?? true
 
-        const chunk = decoder.decode(messageResult?.value ?? new Uint8Array())
-        const lines = chunk.split('\n')
+        buffer += decoder.decode(messageResult?.value ?? new Uint8Array(), { stream: true })
+
+        //const chunk = decoder.decode(messageResult?.value ?? new Uint8Array())
+        const lines = buffer.split('\n')
+        buffer = lines.pop() || ''
 
         for (const line of lines) {
           if(line.startsWith('data:')) {

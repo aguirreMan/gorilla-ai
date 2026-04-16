@@ -66,7 +66,7 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
           ],
         },
       }
-    case 'SET_LAST_ERROR_MESSAGE':
+    case 'SET_LAST_ERROR_MESSAGE': {
       const conversation = state.conversationStore[action.payload.id] ?? []
 
       if (conversation.length === 0) return state
@@ -84,6 +84,7 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
           ],
         },
       }
+    }
     case 'STREAM_MESSAGE': {
         const convo = state.conversationStore[action.payload.id] ?? []
         const last = convo[convo.length - 1]
