@@ -53,13 +53,12 @@ export default function UniversalChat({
         onChange={(e) => setUserInput(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        rows={8}
         disabled={isLoading}
         className={cn(
-          'resize-none min-h-[52px] max-h-48 w-full',
+          'resize-none max-h-48 w-full',
           'bg-transparent border-none shadow-none',
           'rounded-xl rounded-b-none',
-          'px-4 pt-3.5 pb-2',
+          'px-4 pt-8 pb-4',
           'text-foreground',
           'text-sm leading-relaxed',
           'focus-visible:ring-0 focus-visible:border-none',
@@ -68,29 +67,29 @@ export default function UniversalChat({
       />
 
       {/* Toolbar */}
-      <div className="flex items-center justify-between px-3 pb-3 pt-1">
+      <div className='flex items-center justify-between px-7 pb-3 pt-1'>
         {/* Left — hint */}
-        <span className="text-xs text-muted-foreground select-none pl-1">
+        <span className='text-xs text-muted-foreground select-none pl-1'>
           {isLoading ? 'Generating…' : 'Shift + Enter for new line'}
         </span>
 
         {/* Right — send / stop button */}
         <Button
-          size="icon-sm"
+          size='icon-sm'
           onClick={handleSend}
           disabled={!canSend}
           aria-label={isLoading ? 'Stop generation' : 'Send message'}
           className={cn(
             'rounded-lg transition-all duration-150',
             canSend
-              ? 'bg-primary text-primary hover:bg-(--primary)/85 shadow-[0_2px_8px_rgba(77,123,147,0.35)]'
-              : 'bg-muted text-muted-foreground cursor-not-allowed shadow-none',
+              ? 'bg-primary text-primary hover:bg-(--primary)/85'
+              : 'bg-muted text-muted-foreground cursor-not-allowed',
           )}
         >
           {isLoading ? (
-            <Square className="size-3.5 fill-current" />
+            <Square className='size-3.5 fill-current' />
           ) : (
-            <ArrowUp className="size-4" strokeWidth={2.5} />
+            <ArrowUp className='size-4'  strokeWidth={2.5} />
           )}
         </Button>
       </div>

@@ -1,4 +1,4 @@
-import { useReducer } from 'react'
+import { useReducer, useCallback } from 'react'
 import { chatReducer } from '@/lib/chat/chatReducer'
 import { Conversation, StreamingResponse} from '@/types/chatTypes'
 
@@ -14,25 +14,22 @@ export function useChat() {
     ? state.conversationStore[state.selectedChat] ?? []
     : []
 
-  function createNewChat() {
+  const createNewChat = useCallback(() => {
     const newChat: Conversation = {
       id: crypto.randomUUID().toString(),
       title: 'New Chat',
       created_at: new Date().toISOString()
     }
     dispatch({ type: 'NEW_CHAT', payload: newChat })
-  }
+  }, [])
 
-  function selectCurrentChat(chatId: string) {
-    const chatExists = state.conversations.some((chat) => chat.id === chatId)
-    if (chatExists) {
+  const selectCurrentChat = useCallback((chatId: string) => {
       dispatch({ type: 'SELECT_CHAT', payload: chatId })
-    }
-  }
+  }, [])
 
-  function deleteChat(chatId: string) {
-    dispatch({ type: 'DELETE_CHAT', payload: chatId })
-  }
+  const deleteChat = useCallback((chatId: string) => {
+      dispatch({ type: 'DELETE_CHAT', payload: chatId })
+  }, [])
 
   async function userSendsMessage(message: string) {
     if(state.isLoading ) return
@@ -110,7 +107,6 @@ export function useChat() {
       dispatch({ type: 'SET_LOADING', payload: false })
     }
   }
-
 
   return {
     conversations: state.conversations,

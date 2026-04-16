@@ -1,6 +1,5 @@
 'use client'
 import { useUser } from '@clerk/nextjs'
-import Dashboardnav from '@/components/dashboard-components/Dashboardnav'
 import UniversalChat from '@/components/dashboard-components/UniversalChat'
 import UniversalSidebar from '@/components/dashboard-components/UniversalSidebar'
 import MessageBox from '@/components/dashboard-components/MessageBox'
@@ -19,13 +18,11 @@ export default function DashboardPage() {
     deleteChat,
     sendMessage } = useChat()
 
-
-
   if (!isLoaded) return <div>Loading...</div>
   if (!isSignedIn) return null
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className='flex min-h-screen'>
       <UniversalSidebar
         conversations={conversations}
         activeConversationId={selectedChat}
@@ -35,14 +32,11 @@ export default function DashboardPage() {
       />
 
       {/* Main area */}
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <Dashboardnav />
-        <div className="flex flex-col flex-1 overflow-hidden pt-16">
-          <MessageBox messages={messages} isLoading={chatIsLoading} />
-          <div className="px-4 py-3 border-t">
+      <div className='flex flex-col flex-1 '>
+        <MessageBox messages={messages} isLoading={chatIsLoading} />
+          <div className='px-4 py-3 border-t bg-background sticky bottom-0'>
             <UniversalChat onSend={sendMessage} isLoading={chatIsLoading} />
           </div>
-        </div>
       </div>
     </div>
   )

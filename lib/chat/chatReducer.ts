@@ -1,4 +1,4 @@
-    import { Chatstate, Conversation } from '@/types/chatTypes'
+import { Chatstate, Conversation } from '@/types/chatTypes'
 
 export type ChatActions =
  | { type: 'NEW_CHAT'; payload: Conversation }
@@ -30,12 +30,16 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
         },
         selectedChat: action.payload.id,
       }
-    case 'SELECT_CHAT':
+    case 'SELECT_CHAT': {
+      const chatExists = state.conversations.some((chat) => chat.id === action.payload)
+      if (!chatExists) return state
       return {
         ...state,
         selectedChat: action.payload,
       }
-    case 'DELETE_CHAT':
+    }
+
+    case 'DELETE_CHAT':{
       const newStore = { ...state.conversationStore }
       delete newStore[action.payload]
       return {
@@ -44,6 +48,7 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
         conversationStore: newStore,
         selectedChat: state.selectedChat === action.payload ? null : state.selectedChat,
       }
+    }
     case 'ADD_USER_MESSAGE':
       return {
         ...state,
