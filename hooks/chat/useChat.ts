@@ -80,8 +80,6 @@ export function useChat() {
         done = messageResult?.done ?? true
 
         buffer += decoder.decode(messageResult?.value ?? new Uint8Array(), { stream: true })
-
-        //const chunk = decoder.decode(messageResult?.value ?? new Uint8Array())
         const lines = buffer.split('\n')
         buffer = lines.pop() || ''
 
