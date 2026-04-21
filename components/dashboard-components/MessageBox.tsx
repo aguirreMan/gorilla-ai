@@ -84,7 +84,6 @@ export default function MessageBox({ messages, isLoading }: MessageBoxProps) {
             </div>
           </div>
         )}
-
         <div ref={bottomRef} />
       </div>
   )

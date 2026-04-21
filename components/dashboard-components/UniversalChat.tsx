@@ -58,7 +58,7 @@ export default function UniversalChat({
           'resize-none max-h-48 w-full',
           'bg-transparent border-none shadow-none',
           'rounded-xl rounded-b-none',
-          'px-4 pt-8 pb-4',
+          'px-4 pt-4 pb-4',
           'text-foreground',
           'text-sm leading-relaxed',
           'focus-visible:ring-0 focus-visible:border-none',

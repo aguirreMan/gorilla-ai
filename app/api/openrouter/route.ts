@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { OpenRouterRequest } from '@/types/openrouter'
 import { chatGenerationRateLimiting } from '@/lib/upstash/chatLimit'
+import {  saveChatHistory } from '@/lib/supabase-chat/saveChatHistory'
 
 export async function POST(request: NextRequest) {
   const { userId } = await auth()
@@ -15,7 +16,7 @@ export async function POST(request: NextRequest) {
     return new Response(JSON.stringify({ error: 'Rate limit exceeded' }), { status: 429 })
   }
 
-  const { model, messages }: OpenRouterRequest = await request.json()
+  const { model, messages, conversationID }: OpenRouterRequest = await request.json()
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -24,10 +25,15 @@ export async function POST(request: NextRequest) {
     },
     body: JSON.stringify({ model, messages, stream: true }),
   })
+
   if (!response.ok) {
     const errorData = await response.text()
     return new Response(errorData, {status: response.status})
   }
+
+  const title = messages[0].content
+  await saveChatHistory(conversationID, userId, title)
+
   return new Response(response.body, {
     status: 200,
     headers: {
