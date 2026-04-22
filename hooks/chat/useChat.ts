@@ -60,7 +60,7 @@ export function useChat() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(
-          { model: 'openrouter/auto', messages: updateMessages }),
+          { model: 'openrouter/auto', messages: updateMessages, conversationId: conversationId }),
       })
 
       if (!response.ok) throw new Error('Failed to connect to the ai service')
@@ -88,7 +88,7 @@ export function useChat() {
               break
             }
             const parsedMessage: StreamingResponse = JSON.parse(json)
-            const content = parsedMessage.choices?.[0]?.delta?.content
+            const content = parsedMessage.content
 
             if (content) {
              dispatch({ type: 'STREAM_MESSAGE', payload: { id: conversationId, content } })

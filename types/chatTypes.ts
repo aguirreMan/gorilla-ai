@@ -9,11 +9,7 @@ export interface Message {
 
 
 export interface StreamingResponse {
-  choices?: {
-    delta?: {
-      content?: string
-    }
-  }[]
+  content: string
 }
 
 export interface Conversation {

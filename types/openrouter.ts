@@ -1,5 +1,5 @@
 export interface OpenRouterRequest {
-  conversationID: string
+  conversationId: string
   model: string
   messages: { role: string; content: string }[]
 }

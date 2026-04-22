@@ -1,10 +1,10 @@
 import { supabaseServer } from '@/lib/supabase/supabaseServer'
 
-export async function saveChatHistory(conversationID: string, userID: string, title: string) {
+export async function saveChatHistory(conversationId: string, userID: string, title: string) {
   const { data, error } = await supabaseServer
     .from('conversations')
     .upsert({
-      id: conversationID,
+      id: conversationId,
       user_id: userID,
       title,
       updated_at: new Date(),
@@ -23,11 +23,11 @@ export async function saveChatHistory(conversationID: string, userID: string, ti
   return data
 }
 
-export async function saveChatMessage(conversationID: string, role: 'user' | 'assistant', content: string) {
+export async function saveChatMessage(conversationId: string, role: 'user' | 'assistant', content: string) {
   const { data, error } = await supabaseServer
     .from('messages')
     .insert({
-      conversation_id: conversationID,
+      conversation_id: conversationId,
       role,
       content,
       created_at: new Date(),
