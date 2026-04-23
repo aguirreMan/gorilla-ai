@@ -1,4 +1,4 @@
-import { Chatstate, Conversation } from '@/types/chatTypes'
+import { Chatstate, Conversation, Message } from '@/types/chatTypes'
 
 export type ChatActions =
  | { type: 'NEW_CHAT'; payload: Conversation }
@@ -9,6 +9,8 @@ export type ChatActions =
  | { type: 'SET_LAST_ERROR_MESSAGE'; payload: { id: string;  error: string} }
  | { type: 'STREAM_MESSAGE'; payload: { id: string; content: string } }
  | { type: 'SET_LOADING'; payload: boolean }
+ | { type: 'LOAD_CONVERSATIONS'; payload: Conversation[] }
+ | { type: 'LOAD_MESSAGES'; payload: { id: string; messages: Message[] } }
 
 
 export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
@@ -91,9 +93,9 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
       }
     }
     case 'STREAM_MESSAGE': {
-        const convo = state.conversationStore[action.payload.id] ?? []
-        const last = convo[convo.length - 1]
-        if (!last || last.role !== 'assistant') return state
+      const convo = state.conversationStore[action.payload.id] ?? []
+      const last = convo[convo.length - 1]
+      if (!last || last.role !== 'assistant') return state
         return {
           ...state,
           conversationStore: {
@@ -104,7 +106,23 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
             ],
           },
         }
+    }
+
+    case 'LOAD_CONVERSATIONS': {
+      return {
+        ...state,
+        conversations: action.payload
       }
+    }
+    case 'LOAD_MESSAGES': {
+      return {
+        ...state,
+        conversationStore: {
+          ...state.conversationStore,
+          [action.payload.id]: action.payload.messages
+        },
+      }
+    }
     case 'SET_LOADING':
       return {
         ...state,

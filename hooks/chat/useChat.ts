@@ -1,6 +1,6 @@
-import { useReducer, useCallback } from 'react'
+import { useReducer, useCallback, useEffect } from 'react'
 import { chatReducer } from '@/lib/chat/chatReducer'
-import { Conversation, StreamingResponse} from '@/types/chatTypes'
+import { Conversation, StreamingResponse, Message} from '@/types/chatTypes'
 
 export function useChat() {
   const [state, dispatch] = useReducer(chatReducer, {
@@ -9,6 +9,7 @@ export function useChat() {
     selectedChat: null,
     isLoading: false,
   })
+
 
   const activeMessages = state.selectedChat
     ? state.conversationStore[state.selectedChat] ?? []
@@ -23,12 +24,46 @@ export function useChat() {
     dispatch({ type: 'NEW_CHAT', payload: newChat })
   }, [])
 
-  const selectCurrentChat = useCallback((chatId: string) => {
-      dispatch({ type: 'SELECT_CHAT', payload: chatId })
-  }, [])
+  const selectCurrentChat = useCallback(async(chatId: string) => {
+    dispatch({ type: 'SELECT_CHAT', payload: chatId })
+
+    if(chatId in state.conversationStore) return
+
+    dispatch({ type: 'SET_LOADING', payload: true })
+    try {
+      const response = await fetch(`/api/conversations/${chatId}/messages`)
+      const data: { messages: Message[] } = await response.json()
+      dispatch({ type: 'LOAD_MESSAGES', payload: { id: chatId, messages: data.messages } })
+    } catch (error) {
+      console.error('Failed to load messages', error)
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false })
+    }
+  }, [state.conversationStore])
 
   const deleteChat = useCallback((chatId: string) => {
       dispatch({ type: 'DELETE_CHAT', payload: chatId })
+  }, [])
+
+  useEffect(() => {
+    async function loadConversations() {
+       dispatch({ type: 'SET_LOADING', payload: true })
+      try {
+        const response = await fetch('/api/conversations')
+        const data: { conversations: Conversation[] } = await response.json()
+        dispatch({ type: 'LOAD_CONVERSATIONS', payload: data.conversations })
+        if (data.conversations.length > 0) {
+          const getFirstChatID = data.conversations[0].id
+          selectCurrentChat(getFirstChatID)
+        }
+
+      } catch (error) {
+        console.error('Failed to load your conversations', error)
+      } finally {
+        dispatch({ type: 'SET_LOADING', payload: false })
+      }
+    }
+    loadConversations()
   }, [])
 
   async function userSendsMessage(message: string) {

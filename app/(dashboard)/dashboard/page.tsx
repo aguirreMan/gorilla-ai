@@ -29,6 +29,7 @@ export default function DashboardPage() {
         onSelectConversation={selectCurrentChat}
         onNewChat={createNewChat}
         onDeleteConversation={deleteChat}
+        isLoading={chatIsLoading}
       />
 
       {/* Main area */}

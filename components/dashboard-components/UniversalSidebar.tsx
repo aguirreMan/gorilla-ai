@@ -1,5 +1,6 @@
 'use client'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { MessageSquare, Trash2, ImageIcon, SquarePen } from 'lucide-react'
@@ -14,6 +15,7 @@ interface UniversalSidebarProps {
   onSelectConversation: (id: string) => void
   onNewChat: () => void
   onDeleteConversation?: (id: string) => void
+  isLoading: boolean
 }
 
 export default function UniversalSidebar({
@@ -22,6 +24,7 @@ export default function UniversalSidebar({
   onSelectConversation,
   onNewChat,
   onDeleteConversation,
+  isLoading
 }: UniversalSidebarProps) {
 
   const { signOut } = useClerk()
@@ -62,44 +65,51 @@ export default function UniversalSidebar({
       <Separator />
 
       {/* Conversation list */}
-      <ScrollArea className='flex-1 min-h-0 px-2 py-2'>
-        {conversations.length === 0 ? (
-          <p className="text-xs text-center mt-8 px-4 text-muted-foreground">
-            No chats yet. Start a new conversation.
-          </p>
-        ) : (
-          <div className="space-y-0.5">
-            {conversations.map((convo) => (
-              <div
-                key={convo.id}
-                className={`group relative flex items-center rounded-md px-2 py-2 cursor-pointer transition-colors hover:bg-muted ${
-                  activeConversationId === convo.id
-                    ? 'bg-accent text-foreground'
-                    : 'text-muted-foreground'
-                }`}
-                onClick={() => onSelectConversation(convo.id)}
-              >
-                <MessageSquare size={14} className="shrink-0 mr-2 opacity-60" />
-                <span className="text-sm truncate flex-1">{convo.title}</span>
+      {isLoading ? (
+        <div className='space-y-1 px-2 py-2'>
+          {[...Array(4)].map((_, index) => (
+            <Skeleton key={index} className='h-8 w-full rounded-md' />
+          ))}
+        </div>
+      ) : (
+        <ScrollArea className='flex-1 min-h-0 px-2 py-2'>
+          {conversations.length === 0 ? (
+            <p className="text-xs text-center mt-8 px-4 text-muted-foreground">
+              No chats yet. Start a new conversation.
+            </p>
+          ) : (
+            <div className="space-y-0.5">
+              {conversations.map((convo) => (
+                <div
+                  key={convo.id}
+                  className={`group relative flex items-center rounded-md px-2 py-2 cursor-pointer transition-colors hover:bg-muted ${
+                    activeConversationId === convo.id
+                      ? 'bg-accent text-foreground'
+                      : 'text-muted-foreground'
+                  }`}
+                  onClick={() => onSelectConversation(convo.id)}
+                >
+                  <MessageSquare size={14} className="shrink-0 mr-2 opacity-60" />
+                  <span className="text-sm truncate flex-1">{convo.title}</span>
 
-                {/* Delete button - shows on hover */}
-                {onDeleteConversation && (
-                  <Button
-                    className="opacity-0 group-hover:opacity-100 transition-opacity ml-1 p-0.5 rounded hover:text-destructive"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      onDeleteConversation(convo.id)
-                    }}
-                  >
-                    <Trash2 size={12} />
-                  </Button>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </ScrollArea>
-
+                  {/* Delete button - shows on hover */}
+                  {onDeleteConversation && (
+                    <Button
+                      className="opacity-0 group-hover:opacity-100 transition-opacity ml-1 p-0.5 rounded hover:text-destructive"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onDeleteConversation(convo.id)
+                      }}
+                    >
+                      <Trash2 size={12} />
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </ScrollArea>
+      )}
       <Separator />
 
       {/* Footer */}
