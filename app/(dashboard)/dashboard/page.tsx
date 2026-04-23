@@ -33,7 +33,7 @@ export default function DashboardPage() {
       />
 
       {/* Main area */}
-      <div className='flex flex-col flex-1 '>
+      <div className='flex flex-col flex-1'>
         <MessageBox messages={messages} isLoading={chatIsLoading} />
           <div className='px-4 py-3 border-t bg-background sticky bottom-0'>
             <UniversalChat onSend={sendMessage} isLoading={chatIsLoading} />

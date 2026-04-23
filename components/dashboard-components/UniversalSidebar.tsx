@@ -33,6 +33,7 @@ export default function UniversalSidebar({
      await signOut({ redirectUrl: '/' })
   }
 
+
   return (
     <div className="w-72 h-screen fixed left-0 top-0 flex flex-col bg-background border-r border-border">
       {/* Header */}
@@ -95,9 +96,12 @@ export default function UniversalSidebar({
                   {/* Delete button - shows on hover */}
                   {onDeleteConversation && (
                     <Button
-                      className="opacity-0 group-hover:opacity-100 transition-opacity ml-1 p-0.5 rounded hover:text-destructive"
+                      variant='ghost'
+                      size='icon'
+                      className='ml-1 h-6 w-6'
                       onClick={(e) => {
                         e.stopPropagation()
+                        console.log('delete clicked', convo.id)
                         onDeleteConversation(convo.id)
                       }}
                     >
