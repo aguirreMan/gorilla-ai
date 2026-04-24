@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useRef } from 'react'
-//import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Message } from '../../types/chatTypes'
 import { cn } from '@/lib/utils'
@@ -31,7 +30,8 @@ export default function MessageBox({ messages, isLoading }: MessageBoxProps) {
   }
 
   return (
-      <div className='max-w-2xl mx-auto space-y-6 pb-24'>
+    <div className='overflow-y-auto min-h-0 flex-1'>
+      <div className='max-w-2xl mx-auto space-y-6 pt-8'>
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -86,5 +86,6 @@ export default function MessageBox({ messages, isLoading }: MessageBoxProps) {
         )}
         <div ref={bottomRef} />
       </div>
+    </div>
   )
 }

@@ -23,7 +23,7 @@ export default function Dashboardlayout({
         />
           <div className='flex flex-col min-h-screen bg-background'>
             <Dashboardnav />
-            <main className='flex-1 pl-72'>
+            <main className='flex-1 pt-16'>
               {children}
             </main>
           </div>

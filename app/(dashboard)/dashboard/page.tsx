@@ -22,7 +22,7 @@ export default function DashboardPage() {
   if (!isSignedIn) return null
 
   return (
-    <div className='flex min-h-screen'>
+    <div className='flex h-[calc(100vh-4rem)]'>
       <UniversalSidebar
         conversations={conversations}
         activeConversationId={selectedChat}
@@ -33,7 +33,7 @@ export default function DashboardPage() {
       />
 
       {/* Main area */}
-      <div className='flex flex-col flex-1'>
+      <div className='flex flex-col flex-1 min-h-0'>
         <MessageBox messages={messages} isLoading={chatIsLoading} />
           <div className='px-4 py-3 border-t bg-background sticky bottom-0'>
             <UniversalChat onSend={sendMessage} isLoading={chatIsLoading} />

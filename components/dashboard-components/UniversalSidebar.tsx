@@ -1,10 +1,8 @@
 'use client'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { MessageSquare, Trash2, ImageIcon, SquarePen } from 'lucide-react'
-import Link from 'next/link'
+import { MessageSquare, Trash2, SquarePen } from 'lucide-react'
 import { Conversation } from '@/types/chatTypes'
 import { useClerk } from '@clerk/nextjs'
 
@@ -35,24 +33,10 @@ export default function UniversalSidebar({
 
 
   return (
-    <div className="w-72 h-screen fixed left-0 top-0 flex flex-col bg-background border-r border-border">
-      {/* Header */}
-      <div className="px-3 py-4 flex items-center justify-between">
-        <span className="text-sm font-semibold tracking-widest uppercase text-foreground">
-          Gorilla AI
-        </span>
-      </div>
-
+    <div className='w-72 h-full flex flex-col bg-background border-r border-border shrink-0'>
       <Separator />
-
       {/* Navigation links */}
-      <div className="px-2 py-2 flex flex-col gap-0.5">
-        <Button asChild variant='ghost' className='w-full justify-start gap-2 text-sm font-normal text-muted-foreground hover:text-foreground'>
-          <Link href='/images'>
-            <ImageIcon size={16} />
-            Images
-          </Link>
-        </Button>
+      <div className='px-2 py-2 flex flex-col gap-0.5 shrink-0'>
         <Button
           variant='ghost'
           className='w-full justify-start gap-2 text-sm font-normal text-muted-foreground hover:text-foreground'
@@ -73,35 +57,34 @@ export default function UniversalSidebar({
           ))}
         </div>
       ) : (
-        <ScrollArea className='flex-1 min-h-0 px-2 py-2'>
+        <div className='flex-1 overflow-hidden px-2 py-2'>
           {conversations.length === 0 ? (
             <p className="text-xs text-center mt-8 px-4 text-muted-foreground">
               No chats yet. Start a new conversation.
             </p>
           ) : (
-            <div className="space-y-0.5">
+            <div className='space-y-0.5'>
               {conversations.map((convo) => (
                 <div
                   key={convo.id}
-                  className={`group relative flex items-center rounded-md px-2 py-2 cursor-pointer transition-colors hover:bg-muted ${
-                    activeConversationId === convo.id
-                      ? 'bg-accent text-foreground'
-                      : 'text-muted-foreground'
-                  }`}
+                  className={`group/row relative flex items-center justify-between rounded-md px-2 py-2 cursor-pointer transition-colors hover:bg-muted
+                    ${
+                      activeConversationId === convo.id
+                        ? 'bg-accent text-foreground'
+                        : 'text-muted-foreground'
+                    }`}
                   onClick={() => onSelectConversation(convo.id)}
                 >
                   <MessageSquare size={14} className="shrink-0 mr-2 opacity-60" />
-                  <span className="text-sm truncate flex-1">{convo.title}</span>
+                  <span className='text-sm truncate flex-1 min-w-0'>{convo.title}</span>
 
-                  {/* Delete button - shows on hover */}
                   {onDeleteConversation && (
                     <Button
                       variant='ghost'
                       size='icon'
-                      className='ml-1 h-6 w-6'
+                      className='ml-1 h-6 w-6 shrink-0 p-0 opacity-0 group-hover/row:opacity-100 transition-opacity hover:bg-red-100 hover:text-red-500 dark:hover:bg-red-900/30'
                       onClick={(e) => {
                         e.stopPropagation()
-                        console.log('delete clicked', convo.id)
                         onDeleteConversation(convo.id)
                       }}
                     >
@@ -112,12 +95,12 @@ export default function UniversalSidebar({
               ))}
             </div>
           )}
-        </ScrollArea>
+        </div>
       )}
       <Separator />
 
       {/* Footer */}
-      <div className='p-3 mt-auto'>
+      <div className='p-3 shrink-0'>
         <Button
           variant='ghost'
           onClick={redirectSignOut}
