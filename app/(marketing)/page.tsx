@@ -22,13 +22,14 @@ export default function Home() {
 
         {/* Hero Content - Behind Banner */}
         <div className='absolute bottom-[50vh] left-0 right-0 inset-0 z-10 flex flex-col items-center justify-center px-6'>
-          <h1 className='text-primary text-5xl md:text-6xl font-semibold tracking-tight'>Power up your creative intelligence</h1>
+          <h1 className='text-primary text-5xl md:text-6xl font-semibold tracking-tight'>Learn anything fast as hell</h1>
           <p className='max-w-xl text-3xl text-muted-foreground text-center mt-6'>
-            Create stunning visuals with AI,
-            backed by true digital ownership.
+            Interactive research and learning powered by AI
+            <br />
+            Go deeper, move faster and think sharper
           </p>
           <Button className='mt-4' size='lg' asChild>
-            <Link href='/sign-up'>Start using the power of Gorilla AI </Link>
+            <Link href='/sign-up'>Start learning fast as hell! </Link>
           </Button>
         </div>
 

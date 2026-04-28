@@ -7,7 +7,6 @@ import { useState } from 'react'
 import { Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-
 type PaymentType = 'yearly' | 'monthly'
 
 export default function PricingPage() {
