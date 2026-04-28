@@ -41,8 +41,14 @@ export function useChat() {
     }
   }, [state.conversationStore])
 
-  const deleteChat = useCallback((chatId: string) => {
+  const deleteChat = useCallback(async (chatId: string) => {
+    try {
+      const response = await fetch(`/api/conversations/${chatId}`, { method: 'DELETE' })
+      if (!response.ok) throw new Error('Failed to delete chat')
       dispatch({ type: 'DELETE_CHAT', payload: chatId })
+    } catch (error) {
+      console.error('Failed to delete chat', error)
+    }
   }, [])
 
   useEffect(() => {
