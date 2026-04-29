@@ -3,12 +3,10 @@
 
 /* =========================
    Gorilla AI – Design Tokens
-  Jungle = environment
-  Green-black = base
-  Blue = power accent
-
+   Jungle = environment
+   Green-black = base
+   Blue = power accent
    ========================= */
-
 
 :root {
   --radius: 0.625rem;
@@ -17,13 +15,14 @@
   --background: #111610;
   --foreground: #F5F7F6;
 
-  /* Surfaces */
+  /* Surfaces — layered elevation */
+  --surface: #171B14;
   --card: #282E25;
   --card-foreground: #F5F7F6;
   --popover: #282E25;
   --popover-foreground: #F5F7F6;
 
-  /* Brand power */
+  /* Brand */
   --primary: #4D7B93;
   --primary-foreground: #F5F7F6;
   --primary-heading: #3B4133;
@@ -34,15 +33,19 @@
   --muted: #1D1E16;
   --muted-foreground: #A1A6A3;
 
-
+  /* Accent */
   --accent: #19304C;
   --accent-foreground: #F5F7F6;
 
   /* Utility */
-  --border: #282E25;
+  --border: #2C332A;
   --input: #282E25;
-  --ring: #19304C;
-  --destructive: #691C1F;
+  --ring: #4D7B93;
+  --destructive: #7A2E2E;
+
+  /* Glow system */
+  --glow-primary: 0 0 24px color-mix(in oklab, var(--primary), transparent 65%);
+  --glow-sm: 0 0 10px color-mix(in oklab, var(--primary), transparent 80%);
 
   ::-webkit-scrollbar {
     width: 10px;
@@ -60,26 +63,21 @@
   }
 
   ::-webkit-scrollbar-thumb:hover {
-     background-color: var(--muted);
+    background-color: var(--muted-foreground);
   }
 
-  /* ===== Firefox ===== */
+  /* Firefox */
   * {
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
   }
 
-
-  /* sonner */
+  /* Sonner */
   --sonner-radius: 14px;
   --sonner-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
-
-  /* Base toast surface */
   --sonner-bg: var(--card);
   --sonner-border: var(--border);
   --sonner-text: var(--foreground);
-
-  /* Semantic states */
   --sonner-success: #323B20;
   --sonner-error: #7A2E2E;
   --sonner-warning: #8A6F2F;
@@ -89,12 +87,35 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
+  --color-surface: var(--surface);
+
   --color-card: var(--card);
-  --color-border: var(--border);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
 
   --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
 
- --color-destructive: #691C1F;
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) + 8px);
 }
 
 @layer base {
@@ -114,9 +135,26 @@
 
 @layer utilities {
   .bg-jungle {
-    background: linear-gradient(to bottom,
-        color-mix(in oklab, var(--background), black 10%),
-        color-mix(in oklab, var(--background), black 30%),
-        black)
+    background: linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--background), black 10%),
+      color-mix(in oklab, var(--background), black 30%),
+      black
+    );
+  }
+
+  .glass {
+    background: color-mix(in oklab, var(--card), transparent 40%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid color-mix(in oklab, var(--border), transparent 30%);
+  }
+
+  .glow-primary {
+    box-shadow: var(--glow-primary);
+  }
+
+  .glow-sm {
+    box-shadow: var(--glow-sm);
   }
 }

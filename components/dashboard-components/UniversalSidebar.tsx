@@ -33,7 +33,7 @@ export default function UniversalSidebar({
 
 
   return (
-    <div className='w-72 h-full flex flex-col bg-background border-r border-border shrink-0'>
+    <div className='w-72 h-full flex flex-col bg-surface border-r border-border shrink-0'>
       <Separator />
       {/* Navigation links */}
       <div className='px-2 py-2 flex flex-col gap-0.5 shrink-0'>
@@ -70,8 +70,8 @@ export default function UniversalSidebar({
                   className={`group/row relative flex items-center justify-between rounded-md px-2 py-2 cursor-pointer transition-colors hover:bg-muted
                     ${
                       activeConversationId === convo.id
-                        ? 'bg-accent text-foreground'
-                        : 'text-muted-foreground'
+                        ? 'bg-accent text-foreground border-l-2 border-primary pl-[6px]'
+                        : 'text-muted-foreground border-l-2 border-transparent'
                     }`}
                   onClick={() => onSelectConversation(convo.id)}
                 >
@@ -82,7 +82,7 @@ export default function UniversalSidebar({
                     <Button
                       variant='ghost'
                       size='icon'
-                      className='ml-1 h-6 w-6 shrink-0 p-0 opacity-0 group-hover/row:opacity-100 transition-opacity hover:bg-red-100 hover:text-red-500 dark:hover:bg-red-900/30'
+                      className='ml-1 h-6 w-6 shrink-0 p-0 opacity-0 group-hover/row:opacity-100 transition-opacity hover:bg-destructive/15 hover:text-destructive'
                       onClick={(e) => {
                         e.stopPropagation()
                         onDeleteConversation(convo.id)

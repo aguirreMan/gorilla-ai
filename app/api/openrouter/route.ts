@@ -2,7 +2,9 @@ import { NextRequest } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { OpenRouterRequest } from '@/types/openrouter'
 import { chatGenerationRateLimiting } from '@/lib/upstash/chatLimit'
-import {  saveChatHistory, saveChatMessage } from '@/lib/supabase-chat/saveChatHistory'
+import { saveChatHistory, saveChatMessage } from '@/lib/supabase-chat/saveChatHistory'
+import { GORILLA_SYSTEM_PROMPT } from '@/lib/prompts/gorilla'
+
 
 export async function POST(request: NextRequest) {
   const { userId } = await auth()
@@ -23,7 +25,11 @@ export async function POST(request: NextRequest) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
     },
-    body: JSON.stringify({ model, messages, stream: true })
+    body: JSON.stringify({
+      model, messages: [{
+        role: 'system',
+        content: GORILLA_SYSTEM_PROMPT
+      }, ...messages], stream: true })
   })
 
   if (!response.ok) {

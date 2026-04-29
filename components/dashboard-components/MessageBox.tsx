@@ -3,6 +3,8 @@ import { useEffect, useRef } from 'react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Message } from '../../types/chatTypes'
 import { cn } from '@/lib/utils'
+import ReactMarkdown from 'react-markdown'
+
 
 interface MessageBoxProps {
   messages: Message[]
@@ -20,18 +22,49 @@ export default function MessageBox({ messages, isLoading }: MessageBoxProps) {
     return (
       <div className='flex-1 flex flex-col items-center justify-center gap-2'>
         <p className='text-2xl font-semibold text-foreground'>
-          What can I help you with?
+          Debug code, learn faster, and keep shipping
         </p>
         <p className='text-sm text-muted-foreground'>
-          Start a conversation below
+          Built for developers who want answers fast
         </p>
       </div>
     )
   }
 
+  const chatComponents = {
+    p({ children }: { children?: React.ReactNode }) {
+      return <div className='mb-4 last:mb-0'>{children}</div>
+    },
+
+    code({
+      inline,
+      className,
+      children,
+    }: {
+      inline?: boolean
+      className?: string
+      children?: React.ReactNode
+    }) {
+      if (inline) {
+        return (
+          <code className='bg-surface px-1.5 py-0.5 rounded-sm text-sm glow-sm'>
+            {children}
+          </code>
+        )
+      }
+      return (
+        <pre className='bg-muted text-primary rounded-lg p-4 overflow-x-auto text-sm my-3 border border-border'>
+          <code className={className}>
+            {children}
+          </code>
+        </pre>
+      )
+    },
+  }
+
   return (
     <div className='overflow-y-auto min-h-0 flex-1'>
-      <div className='max-w-2xl mx-auto space-y-6 pt-8'>
+      <div className='max-w-4xl mx-auto space-y-6 pt-8'>
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -50,16 +83,19 @@ export default function MessageBox({ messages, isLoading }: MessageBoxProps) {
             </Avatar>
 
             {/* Bubble */}
-            <div
-              className={cn(
-                'max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed border text-foreground',
-                msg.role === 'user'
-                  ? 'bg-accent rounded-tr-sm'
-                  : 'bg-card rounded-tl-sm'
-              )}
+              <div
+                className={cn(
+                  'max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed border text-foreground',
+                  msg.role === 'user'
+                    ? 'bg-accent rounded-tr-sm'
+                    : 'bg-card rounded-tl-sm'
+                )}
             >
-              {msg.content}
-            </div>
+              <ReactMarkdown components={chatComponents}>
+                {msg.content}
+              </ReactMarkdown>
+
+              </div>
           </div>
         ))}
 
@@ -67,7 +103,7 @@ export default function MessageBox({ messages, isLoading }: MessageBoxProps) {
         {isLoading && (
           <div className='flex gap-3 flex-row'>
             <Avatar className="h-8 w-8 shrink-0">
-              <AvatarFallback className='text-xs font-semibold text-foreground bg-secondary'>
+              <AvatarFallback className='text-xs font-semibold text-foreground bg-primary'>
                 G
               </AvatarFallback>
             </Avatar>
@@ -76,7 +112,7 @@ export default function MessageBox({ messages, isLoading }: MessageBoxProps) {
                 {[0, 1, 2].map((i) => (
                   <span
                     key={i}
-                    className='w-1.5 h-1.5 rounded-full animate-bounce bg-muted-foreground'
+                    className='w-1.5 h-1.5 rounded-full animate-bounce bg-secondary'
                     style={{ animationDelay: `${i * 0.15}s`}}
                   />
                 ))}

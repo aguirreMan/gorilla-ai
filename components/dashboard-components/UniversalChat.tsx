@@ -15,7 +15,7 @@ interface UniversalChatProps {
 export default function UniversalChat({
   onSend,
   isLoading = false,
-  placeholder = 'Ask Gorilla AI anything…',
+  placeholder = 'What are we building today?',
 }: UniversalChatProps) {
   const [userInput, setUserInput] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
