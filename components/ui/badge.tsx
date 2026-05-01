@@ -19,7 +19,12 @@ const badgeVariants = cva(
         ghost: '[a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 [a&]:hover:underline',
       },
+      shape: {
+         rounded: 'rounded-md',
+         sharp: 'rounded-none',
+       }
     },
+
     defaultVariants: {
       variant: 'default',
     },
@@ -37,7 +42,7 @@ function Badge({
 
   return (
     <Comp
-      data-slot="badge"
+      data-slot='badge'
       data-variant={variant}
       className={cn(badgeVariants({ variant }), className)}
       {...props}

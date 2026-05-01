@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Message } from '../../types/chatTypes'
 import { cn } from '@/lib/utils'
 import ReactMarkdown from 'react-markdown'
-
+import CodeBlock from './Codeblock'
 
 interface MessageBoxProps {
   messages: Message[]
@@ -31,6 +31,19 @@ export default function MessageBox({ messages, isLoading }: MessageBoxProps) {
     )
   }
 
+  function renderUserMessage(content: string) {
+    const parts = content.split(/(```[\s\S]*?```)/g)
+    return parts.map((part, i) => {
+      const codeMatch = part.match(/^```(\w*)\n?([\s\S]*?)```$/)
+      if (codeMatch) {
+        const language = codeMatch[1] || 'text'
+        const code = codeMatch[2].replace(/\n$/, '')
+        return <CodeBlock key={i} language={language} code={code} />
+      }
+      return <span key={i} className='whitespace-pre-wrap'>{part}</span>
+    })
+  }
+
   const chatComponents = {
     p({ children }: { children?: React.ReactNode }) {
       return <div className='mb-4 last:mb-0'>{children}</div>
@@ -52,13 +65,11 @@ export default function MessageBox({ messages, isLoading }: MessageBoxProps) {
           </code>
         )
       }
-      return (
-        <pre className='bg-muted text-primary rounded-lg p-4 overflow-x-auto text-sm my-3 border border-border'>
-          <code className={className}>
-            {children}
-          </code>
-        </pre>
-      )
+      const match = /language-(\w+)/.exec(className || '')
+       const language = match ? match[1] : 'plaintext'
+       const code = String(children).replace(/\n$/, '')
+
+      return <CodeBlock language={language} code={code} />
     },
   }
 
@@ -91,9 +102,13 @@ export default function MessageBox({ messages, isLoading }: MessageBoxProps) {
                     : 'bg-card rounded-tl-sm'
                 )}
             >
-              <ReactMarkdown components={chatComponents}>
-                {msg.content}
-              </ReactMarkdown>
+              {msg.role === 'user' ? (
+                renderUserMessage(msg.content)
+              ) : (
+                <ReactMarkdown components={chatComponents}>
+                  {msg.content}
+                </ReactMarkdown>
+              )}
 
               </div>
           </div>
