@@ -1,4 +1,3 @@
-import MarketingModal from '@/components/pages-components/MarketingModal'
 import Image from 'next/image'
 import Gorilla from '@/public/assets/super-gorilla.jpg'
 import Link from 'next/link'
@@ -31,11 +30,6 @@ export default function Home() {
           <Button className='mt-4' size='lg' asChild>
             <Link href='/sign-up'>Get started!</Link>
           </Button>
-        </div>
-
-        {/* Banner - On Top of content */}
-        <div className='relative z-20'>
-          <MarketingModal />
         </div>
       </div>
     </>

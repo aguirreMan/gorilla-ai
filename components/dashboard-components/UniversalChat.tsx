@@ -26,6 +26,9 @@ export default function UniversalChat({
     if (!canSend) return
     onSend?.(userInput.trim())
     setUserInput('')
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto'
+    }
     textareaRef.current?.focus()
   }
 
@@ -50,12 +53,16 @@ export default function UniversalChat({
       <Textarea
         ref={textareaRef}
         value={userInput}
-        onChange={(e) => setUserInput(e.target.value)}
+        onChange={(e) => {
+          setUserInput(e.target.value)
+          e.target.style.height = 'auto'
+          e.target.style.height = `${e.target.scrollHeight}px`
+        }}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={isLoading}
         className={cn(
-          'resize-none max-h-48 w-full',
+          'resize-none max-h-48 overflow-y-auto w-full',
           'bg-transparent border-none shadow-none',
           'rounded-xl rounded-b-none',
           'px-4 pt-4 pb-4',
@@ -82,7 +89,7 @@ export default function UniversalChat({
           className={cn(
             'rounded-lg transition-all duration-150',
             canSend
-              ? 'bg-primary text-primary hover:bg-(--primary)/85'
+              ? 'bg-primary text-primary-foreground hover:bg-(--primary)/85'
               : 'bg-muted text-muted-foreground cursor-not-allowed',
           )}
         >

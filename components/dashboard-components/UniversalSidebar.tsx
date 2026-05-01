@@ -4,7 +4,19 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { MessageSquare, Trash2, SquarePen } from 'lucide-react'
 import { Conversation } from '@/types/chatTypes'
-import { useClerk } from '@clerk/nextjs'
+import { useClerk, useUser } from '@clerk/nextjs'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from '@/components/ui/alert-dialog'
 
 
 interface UniversalSidebarProps {
@@ -26,6 +38,7 @@ export default function UniversalSidebar({
 }: UniversalSidebarProps) {
 
   const { signOut } = useClerk()
+  const { user } = useUser()
 
   async function redirectSignOut() {
      await signOut({ redirectUrl: '/' })
@@ -34,6 +47,24 @@ export default function UniversalSidebar({
 
   return (
     <div className='w-72 h-full flex flex-col bg-surface border-r border-border shrink-0'>
+      {/*use header */}
+      <div className='flex items-center gap-3 px-3 py-3 shrink-0'>
+        <Avatar className='h-7 w-7 shrink-0'>
+          <AvatarImage src={user?.imageUrl} alt={user?.fullName ?? undefined} />
+          <AvatarFallback className='text-xs font-semibold bg-primary text-primary-foreground'>
+            {user?.firstName?.[0]?.toUpperCase() ?? 'U'}
+          </AvatarFallback>
+        </Avatar>
+        <div className='flex flex-col min-w-0'>
+          <span className='text-sm font-semibold text-muted-foreground truncate'>
+            {user?.firstName}
+          </span>
+          <span className='text-xs text-muted-foreground truncate'>
+                 {user?.primaryEmailAddress?.emailAddress}
+          </span>
+        </div>
+
+      </div>
       <Separator />
       {/* Navigation links */}
       <div className='px-2 py-2 flex flex-col gap-0.5 shrink-0'>
@@ -79,17 +110,40 @@ export default function UniversalSidebar({
                   <span className='text-sm truncate flex-1 min-w-0'>{convo.title}</span>
 
                   {onDeleteConversation && (
-                    <Button
-                      variant='ghost'
-                      size='icon'
-                      className='ml-1 h-6 w-6 shrink-0 p-0 opacity-0 group-hover/row:opacity-100 transition-opacity hover:bg-destructive/15 hover:text-destructive'
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onDeleteConversation(convo.id)
-                      }}
-                    >
-                      <Trash2 size={12} />
-                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant='ghost'
+                          size='icon'
+                          className='ml-1 h-6 w-6 shrink-0 p-0 opacity-0 group-hover/row:opacity-100 transition-opacity
+                          hover:bg-destructive/15 hover:text-destructive'
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Trash2 size={12} />
+                        </Button>
+                      </AlertDialogTrigger>
+
+                      <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete conversation?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete this chat.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>
+                            Cancel
+                          </AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => onDeleteConversation(convo.id)}
+                            className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   )}
                 </div>
               ))}

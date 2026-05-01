@@ -117,8 +117,8 @@ export default function MessageBox({ messages, isLoading }: MessageBoxProps) {
         {/* Loading indicator */}
         {isLoading && (
           <div className='flex gap-3 flex-row'>
-            <Avatar className="h-8 w-8 shrink-0">
-              <AvatarFallback className='text-xs font-semibold text-foreground bg-primary'>
+            <Avatar className='h-8 w-8 shrink-0'>
+              <AvatarFallback className='text-xs font-semibold text-foreground bg-secondary'>
                 G
               </AvatarFallback>
             </Avatar>

@@ -3,6 +3,7 @@ import { useUser } from '@clerk/nextjs'
 import UniversalChat from '@/components/dashboard-components/UniversalChat'
 import UniversalSidebar from '@/components/dashboard-components/UniversalSidebar'
 import MessageBox from '@/components/dashboard-components/MessageBox'
+import DashboardSkeleton from '@/components/dashboard-components/DashboardSkeleton'
 import { useChat } from '@/hooks/chat/useChat'
 
 export default function DashboardPage() {
@@ -18,7 +19,7 @@ export default function DashboardPage() {
     deleteChat,
     sendMessage } = useChat()
 
-  if (!isLoaded) return <div>Loading...</div>
+  if (!isLoaded) return <DashboardSkeleton />
   if (!isSignedIn) return null
 
   return (
