@@ -2,63 +2,10 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import FeatureCard from '@/components/pages-components/FeatureCard'
+import StepCard from '@/components/pages-components/StepCard'
 import { Bug, Code as Code2, Lightbulb, ArrowRight, CircleCheck as CheckCircle2, ChevronRight, BookOpen } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-
-function FeatureCard({
-  icon: Icon,
-  title,
-  description,
-  accent,
-}: {
-  icon: React.ElementType
-  title: string
-  description: string
-  accent?: boolean
-}) {
-  return (
-    <div className={`group relative rounded-xl p-6 border transition-all duration-300 hover:-translate-y-1 ${
-      accent
-        ? 'border-primary/40 bg-primary/5 hover:border-primary/60 hover:bg-primary/10'
-        : 'border-border bg-card hover:border-border/80 hover:bg-card/80'
-    }`}>
-      <div className={`inline-flex items-center justify-center w-10 h-10 rounded-lg mb-4 ${
-        accent ? 'bg-primary/20' : 'bg-secondary/60'
-      }`}>
-        <Icon className={`w-5 h-5 ${accent ? 'text-primary' : 'text-muted-foreground'}`} />
-      </div>
-      <h3 className="text-base font-semibold text-foreground mb-2">{title}</h3>
-      <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
-    </div>
-  )
-}
-
-function StepCard({
-  number,
-  title,
-  description,
-  last,
-}: {
-  number: string
-  title: string
-  description: string
-  last?: boolean
-}) {
-  return (
-    <div className='flex gap-5'>
-      <div className='shrink-0 flex flex-col items-center'>
-        <div className='w-9 h-9 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center text-primary text-sm font-semibold'>
-          {number}
-        </div>
-        {!last && <div className='flex-1 w-px bg-border mt-3' />}
-      </div>
-      <div className={`${last ? 'pb-0' : 'pb-10'}`}>
-        <h3 className='text-base font-semibold text-foreground mb-1'>{title}</h3>
-        <p className='text-sm text-muted-foreground leading-relaxed'>{description}</p>
-      </div>
-    </div>
-  )
-}
 
 const CHAT_STEPS = [
   { role: 'user' as const, text: 'Why does user.profile throw undefined here?' },
@@ -92,57 +39,57 @@ function ChatDemo() {
   const assistantSteps = visible.filter(s => s.role === 'assistant')
 
   return (
-    <div ref={ref} className="rounded-xl border border-border bg-card overflow-hidden shadow-2xl">
-      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-border bg-card/80">
-        <div className="w-2 h-2 rounded-full bg-primary/70" />
-        <span className="text-sm font-medium text-foreground">Gorilla AI</span>
-        <span className="ml-auto text-xs text-muted-foreground/60">auth/session.ts · line 42</span>
+    <div ref={ref} className='rounded-xl border border-border bg-card overflow-hidden shadow-2xl'>
+      <div className='flex items-center gap-3 px-5 py-3.5 border-b border-border bg-card/80'>
+        <div className='w-2 h-2 rounded-full bg-primary/70' />
+        <span className='text-sm font-medium text-foreground'>Gorilla AI</span>
+        <span className='ml-auto text-xs text-muted-foreground/60'>auth/session.ts · line 42</span>
       </div>
 
-      <div className="p-5 space-y-4 min-h-[300px]">
-        <div className="rounded-lg bg-muted/50 border border-border px-4 py-3">
-          <p className="text-xs text-muted-foreground mb-2 font-medium">auth/session.ts</p>
-          <code className="text-sm text-foreground font-mono">
-            const avatar = <span className="text-red-400/80">user.profile</span>.avatar
+      <div className='p-5 space-y-4 min-h-[300px]'>
+        <div className='rounded-lg bg-muted/50 border border-border px-4 py-3'>
+          <p className='text-xs text-muted-foreground mb-2 font-medium'>auth/session.ts</p>
+          <code className='text-sm text-foreground font-mono'>
+            const avatar = <span className='text-red-400/80'>user.profile</span>.avatar
           </code>
         </div>
 
         {visible.some(s => s.role === 'user') && (
-          <div className="flex justify-end animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <div className="max-w-[80%] rounded-2xl rounded-tr-sm bg-primary/15 border border-primary/20 px-4 py-2.5">
-              <p className="text-sm text-foreground">{CHAT_STEPS[0].text}</p>
+          <div className='flex justify-end animate-in fade-in slide-in-from-bottom-2 duration-300'>
+            <div className='max-w-[80%] rounded-2xl rounded-tr-sm bg-primary/15 border border-primary/20 px-4 py-2.5'>
+              <p className='text-sm text-foreground'>{CHAT_STEPS[0].text}</p>
             </div>
           </div>
         )}
 
         {assistantSteps.length > 0 && (
-          <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <div className='space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300'>
             {assistantSteps.some(s => s.section === 'root-cause') && (
-              <div className="rounded-xl border border-border bg-muted/30 px-4 py-3 space-y-1">
-                <p className="text-xs font-semibold text-primary uppercase tracking-wide">Root cause</p>
-                <p className="text-sm text-foreground leading-relaxed">{CHAT_STEPS[1].text}</p>
+              <div className='rounded-xl border border-border bg-muted/30 px-4 py-3 space-y-1'>
+                <p className='text-xs font-semibold text-primary uppercase tracking-wide'>Root cause</p>
+                <p className='text-sm text-foreground leading-relaxed'>{CHAT_STEPS[1].text}</p>
               </div>
             )}
             {assistantSteps.some(s => s.section === 'fix') && (
-              <div className="rounded-xl border border-green-500/20 bg-green-500/5 px-4 py-3 space-y-1">
-                <p className="text-xs font-semibold text-green-500/80 uppercase tracking-wide">Fix</p>
-                <code className="text-sm text-foreground font-mono">{CHAT_STEPS[2].text}</code>
+              <div className='rounded-xl border border-green-500/20 bg-green-500/5 px-4 py-3 space-y-1'>
+                <p className='text-xs font-semibold text-green-500/80 uppercase tracking-wide'>Fix</p>
+                <code className='text-sm text-foreground font-mono'>{CHAT_STEPS[2].text}</code>
               </div>
             )}
             {assistantSteps.some(s => s.section === 'learn') && (
-              <div className="rounded-xl border border-border bg-card/40 px-4 py-3 space-y-1">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Why it works</p>
-                <p className="text-sm text-muted-foreground leading-relaxed">{CHAT_STEPS[3].text}</p>
+              <div className='rounded-xl border border-border bg-card/40 px-4 py-3 space-y-1'>
+                <p className='text-xs font-semibold text-muted-foreground uppercase tracking-wide'>Why it works</p>
+                <p className='text-sm text-muted-foreground leading-relaxed'>{CHAT_STEPS[3].text}</p>
               </div>
             )}
           </div>
         )}
 
         {started && step < CHAT_STEPS.length && step > 0 && (
-          <div className="flex gap-1 px-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary/50 animate-bounce [animation-delay:0ms]" />
-            <span className="w-1.5 h-1.5 rounded-full bg-primary/50 animate-bounce [animation-delay:150ms]" />
-            <span className="w-1.5 h-1.5 rounded-full bg-primary/50 animate-bounce [animation-delay:300ms]" />
+          <div className='flex gap-1 px-1'>
+            <span className='w-1.5 h-1.5 rounded-full bg-primary/50 animate-bounce [animation-delay:0ms]' />
+            <span className='w-1.5 h-1.5 rounded-full bg-primary/50 animate-bounce [animation-delay:150ms]' />
+            <span className='w-1.5 h-1.5 rounded-full bg-primary/50 animate-bounce [animation-delay:300ms]' />
           </div>
         )}
       </div>
@@ -152,7 +99,7 @@ function ChatDemo() {
 
 export default function Home() {
   return (
-    <div className="bg-background min-h-screen">
+    <div className='bg-background min-h-screen'>
 
       {/* Hero */}
       <section className='relative overflow-hidden pt-40 pb-28 px-6 text-center bg-grid'>
@@ -230,33 +177,33 @@ export default function Home() {
       </section>
 
       {/* Demo */}
-      <section className="py-24 px-6 border-y border-border bg-card/10">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+      <section className='py-24 px-6 border-y border-border bg-card/10'>
+        <div className='max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center'>
           <div>
-            <p className="text-xs uppercase tracking-widest text-primary mb-3">See it in action</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
+            <p className='text-xs uppercase tracking-widest text-primary mb-3'>See it in action</p>
+            <h2 className='text-3xl md:text-4xl font-bold text-foreground leading-tight'>
               From confusion to clarity in seconds
             </h2>
-            <p className="mt-5 text-muted-foreground leading-relaxed">
+            <p className='mt-5 text-muted-foreground leading-relaxed'>
               Paste your code or error, ask your question in plain English, and get an answer that actually makes sense — root cause, fix, and the reasoning behind it.
             </p>
-            <ul className="mt-8 space-y-3">
+            <ul className='mt-8 space-y-3'>
               {[
                 'Works with any language or framework',
                 'Explains the why, not just the fix',
                 'Ask follow-ups in the same conversation',
               ].map(item => (
-                <li key={item} className="flex items-center gap-3 text-sm text-muted-foreground">
+                <li key={item} className='flex items-center gap-3 text-sm text-muted-foreground'>
                   <CheckCircle2 className='w-4 h-4 text-primary shrink-0' />
                   {item}
                 </li>
               ))}
             </ul>
-            <div className="mt-10">
-              <Button asChild className="glow-sm">
-                <Link href="/sign-up">
+            <div className='mt-10'>
+              <Button asChild className='glow-sm'>
+                <Link href='/sign-up'>
                   Try it free
-                  <ArrowRight className="ml-2 w-4 h-4" />
+                  <ArrowRight className='ml-2 w-4 h-4' />
                 </Link>
               </Button>
             </div>
@@ -267,11 +214,11 @@ export default function Home() {
       </section>
 
       {/* How it works */}
-      <section className="py-28 px-6">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-xs uppercase tracking-widest text-primary mb-3">How it works</p>
-            <h2 className="text-3xl md:text-5xl font-bold text-foreground">
+      <section className='py-28 px-6'>
+        <div className='max-w-3xl mx-auto'>
+          <div className='text-center mb-16'>
+            <p className='text-xs uppercase tracking-widest text-primary mb-3'>How it works</p>
+            <h2 className='text-3xl md:text-5xl font-bold text-foreground'>
               Three steps to clarity
             </h2>
           </div>
@@ -303,27 +250,27 @@ export default function Home() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-28 px-6 text-center relative overflow-hidden border-t border-border">
-        <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/6 blur-[100px]" aria-hidden />
-        <div className="relative z-10 max-w-2xl mx-auto">
-          <h2 className="text-3xl md:text-5xl font-bold text-foreground">
+      <section className='py-28 px-6 text-center relative overflow-hidden border-t border-border'>
+        <div className='pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/6 blur-[100px]' aria-hidden />
+        <div className='relative z-10 max-w-2xl mx-auto'>
+          <h2 className='text-3xl md:text-5xl font-bold text-foreground'>
             Ready to understand your code?
           </h2>
-          <p className="mt-5 text-muted-foreground text-lg">
+          <p className='mt-5 text-muted-foreground text-lg'>
             No setup. No credit card. Just paste your code and go.
           </p>
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" asChild className="glow-primary px-10 text-base">
-              <Link href="/sign-up">
+          <div className='mt-10 flex flex-col sm:flex-row items-center justify-center gap-4'>
+            <Button size='lg' asChild className='glow-primary px-10 text-base'>
+              <Link href='/sign-up'>
                 Start for free
-                <ArrowRight className="ml-2 w-4 h-4" />
+                <ArrowRight className='ml-2 w-4 h-4' />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild className="text-base">
-              <Link href="/pricing">See pricing</Link>
+            <Button size='lg' variant='outline' asChild className='text-base'>
+              <Link href='/pricing'>See pricing</Link>
             </Button>
           </div>
-          <p className="mt-5 text-xs text-muted-foreground/50">
+          <p className='mt-5 text-xs text-muted-foreground/50'>
             Free plan &nbsp;&middot;&nbsp; No credit card &nbsp;&middot;&nbsp; Cancel anytime
           </p>
         </div>

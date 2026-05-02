@@ -19,6 +19,7 @@ export default function NavbarMarketing() {
     setOpenNav(prev => !prev)
   }
 
+
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 768px)')
     const handleResize = () => { if (mq.matches) setOpenNav(false) }
@@ -32,6 +33,18 @@ export default function NavbarMarketing() {
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    if (openNav) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [openNav])
 
   return (
     <>
@@ -54,7 +67,7 @@ export default function NavbarMarketing() {
             <Link
               key={label}
               href={href}
-              onClick={toggleNav}
+              onClick={() => setOpenNav(false)}
               className={`text-sm transition-colors ${
                 pathname === href
                   ? 'text-foreground font-medium'
@@ -65,10 +78,10 @@ export default function NavbarMarketing() {
             </Link>
           ))}
           <Button asChild variant='ghost' size='sm'>
-            <Link href='/sign-in' onClick={toggleNav}>Sign in</Link>
+            <Link href='/sign-in' onClick={() => setOpenNav(false)}>Sign in</Link>
           </Button>
           <Button asChild size='sm'>
-            <Link href='/sign-up' onClick={toggleNav}>Get started</Link>
+            <Link href='/sign-up' onClick={() => setOpenNav(false)}>Get started</Link>
           </Button>
         </div>
 
@@ -98,7 +111,7 @@ export default function NavbarMarketing() {
               <Link
                 key={label}
                 href={href}
-                onClick={toggleNav}
+                onClick={() => setOpenNav(false)}
                 className={`text-xl font-medium transition-colors ${
                   pathname === href
                     ? 'text-foreground'
@@ -111,10 +124,10 @@ export default function NavbarMarketing() {
 
             <div className='flex flex-col gap-3 mt-4 w-full max-w-xs'>
               <Button asChild variant='outline' size='lg' className='w-full'>
-                <Link href='/sign-in' onClick={toggleNav}>Sign in</Link>
+                <Link href='/sign-in' onClick={() => setOpenNav(false)}>Sign in</Link>
               </Button>
               <Button asChild size='lg' className='w-full'>
-                <Link href='/sign-up' onClick={toggleNav}>Get started</Link>
+                <Link href='/sign-up' onClick={() => setOpenNav(false)}>Get started</Link>
               </Button>
             </div>
           </nav>
