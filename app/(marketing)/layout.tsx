@@ -1,5 +1,4 @@
 import NavbarMarketing from '@/components/pages-components/MarketingNavbar'
-import Footer from '@/components/pages-components/Footer'
 
 export default function MarketingLayout({ children }: {
     children: React.ReactNode
@@ -10,7 +9,6 @@ export default function MarketingLayout({ children }: {
             <main>
                 {children}
             </main>
-            <Footer />
         </>
     )
 }

@@ -101,7 +101,7 @@ export default function UniversalSidebar({
                   className={`group/row relative flex items-center justify-between rounded-md px-2 py-2 cursor-pointer transition-colors hover:bg-muted
                     ${
                       activeConversationId === convo.id
-                        ? 'bg-accent text-foreground border-l-2 border-primary pl-[6px]'
+                        ? 'bg-accent text-foreground border-l-2 border-primary pl-1.5'
                         : 'text-muted-foreground border-l-2 border-transparent'
                     }`}
                   onClick={() => onSelectConversation(convo.id)}

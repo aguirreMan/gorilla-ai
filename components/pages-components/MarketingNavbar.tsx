@@ -2,111 +2,124 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { IoMdClose } from 'react-icons/io'
-import { GiHamburgerMenu } from 'react-icons/gi'
+import { usePathname } from 'next/navigation'
+import { Menu, X } from 'lucide-react'
 import { Button } from '../ui/button'
 
+const navLinks = [
+  { label: 'Pricing', href: '/pricing' },
+]
+
 export default function NavbarMarketing() {
-    const [openNav, setOpenNav] = useState(false)
+  const [openNav, setOpenNav] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const pathname = usePathname()
 
-    function toggleNav() {
-      setOpenNav(!openNav)
-    }
+  function toggleNav() {
+    setOpenNav(prev => !prev)
+  }
 
-    useEffect(() => {
-      const mediaQuery = window.matchMedia('(min-width: 768px)')
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)')
+    const handleResize = () => { if (mq.matches) setOpenNav(false) }
+    mq.addEventListener('change', handleResize)
+    return () => mq.removeEventListener('change', handleResize)
+  }, [])
 
-      function resizeNavigationOnBreakPoint() {
-        if (mediaQuery.matches) {
-          setOpenNav(false)
-        }
-      }
-      mediaQuery.addEventListener('change', resizeNavigationOnBreakPoint)
+  // Scroll background
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
-      return () => {
-        mediaQuery.removeEventListener('change', resizeNavigationOnBreakPoint)
-      }
-    }, [])
+  return (
+    <>
+      <nav className={`fixed w-full top-0 left-0 z-50 px-6 flex items-center justify-between transition-all duration-300 ${
+        scrolled
+          ? 'bg-background/80 backdrop-blur-md border-b border-border py-4'
+          : 'bg-transparent pt-8 pb-4'
+      }`}>
 
-    return (
-        <>
-            <nav className='fixed w-full pt-8 top-0 left-0 flex items-center justify-between bg-transparent z-50 px-6'>
-                <Link href='/'>
-                    <h2 className='text-3xl cursor-pointer font-semibold tracking-tight text-foreground'>
-                        Gorilla Ai
-                    </h2>
-                </Link>
+        {/* Logo */}
+        <Link href='/'>
+          <span className='text-2xl font-semibold tracking-tight text-accent cursor-pointer'>
+            Gorilla AI
+          </span>
+        </Link>
 
-                {/* Desktop Navigation */}
-                <ul className='hidden md:flex absolute left-1/2 -translate-x-1/2 flex-row gap-6 items-center'>
-                    <Link href='/featured'>
-                        <li className='cursor-pointer text-md text-muted-foreground hover:text-foreground transition'>Featured</li>
-                    </Link>
-                    <Link href='/pricing'>
-                        <li className='cursor-pointer text-md text-muted-foreground hover:text-foreground transition'>Pricing</li>
-                    </Link>
-                    <Link href='/about'>
-                        <li className='cursor-pointer text-md text-muted-foreground hover:text-foreground transition'>About</li>
-                    </Link>
-                    <Link href='/contact'>
-                        <li className='cursor-pointer text-md text-muted-foreground hover:text-foreground transition'>Contact</li>
-                    </Link>
+        {/* Desktop nav */}
+        <div className='hidden md:flex items-center gap-6'>
+          {navLinks.map(({ label, href }) => (
+            <Link
+              key={label}
+              href={href}
+              onClick={toggleNav}
+              className={`text-sm transition-colors ${
+                pathname === href
+                  ? 'text-foreground font-medium'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
+          <Button asChild variant='ghost' size='sm'>
+            <Link href='/sign-in' onClick={toggleNav}>Sign in</Link>
+          </Button>
+          <Button asChild size='sm'>
+            <Link href='/sign-up' onClick={toggleNav}>Get started</Link>
+          </Button>
+        </div>
 
+        {/* Hamburger */}
+        <button
+          className='md:hidden z-50 text-muted-foreground hover:text-foreground transition-colors'
+          onClick={toggleNav}
+          aria-label='Toggle navigation'
+        >
+          {openNav ? <X size={26} /> : <Menu size={26} />}
+        </button>
+      </nav>
 
-                    <Button asChild size='sm'>
-                        <Link href='/sign-in'>Launch App</Link>
-                    </Button>
-                </ul>
+      {/* Mobile overlay */}
+      {openNav && (
+        <div
+          className='fixed inset-0 w-full h-full bg-background/95 backdrop-blur-sm z-40 flex flex-col justify-center items-center gap-8'
+          onClick={toggleNav}
+        >
+          <span className='text-xl font-semibold text-foreground'>Gorilla AI</span>
 
-                {/* Hamburger Button */}
-                <div className='md:hidden cursor-pointer z-50' onClick={toggleNav}>
-                    {openNav ? <IoMdClose size={28} className='text-muted-foreground' /> : <GiHamburgerMenu size={28} className='text-muted-foreground' />}
-                </div>
-            </nav>
+          <nav
+            className='flex flex-col gap-6 items-center'
+            onClick={e => e.stopPropagation()}
+          >
+            {navLinks.map(({ label, href }) => (
+              <Link
+                key={label}
+                href={href}
+                onClick={toggleNav}
+                className={`text-xl font-medium transition-colors ${
+                  pathname === href
+                    ? 'text-foreground'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {label}
+              </Link>
+            ))}
 
-            {/* Mobile Menu */}
-            {openNav && (
-                <div
-                    className='fixed inset-0 w-full h-full bg-background/95 backdrop-blur-sm z-40 flex justify-center items-center'
-                    onClick={toggleNav}
-                >
-                    <nav
-                        className='flex flex-col gap-6 items-center'
-                        onClick={(event) => event.stopPropagation()}
-                    >
-                        <Link href='/featured' onClick={toggleNav}>
-                            <span className='cursor-pointer text-muted-foreground hover:text-foreground font-medium transition text-xl'>
-                                Featured
-                            </span>
-                        </Link>
-                        <Link href='/pricing' onClick={toggleNav}>
-                            <span className='cursor-pointer text-muted-foreground hover:text-foreground font-medium transition text-xl'>
-                                Pricing
-                            </span>
-                        </Link>
-                        <Link href='/research' onClick={toggleNav}>
-                            <span className='cursor-pointer text-muted-foreground hover:text-foreground font-medium transition text-xl'>
-                                Research
-                            </span>
-                        </Link>
-                        <Link href='/contact' onClick={toggleNav}>
-                            <span className='cursor-pointer text-muted-foreground hover:text-foreground font-medium transition text-xl'>
-                                Contact
-                            </span>
-                        </Link>
-
-                        <div className='flex flex-col gap-3 mt-4 w-full max-w-xs'>
-                            <Button asChild variant='outline' size='lg' className='w-full'>
-                                <Link href='/sign-in' onClick={toggleNav}>Sign In</Link>
-                            </Button>
-
-                            <Button asChild size='lg' className='w-full'>
-                                <Link href='/sign-up' onClick={toggleNav}>Get Started</Link>
-                            </Button>
-                        </div>
-                    </nav>
-                </div>
-            )}
-        </>
-    )
+            <div className='flex flex-col gap-3 mt-4 w-full max-w-xs'>
+              <Button asChild variant='outline' size='lg' className='w-full'>
+                <Link href='/sign-in' onClick={toggleNav}>Sign in</Link>
+              </Button>
+              <Button asChild size='lg' className='w-full'>
+                <Link href='/sign-up' onClick={toggleNav}>Get started</Link>
+              </Button>
+            </div>
+          </nav>
+        </div>
+      )}
+    </>
+  )
 }
