@@ -1,4 +1,5 @@
 'use client'
+
 import { useEffect, useRef } from 'react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Message } from '../../types/chatTypes'
@@ -8,15 +9,15 @@ import CodeBlock from './Codeblock'
 
 interface MessageBoxProps {
   messages: Message[]
-  isLoading?: boolean
+  isStreaming: boolean
 }
 
-export default function MessageBox({ messages, isLoading }: MessageBoxProps) {
+export default function MessageBox({ messages, isStreaming }: MessageBoxProps) {
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'auto', block: 'end' })
-  }, [messages, isLoading])
+  }, [messages, isStreaming])
 
   if (messages.length === 0) {
     return (
@@ -115,7 +116,7 @@ export default function MessageBox({ messages, isLoading }: MessageBoxProps) {
         ))}
 
         {/* Loading indicator */}
-        {isLoading && (
+        {isStreaming && (
           <div className='flex gap-3 flex-row'>
             <Avatar className='h-8 w-8 shrink-0'>
               <AvatarFallback className='text-xs font-semibold text-foreground bg-secondary'>

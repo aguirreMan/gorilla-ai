@@ -8,19 +8,19 @@ import { cn } from '@/lib/utils'
 
 interface UniversalChatProps {
   onSend?: (message: string) => void
-  isLoading?: boolean
+  isStreaming?: boolean
   placeholder?: string
 }
 
 export default function UniversalChat({
   onSend,
-  isLoading = false,
+  isStreaming = false,
   placeholder = 'What are we building today?',
 }: UniversalChatProps) {
   const [userInput, setUserInput] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const canSend = userInput.trim().length > 0 && !isLoading
+  const canSend = userInput.trim().length > 0 && !isStreaming
 
   function handleSend() {
     if (!canSend) return
@@ -60,7 +60,7 @@ export default function UniversalChat({
         }}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        disabled={isLoading}
+        disabled={isStreaming}
         className={cn(
           'resize-none max-h-48 overflow-y-auto w-full',
           'bg-transparent border-none shadow-none',
@@ -77,7 +77,7 @@ export default function UniversalChat({
       <div className='flex items-center justify-between px-7 pb-3 pt-1'>
         {/* Left — hint */}
         <span className='text-xs text-muted-foreground select-none pl-1'>
-          {isLoading ? 'Generating…' : 'Shift + Enter for new line'}
+          {isStreaming ? 'Generating…' : 'Shift + Enter for new line'}
         </span>
 
         {/* Right — send / stop button */}
@@ -85,15 +85,15 @@ export default function UniversalChat({
           size='icon-sm'
           onClick={handleSend}
           disabled={!canSend}
-          aria-label={isLoading ? 'Stop generation' : 'Send message'}
+          aria-label={isStreaming ? 'Stop generation' : 'Send message'}
           className={cn(
             'rounded-lg transition-all duration-150',
             canSend
-              ? 'bg-primary text-primary-foreground hover:bg-(--primary)/85'
+              ? 'bg-primary text-primary-foreground hover:bg-primary/85'
               : 'bg-muted text-muted-foreground cursor-not-allowed',
           )}
         >
-          {isLoading ? (
+          {isStreaming ? (
             <Square className='size-3.5 fill-current' />
           ) : (
             <ArrowUp className='size-4'  strokeWidth={2.5} />

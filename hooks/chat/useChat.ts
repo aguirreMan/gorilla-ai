@@ -1,4 +1,4 @@
-import { useReducer, useCallback, useEffect } from 'react'
+import { useState, useReducer, useCallback, useEffect } from 'react'
 import { chatReducer } from '@/lib/chat/chatReducer'
 import { Conversation, StreamingResponse, Message} from '@/types/chatTypes'
 
@@ -10,6 +10,7 @@ export function useChat() {
     isLoading: false,
   })
 
+  const [isStreaming, setStreaming] = useState(false)
 
   const activeMessages = state.selectedChat
     ? state.conversationStore[state.selectedChat] ?? []
@@ -73,7 +74,7 @@ export function useChat() {
   }, [])
 
   async function userSendsMessage(message: string) {
-    if(state.isLoading ) return
+    if(isStreaming) return
     let conversationId = state.selectedChat
 
     if (!conversationId) {
@@ -84,6 +85,7 @@ export function useChat() {
       }
       dispatch({ type: 'NEW_CHAT', payload: generateNewChat })
       conversationId = generateNewChat.id
+
     }
 
     const currentMessages = state.conversationStore[conversationId] ?? []
@@ -94,7 +96,8 @@ export function useChat() {
 
     // assistant message
     dispatch({ type: 'ADD_ASSISTANT_MESSAGE', payload: { id: conversationId } })
-    dispatch({ type: 'SET_LOADING', payload: true })
+
+    setStreaming(true)
 
     try {
       const response = await fetch('/api/openrouter', {
@@ -145,7 +148,7 @@ export function useChat() {
         payload: { id: conversationId, error: error instanceof Error ? error.message : String(error) }
       })
     } finally {
-      dispatch({ type: 'SET_LOADING', payload: false })
+      setStreaming(false)
     }
   }
 
@@ -158,5 +161,6 @@ export function useChat() {
     selectCurrentChat,
     deleteChat,
     sendMessage: userSendsMessage,
+    isStreaming
   }
 }
