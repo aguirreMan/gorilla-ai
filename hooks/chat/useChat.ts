@@ -1,4 +1,4 @@
-import { useState, useReducer, useCallback, useEffect } from 'react'
+import { useState, useReducer, useCallback, useEffect, useRef } from 'react'
 import { chatReducer } from '@/lib/chat/chatReducer'
 import { Conversation, StreamingResponse, Message} from '@/types/chatTypes'
 
@@ -11,6 +11,7 @@ export function useChat() {
   })
 
   const [isStreaming, setStreaming] = useState(false)
+  const abortController = useRef<AbortController | null>(null)
 
   const activeMessages = state.selectedChat
     ? state.conversationStore[state.selectedChat] ?? []
@@ -28,14 +29,18 @@ export function useChat() {
   const selectCurrentChat = useCallback(async(chatId: string) => {
     dispatch({ type: 'SELECT_CHAT', payload: chatId })
 
-    if(chatId in state.conversationStore) return
+    if (chatId in state.conversationStore) return
+
+    if (abortController.current) abortController.current.abort()
+    abortController.current = new AbortController()
 
     dispatch({ type: 'SET_LOADING', payload: true })
     try {
-      const response = await fetch(`/api/conversations/${chatId}/messages`)
+      const response = await fetch(`/api/conversations/${chatId}/messages`, { signal: abortController.current.signal })
       const data: { messages: Message[] } = await response.json()
       dispatch({ type: 'LOAD_MESSAGES', payload: { id: chatId, messages: data.messages } })
     } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') return
       console.error('Failed to load messages', error)
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false })
