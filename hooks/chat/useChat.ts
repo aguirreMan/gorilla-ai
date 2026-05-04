@@ -19,7 +19,7 @@ export function useChat() {
 
   const createNewChat = useCallback(() => {
     const newChat: Conversation = {
-      id: crypto.randomUUID().toString(),
+      id: crypto.randomUUID(),
       title: 'New Chat',
       created_at: new Date().toISOString()
     }
@@ -104,9 +104,14 @@ export function useChat() {
 
     setStreaming(true)
 
+    if(abortController.current) abortController.current.abort()
+    abortController.current = new AbortController()
+    const abortSignal = abortController.current.signal
+
     try {
       const response = await fetch('/api/openrouter', {
         method: 'POST',
+        signal: abortSignal,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(
           { model: 'anthropic/claude-sonnet-4-5', messages: updateMessages, conversationId: conversationId }),
@@ -125,9 +130,15 @@ export function useChat() {
         const messageResult = await reader?.read()
         done = messageResult?.done ?? true
 
+        if (abortSignal.aborted) {
+          await reader.cancel()
+          return
+        }
+
         buffer += decoder.decode(messageResult?.value ?? new Uint8Array(), { stream: true })
         const lines = buffer.split('\n')
         buffer = lines.pop() || ''
+
 
         for (const line of lines) {
           if(line.startsWith('data:')) {
@@ -136,8 +147,9 @@ export function useChat() {
               done = true
               break
             }
+
             const parsedMessage: StreamingResponse = JSON.parse(json)
-            const content = parsedMessage.content
+          const content = parsedMessage.content
 
             if (content) {
              dispatch({ type: 'STREAM_MESSAGE', payload: { id: conversationId, content } })
@@ -147,15 +159,30 @@ export function useChat() {
       }
 
     } catch (error) {
-      console.error(error)
+      if (error instanceof Error && error.name === 'AbortError') {
+        return
+      }
       dispatch({
         type: 'SET_LAST_ERROR_MESSAGE',
         payload: { id: conversationId, error: error instanceof Error ? error.message : String(error) }
       })
     } finally {
-      setStreaming(false)
+      setStreaming(false) // This will be overridden by stopStreaming if aborted
     }
   }
+
+  const stopStreaming = useCallback(() => {
+    abortController.current?.abort()
+    setStreaming(false)
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (abortController.current) {
+        abortController.current.abort()
+      }
+    }
+  }, [])
 
   return {
     conversations: state.conversations,
@@ -166,6 +193,7 @@ export function useChat() {
     selectCurrentChat,
     deleteChat,
     sendMessage: userSendsMessage,
-    isStreaming
+    isStreaming,
+    stopStreaming
   }
 }
