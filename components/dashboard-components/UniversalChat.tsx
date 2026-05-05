@@ -1,34 +1,28 @@
 'use client'
-
 import { useRef, useState, KeyboardEvent } from 'react'
 import { ArrowUp, Square } from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { useChat } from '@/hooks/chat/useChat'
 
 interface UniversalChatProps {
   onSend?: (message: string) => void
   isStreaming?: boolean
   placeholder?: string
+  stopStreaming?: () => void
 }
 
-export default function UniversalChat({ onSend, placeholder = 'What are we building today?',}: UniversalChatProps) {
+export default function UniversalChat({
+  onSend,
+  placeholder = 'What are we learning or building today?',
+  isStreaming = false,
+  stopStreaming
+}: UniversalChatProps) {
   const [userInput, setUserInput] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const canSend = userInput.trim().length > 0
 
-  const { stopStreaming, isStreaming } = useChat()
-
-
-  const canSend = userInput.trim().length > 0 && !isStreaming
-  const showStopButton = isStreaming
-
-  function handleSend() {
-    if(showStopButton) {
-      stopStreaming()
-      return
-    }
-    if (!canSend) return
+  function sendToOpenRouter() {
     onSend?.(userInput.trim())
     setUserInput('')
     if (textareaRef.current) {
@@ -37,26 +31,29 @@ export default function UniversalChat({ onSend, placeholder = 'What are we build
     textareaRef.current?.focus()
   }
 
+  function handleAction() {
+    if (isStreaming) {
+      stopStreaming?.()
+    } else {
+      if (canSend) sendToOpenRouter()
+    }
+  }
+
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
-      if (!isStreaming) {
-        handleSend()
-      }
+      if (!isStreaming) sendToOpenRouter()
     }
   }
 
   return (
-    <div
-      className={cn(
-        'relative flex flex-col gap-0 w-full max-w-3xl mx-auto',
-        'rounded-xl border',
-        'shadow-[0_4px_32px_rgba(0,0,0,0.45)]',
-        'transition-shadow duration-200',
-        'focus-within:shadow-[0_4px_40px_rgba(77,123,147,0.18)]',
-      )}
-    >
-      {/* Textarea */}
+    <div className={cn(
+      'relative flex flex-col gap-0 w-full max-w-3xl mx-auto',
+      'rounded-xl border',
+      'shadow-[0_4px_32px_rgba(0,0,0,0.45)]',
+      'transition-shadow duration-200',
+      'focus-within:shadow-[0_4px_40px_rgba(77,123,147,0.18)]',
+    )}>
       <Textarea
         ref={textareaRef}
         value={userInput}
@@ -73,37 +70,31 @@ export default function UniversalChat({ onSend, placeholder = 'What are we build
           'bg-transparent border-none shadow-none',
           'rounded-xl rounded-b-none',
           'px-4 pt-4 pb-4',
-          'text-foreground',
-          'text-sm leading-relaxed',
+          'text-foreground text-sm leading-relaxed',
           'focus-visible:ring-0 focus-visible:border-none',
           'disabled:opacity-60',
         )}
       />
-
-      {/* Toolbar */}
       <div className='flex items-center justify-between px-7 pb-3 pt-1'>
-        {/* Left — hint */}
         <span className='text-xs text-muted-foreground select-none pl-1'>
           {isStreaming ? 'Generating…' : 'Shift + Enter for new line'}
         </span>
-
-        {/* Right — send / stop button */}
         <Button
           size='icon-sm'
-          onClick={handleSend}
-          disabled={!canSend}
+          onClick={handleAction}
+          disabled={!isStreaming && !canSend}
           aria-label={isStreaming ? 'Stop generation' : 'Send message'}
           className={cn(
             'rounded-lg transition-all duration-150',
-            canSend
-              ? 'bg-primary text-primary-foreground hover:bg-primary/85'
+            (canSend || isStreaming)
+              ? 'bg-primary text-primary-foreground hover:bg-primary/85 cursor-pointer'
               : 'bg-muted text-muted-foreground cursor-not-allowed',
           )}
         >
           {isStreaming ? (
-            <Square  className='size-3.5 fill-current' />
+            <Square className='size-3.5 fill-current' />
           ) : (
-            <ArrowUp className='size-4'  strokeWidth={2.5} />
+            <ArrowUp className='size-4' strokeWidth={2.5} />
           )}
         </Button>
       </div>

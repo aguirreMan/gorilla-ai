@@ -19,7 +19,8 @@ export default function DashboardPage() {
     selectCurrentChat,
     deleteChat,
     sendMessage,
-    isStreaming } = useChat()
+    isStreaming,
+    stopStreaming } = useChat()
 
   if (!isLoaded) return <DashboardSkeleton />
   if (!isSignedIn) return null
@@ -39,7 +40,7 @@ export default function DashboardPage() {
       <div className='flex flex-col flex-1 min-h-0'>
         <MessageBox messages={messages} isStreaming={isStreaming} isLoadingMessages={isLoadingMessages} />
           <div className='px-4 py-3 border-t bg-background sticky bottom-0'>
-            <UniversalChat onSend={sendMessage} isStreaming={isStreaming} />
+            <UniversalChat onSend={sendMessage} isStreaming={isStreaming} stopStreaming={stopStreaming} />
           </div>
       </div>
     </div>
