@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import ChatSkeleton from './ChatSkeleton'
 import { Message } from '../../types/chatTypes'
 import { cn } from '@/lib/utils'
 import ReactMarkdown from 'react-markdown'
@@ -10,14 +11,19 @@ import CodeBlock from './Codeblock'
 interface MessageBoxProps {
   messages: Message[]
   isStreaming: boolean
+  isLoadingMessages: boolean
 }
 
-export default function MessageBox({ messages, isStreaming }: MessageBoxProps) {
+export default function MessageBox({ messages, isStreaming, isLoadingMessages }: MessageBoxProps) {
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'auto', block: 'end' })
   }, [messages, isStreaming])
+
+  if (isLoadingMessages) {
+    return <ChatSkeleton />
+  }
 
   if (messages.length === 0) {
     return (
@@ -50,11 +56,7 @@ export default function MessageBox({ messages, isStreaming }: MessageBoxProps) {
       return <div className='mb-4 last:mb-0'>{children}</div>
     },
 
-    code({
-      inline,
-      className,
-      children,
-    }: {
+    code({inline, className, children}: {
       inline?: boolean
       className?: string
       children?: React.ReactNode

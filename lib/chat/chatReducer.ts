@@ -9,7 +9,8 @@ export type ChatActions =
  | { type: 'REMOVE_LAST_MESSAGE'; payload: { id: string } }
  | { type: 'SET_LAST_ERROR_MESSAGE'; payload: { id: string;  error: string} }
  | { type: 'STREAM_MESSAGE'; payload: { id: string; content: string } }
- | { type: 'SET_LOADING'; payload: boolean }
+ | { type: 'SET_LOADING_CONVERSATIONS'; payload: boolean }
+ | { type: 'SET_LOADING_MESSAGES'; payload: boolean }
  | { type: 'LOAD_CONVERSATIONS'; payload: Conversation[] }
  | { type: 'LOAD_MESSAGES'; payload: { id: string; messages: Message[] } }
 
@@ -42,7 +43,7 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
       }
     }
 
-    case 'DELETE_CHAT':{
+    case 'DELETE_CHAT': {
       const newStore = { ...state.conversationStore }
       delete newStore[action.payload]
       return {
@@ -82,7 +83,7 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
           ...state.conversationStore,
           [action.payload.id]: [
             ...(state.conversationStore[action.payload.id] ?? []),
-            {role: 'assistant', content: ''}
+            { role: 'assistant', content: '' }
           ],
         },
       }
@@ -109,16 +110,16 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
       const convo = state.conversationStore[action.payload.id] ?? []
       const last = convo[convo.length - 1]
       if (!last || last.role !== 'assistant') return state
-        return {
-          ...state,
-          conversationStore: {
-            ...state.conversationStore,
-            [action.payload.id]: [
-              ...convo.slice(0, -1),
-              { ...last, content: last.content + action.payload.content },
-            ],
-          },
-        }
+      return {
+        ...state,
+        conversationStore: {
+          ...state.conversationStore,
+          [action.payload.id]: [
+            ...convo.slice(0, -1),
+            { ...last, content: last.content + action.payload.content },
+          ],
+        },
+      }
     }
 
     case 'LOAD_CONVERSATIONS': {
@@ -136,11 +137,10 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
         },
       }
     }
-    case 'SET_LOADING':
-      return {
-        ...state,
-        isLoading: action.payload,
-      }
+    case 'SET_LOADING_CONVERSATIONS':
+      return { ...state, isLoadingConversations: action.payload }
+    case 'SET_LOADING_MESSAGES':
+      return { ...state, isLoadingMessages: action.payload }
     default:
       return state
   }

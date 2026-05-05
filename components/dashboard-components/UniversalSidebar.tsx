@@ -1,4 +1,5 @@
 'use client'
+import { SidebarSkeleton } from '@/components/dashboard-components/SidebarSkeleton'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -82,11 +83,7 @@ export default function UniversalSidebar({
 
       {/* Conversation list */}
       {isLoading ? (
-        <div className='space-y-1 px-2 py-2'>
-          {[...Array(4)].map((_, index) => (
-            <Skeleton key={index} className='h-8 w-full rounded-md' />
-          ))}
-        </div>
+        <SidebarSkeleton />
       ) : (
         <div className='flex-1 overflow-hidden px-2 py-2'>
           {conversations.length === 0 ? (

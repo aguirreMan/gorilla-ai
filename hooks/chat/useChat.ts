@@ -7,11 +7,17 @@ export function useChat() {
     conversations: [],
     conversationStore: {},
     selectedChat: null,
-    isLoading: false,
+    isLoadingConversations: false,
+    isLoadingMessages: false,
   })
 
   const [isStreaming, setStreaming] = useState(false)
   const abortController = useRef<AbortController | null>(null)
+  const conversationStoreRef = useRef(state.conversationStore)
+
+  useEffect(() => {
+    conversationStoreRef.current = state.conversationStore
+  }, [state.conversationStore])
 
   const activeMessages = state.selectedChat
     ? state.conversationStore[state.selectedChat] ?? []
@@ -34,7 +40,7 @@ export function useChat() {
     if (abortController.current) abortController.current.abort()
     abortController.current = new AbortController()
 
-    dispatch({ type: 'SET_LOADING', payload: true })
+    dispatch({ type: 'SET_LOADING_MESSAGES', payload: true })
     try {
       const response = await fetch(`/api/conversations/${chatId}/messages`, { signal: abortController.current.signal })
       const data: { messages: Message[] } = await response.json()
@@ -43,7 +49,7 @@ export function useChat() {
       if (error instanceof Error && error.name === 'AbortError') return
       console.error('Failed to load messages', error)
     } finally {
-      dispatch({ type: 'SET_LOADING', payload: false })
+      dispatch({ type: 'SET_LOADING_MESSAGES', payload: false })
     }
   }, [state.conversationStore])
 
@@ -58,25 +64,26 @@ export function useChat() {
   }, [])
 
   useEffect(() => {
-    async function loadConversations() {
-       dispatch({ type: 'SET_LOADING', payload: true })
-      try {
-        const response = await fetch('/api/conversations')
-        const data: { conversations: Conversation[] } = await response.json()
-        dispatch({ type: 'LOAD_CONVERSATIONS', payload: data.conversations })
-        if (data.conversations.length > 0) {
-          const getFirstChatID = data.conversations[0].id
-          selectCurrentChat(getFirstChatID)
-        }
+     async function loadConversations() {
+        dispatch({ type: 'SET_LOADING_CONVERSATIONS', payload: true })
+       try {
+         const response = await fetch('/api/conversations')
+         const data: { conversations: Conversation[] } = await response.json()
+         dispatch({ type: 'LOAD_CONVERSATIONS', payload: data.conversations })
+         if (data.conversations.length > 0) {
+           const getFirstChatID = data.conversations[0].id
+           selectCurrentChat(getFirstChatID)
+         }
 
-      } catch (error) {
-        console.error('Failed to load your conversations', error)
-      } finally {
-        dispatch({ type: 'SET_LOADING', payload: false })
-      }
-    }
-    loadConversations()
-  }, [])
+       } catch (error) {
+         console.error('Failed to load your conversations', error)
+       } finally {
+         dispatch({ type: 'SET_LOADING_CONVERSATIONS', payload: false })
+       }
+     }
+     loadConversations()
+   }, [])
+
 
   async function userSendsMessage(message: string) {
     if(isStreaming) return
@@ -159,13 +166,14 @@ export function useChat() {
       }
 
     } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        return
-      }
-      dispatch({
-        type: 'SET_LAST_ERROR_MESSAGE',
-        payload: { id: conversationId, error: error instanceof Error ? error.message : String(error) }
-      })
+     if(error instanceof Error && error.name === 'AbortError') {
+       const messageHistory = conversationStoreRef.current[conversationId] ?? []
+       const lastMessage = messageHistory[messageHistory.length - 1]
+
+       if (lastMessage?.role === 'assistant' && !lastMessage.content) {
+         dispatch({ type: 'REMOVE_LAST_MESSAGE', payload: { id: conversationId } })
+       }
+     }
     } finally {
       setStreaming(false) // This will be overridden by stopStreaming if aborted
     }
@@ -188,7 +196,8 @@ export function useChat() {
     conversations: state.conversations,
     selectedChat: state.selectedChat,
     messages: activeMessages,
-    isLoading: state.isLoading,
+    isLoadingConversations: state.isLoadingConversations,
+    isLoadingMessages: state.isLoadingMessages,
     createNewChat,
     selectCurrentChat,
     deleteChat,

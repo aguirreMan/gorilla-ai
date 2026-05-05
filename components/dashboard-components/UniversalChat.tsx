@@ -5,6 +5,7 @@ import { ArrowUp, Square } from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { useChat } from '@/hooks/chat/useChat'
 
 interface UniversalChatProps {
   onSend?: (message: string) => void
@@ -12,17 +13,21 @@ interface UniversalChatProps {
   placeholder?: string
 }
 
-export default function UniversalChat({
-  onSend,
-  isStreaming = false,
-  placeholder = 'What are we building today?',
-}: UniversalChatProps) {
+export default function UniversalChat({ onSend, placeholder = 'What are we building today?',}: UniversalChatProps) {
   const [userInput, setUserInput] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  const { stopStreaming, isStreaming } = useChat()
+
+
   const canSend = userInput.trim().length > 0 && !isStreaming
+  const showStopButton = isStreaming
 
   function handleSend() {
+    if(showStopButton) {
+      stopStreaming()
+      return
+    }
     if (!canSend) return
     onSend?.(userInput.trim())
     setUserInput('')
@@ -35,7 +40,9 @@ export default function UniversalChat({
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
-      handleSend()
+      if (!isStreaming) {
+        handleSend()
+      }
     }
   }
 
@@ -94,7 +101,7 @@ export default function UniversalChat({
           )}
         >
           {isStreaming ? (
-            <Square className='size-3.5 fill-current' />
+            <Square  className='size-3.5 fill-current' />
           ) : (
             <ArrowUp className='size-4'  strokeWidth={2.5} />
           )}

@@ -12,7 +12,8 @@ export default function DashboardPage() {
   const {
     conversations,
     messages,
-    isLoading: chatIsLoading,
+    isLoadingConversations,
+    isLoadingMessages,
     selectedChat,
     createNewChat,
     selectCurrentChat,
@@ -31,12 +32,12 @@ export default function DashboardPage() {
         onSelectConversation={selectCurrentChat}
         onNewChat={createNewChat}
         onDeleteConversation={deleteChat}
-        isLoading={chatIsLoading}
+        isLoading={isLoadingConversations}
       />
 
       {/* Main area */}
       <div className='flex flex-col flex-1 min-h-0'>
-        <MessageBox messages={messages} isStreaming={isStreaming} />
+        <MessageBox messages={messages} isStreaming={isStreaming} isLoadingMessages={isLoadingMessages} />
           <div className='px-4 py-3 border-t bg-background sticky bottom-0'>
             <UniversalChat onSend={sendMessage} isStreaming={isStreaming} />
           </div>
