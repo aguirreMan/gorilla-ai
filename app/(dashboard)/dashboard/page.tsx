@@ -1,4 +1,5 @@
 'use client'
+
 import { useUser } from '@clerk/nextjs'
 import UniversalChat from '@/components/dashboard-components/UniversalChat'
 import UniversalSidebar from '@/components/dashboard-components/UniversalSidebar'

@@ -7,6 +7,12 @@ import { Message } from '../../types/chatTypes'
 import { cn } from '@/lib/utils'
 import ReactMarkdown from 'react-markdown'
 import CodeBlock from './Codeblock'
+import dynamic from 'next/dynamic'
+const MermaidBlock = dynamic(() => import('./MermaidBlock'), {
+  ssr: false,
+  loading: () => <div className="h-32 animate-pulse bg-muted rounded-xl" />
+})
+import MermaidErrorBoundary from './MermaidErrorBoundary'
 
 interface MessageBoxProps {
   messages: Message[]
@@ -68,9 +74,16 @@ export default function MessageBox({ messages, isStreaming, isLoadingMessages }:
           </code>
         )
       }
+
       const match = /language-(\w+)/.exec(className || '')
-       const language = match ? match[1] : 'plaintext'
-       const code = String(children).replace(/\n$/, '')
+      const language = match ? match[1] : 'plaintext'
+      const code = String(children).replace(/\n$/, '')
+
+      if (language === 'mermaid') {
+        return <MermaidErrorBoundary>
+          <MermaidBlock chart={code} />
+        </MermaidErrorBoundary>
+      }
 
       return <CodeBlock language={language} code={code} />
     },
