@@ -73,8 +73,9 @@ export function useChat() {
         dispatch({ type: 'SET_LOADING_CONVERSATIONS', payload: true })
        try {
          const response = await fetch('/api/conversations')
+         if (!response.ok) throw new Error('Failed to load conversations')
          const data: { conversations: Conversation[] } = await response.json()
-         dispatch({ type: 'LOAD_CONVERSATIONS', payload: data.conversations })
+         dispatch({ type: 'LOAD_CONVERSATIONS', payload: data.conversations ?? [] })
        } catch (error) {
          console.error('Failed to load your conversations', error)
        } finally {

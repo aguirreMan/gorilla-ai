@@ -19,6 +19,9 @@ export type ChatActions =
 export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
   switch (action.type) {
     case 'NEW_CHAT':
+      const currentMessages = state.selectedChat ? state.conversationStore[state.selectedChat] : undefined
+      if (currentMessages && currentMessages.length === 0) return state
+
       return {
         ...state,
         conversations: [
