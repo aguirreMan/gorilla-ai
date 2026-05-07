@@ -1,4 +1,4 @@
-import { useEffect, useRef, useId } from 'react'
+import { useEffect, useRef } from 'react'
 import mermaid from 'mermaid'
 import { toast } from 'sonner'
 
@@ -12,35 +12,28 @@ mermaid.initialize({
 
 export default function MermaidBlock({ chart }: { chart: string }) {
   const mermaidRef = useRef<HTMLDivElement>(null)
-  //const mermaidFailureRef = useRef(false)
-
-  //const mermaidId = useId()
 
   useEffect(() => {
-    async function renderDiagram() {
-      if (!mermaidRef.current) return
+    const mermaidTimer = setTimeout(async () => {
       const validMermaid = await mermaid.parse(chart, { suppressErrors: true })
 
-      if (!validMermaid) return
+      if (!validMermaid || !mermaidRef.current) return
 
       try {
+        mermaidRef.current.removeAttribute('data-processed')
         mermaidRef.current.textContent = chart
 
-        await mermaid.run({
-          nodes: [mermaidRef.current],
-        })
-        console.log('Mermaid response', mermaidRef.current)
+        await mermaid.run({ nodes: [mermaidRef.current]})
       } catch (error) {
-        //mermaidFailureRef.current = true
         toast.error('Mermaid failed to render')
         console.error('Mermaid render failed:', error)
       }
-    }
 
-    renderDiagram()
+    }, 1000)
+    return () => clearTimeout(mermaidTimer)
   }, [chart])
 
   return (
-    <div ref={mermaidRef} />
+    <div className='w-full h-auto' ref={mermaidRef} />
   )
 }

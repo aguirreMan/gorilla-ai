@@ -11,6 +11,7 @@ export type ChatActions =
  | { type: 'STREAM_MESSAGE'; payload: { id: string; content: string } }
  | { type: 'SET_LOADING_CONVERSATIONS'; payload: boolean }
  | { type: 'SET_LOADING_MESSAGES'; payload: boolean }
+ | { type: 'DESELECT_CHAT' }
  | { type: 'LOAD_CONVERSATIONS'; payload: Conversation[] }
  | { type: 'LOAD_MESSAGES'; payload: { id: string; messages: Message[] } }
 
@@ -137,6 +138,8 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
         },
       }
     }
+    case 'DESELECT_CHAT':
+      return { ...state, selectedChat: null }
     case 'SET_LOADING_CONVERSATIONS':
       return { ...state, isLoadingConversations: action.payload }
     case 'SET_LOADING_MESSAGES':

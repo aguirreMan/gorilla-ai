@@ -1,6 +1,5 @@
 'use client'
 import { SidebarSkeleton } from '@/components/dashboard-components/SidebarSkeleton'
-import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { MessageSquare, Trash2, SquarePen } from 'lucide-react'
@@ -39,34 +38,36 @@ export default function UniversalSidebar({
 }: UniversalSidebarProps) {
 
   const { signOut } = useClerk()
-  const { user } = useUser()
+  const { user, isLoaded } = useUser()
 
   async function redirectSignOut() {
-     await signOut({ redirectUrl: '/' })
+    await signOut({ redirectUrl: '/' })
   }
-
 
   return (
     <div className='w-72 h-full flex flex-col bg-surface border-r border-border shrink-0'>
-      {/*use header */}
+      {/* User header */}
       <div className='flex items-center gap-3 px-3 py-3 shrink-0'>
         <Avatar className='h-7 w-7 shrink-0'>
-          <AvatarImage src={user?.imageUrl} alt={user?.fullName ?? undefined} />
+          {isLoaded && (
+            <AvatarImage src={user?.imageUrl} alt={user?.fullName ?? undefined} />
+          )}
           <AvatarFallback className='text-xs font-semibold bg-primary text-primary-foreground'>
-            {user?.firstName?.[0]?.toUpperCase() ?? 'U'}
+            {isLoaded ? (user?.firstName?.[0]?.toUpperCase() ?? 'U') : 'U'}
           </AvatarFallback>
         </Avatar>
         <div className='flex flex-col min-w-0'>
           <span className='text-sm font-semibold text-muted-foreground truncate'>
-            {user?.firstName}
+            {isLoaded ? user?.firstName : ''}
           </span>
           <span className='text-xs text-muted-foreground truncate'>
-                 {user?.primaryEmailAddress?.emailAddress}
+            {isLoaded ? user?.primaryEmailAddress?.emailAddress : ''}
           </span>
         </div>
-
       </div>
+
       <Separator />
+
       {/* Navigation links */}
       <div className='px-2 py-2 flex flex-col gap-0.5 shrink-0'>
         <Button
@@ -148,6 +149,7 @@ export default function UniversalSidebar({
           )}
         </div>
       )}
+
       <Separator />
 
       {/* Footer */}

@@ -63,6 +63,11 @@ export function useChat() {
     }
   }, [])
 
+  const deselectChat = useCallback(() => {
+    if(abortController.current) abortController.current.abort()
+    dispatch({ type: 'DESELECT_CHAT' })
+  }, [])
+
   useEffect(() => {
      async function loadConversations() {
         dispatch({ type: 'SET_LOADING_CONVERSATIONS', payload: true })
@@ -70,11 +75,6 @@ export function useChat() {
          const response = await fetch('/api/conversations')
          const data: { conversations: Conversation[] } = await response.json()
          dispatch({ type: 'LOAD_CONVERSATIONS', payload: data.conversations })
-         if (data.conversations.length > 0) {
-           const getFirstChatID = data.conversations[0].id
-           selectCurrentChat(getFirstChatID)
-         }
-
        } catch (error) {
          console.error('Failed to load your conversations', error)
        } finally {
@@ -203,6 +203,7 @@ export function useChat() {
     deleteChat,
     sendMessage: userSendsMessage,
     isStreaming,
-    stopStreaming
+    stopStreaming,
+    deselectChat,
   }
 }
