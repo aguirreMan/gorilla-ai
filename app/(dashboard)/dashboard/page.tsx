@@ -1,8 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import { useUser } from '@clerk/nextjs'
 import UniversalChat from '@/components/dashboard-components/UniversalChat'
-import UniversalSidebar from '@/components/dashboard-components/UniversalSidebar'
+import Sidebar from '@/components/dashboard-components/Sidebar'
 import MessageBox from '@/components/dashboard-components/MessageBox'
 import DashboardSkeleton from '@/components/dashboard-components/DashboardSkeleton'
 import { useChat } from '@/hooks/chat/useChat'
@@ -23,18 +24,26 @@ export default function DashboardPage() {
     isStreaming,
     stopStreaming } = useChat()
 
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+
   if (!isLoaded) return <DashboardSkeleton />
   if (!isSignedIn) return null
 
+
+
+
   return (
     <div className='flex h-[calc(100vh-4rem)]'>
-      <UniversalSidebar
+      <Sidebar
         conversations={conversations}
         activeConversationId={selectedChat}
         onSelectConversation={selectCurrentChat}
         onNewChat={createNewChat}
         onDeleteConversation={deleteChat}
         isLoading={isLoadingConversations}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
       />
 
       {/* Main area */}

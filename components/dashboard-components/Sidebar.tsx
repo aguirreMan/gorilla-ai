@@ -1,4 +1,5 @@
 'use client'
+
 import { SidebarSkeleton } from '@/components/dashboard-components/SidebarSkeleton'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -17,15 +18,18 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from '@/components/ui/alert-dialog'
+import { cn } from '@/lib/utils'
 
 
-interface UniversalSidebarProps {
+interface SidebarProps {
   conversations: Conversation[]
   activeConversationId: string | null
   onSelectConversation: (id: string) => void
   onNewChat: () => void
   onDeleteConversation?: (id: string) => void
   isLoading: boolean
+  isOpen: boolean
+  onClose: () => void
 }
 
 export default function UniversalSidebar({
@@ -34,8 +38,10 @@ export default function UniversalSidebar({
   onSelectConversation,
   onNewChat,
   onDeleteConversation,
-  isLoading
-}: UniversalSidebarProps) {
+  isLoading,
+  isOpen,
+  onClose
+}: SidebarProps) {
 
   const { signOut } = useClerk()
   const { user, isLoaded } = useUser()
@@ -44,9 +50,19 @@ export default function UniversalSidebar({
     await signOut({ redirectUrl: '/' })
   }
 
+  function handleConversationSelect(id: string) {
+    onSelectConversation(id)
+    onClose()
+  }
+
   return (
     <div className='w-72 h-full flex flex-col bg-surface border-r border-border shrink-0'>
       {/* User header */}
+      <div className={cn('fixed inset-y-0 left-0 z-50 w-72', isOpen ? 'translate-x-0' : '-translate-x-full')}>
+        <Button onClick={onClose}>
+          Close
+        </Button>
+      </div>
       <div className='flex items-center gap-3 px-3 py-3 shrink-0'>
         <Avatar className='h-7 w-7 shrink-0'>
           {isLoaded && (
@@ -102,7 +118,7 @@ export default function UniversalSidebar({
                         ? 'bg-accent text-foreground border-l-2 border-primary pl-1.5'
                         : 'text-muted-foreground border-l-2 border-transparent'
                     }`}
-                  onClick={() => onSelectConversation(convo.id)}
+                  onClick={() => handleConversationSelect(convo.id)}
                 >
                   <MessageSquare size={14} className="shrink-0 mr-2 opacity-60" />
                   <span className='text-sm truncate flex-1 min-w-0'>{convo.title}</span>
