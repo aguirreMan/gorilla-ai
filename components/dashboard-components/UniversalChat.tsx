@@ -75,7 +75,7 @@ export default function UniversalChat({
           'disabled:opacity-60',
         )}
       />
-      <div className='flex items-center justify-between px-7 pb-3 pt-1'>
+      <div className='flex items-center justify-between px-4 sm:px-7 pb-3 pt-1'>
         <span className='text-xs text-muted-foreground select-none pl-1'>
           {isStreaming ? 'Generating…' : 'Shift + Enter for new line'}
         </span>

@@ -3,7 +3,6 @@
 import Dashboardnav from '@/components/dashboard-components/Dashboardnav'
 import { ClerkProvider } from '@clerk/nextjs'
 import { ChatContextProvider } from '@/context/chatContext'
-
 import { Toaster } from 'sonner'
 
 export default function Dashboardlayout({children}: { children: React.ReactNode}) {
@@ -18,7 +17,7 @@ export default function Dashboardlayout({children}: { children: React.ReactNode}
           richColors
           closeButton
         />
-        <div className='flex flex-col min-h-screen bg-background'>
+        <div className='flex flex-col min-h-dvh bg-background'>
           <Dashboardnav />
             <main className='flex-1 pt-16'>
               {children}

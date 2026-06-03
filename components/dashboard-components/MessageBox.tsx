@@ -53,13 +53,13 @@ export default function MessageBox({ messages, isStreaming, isLoadingMessages }:
         const code = codeMatch[2].replace(/\n$/, '')
         return <CodeBlock key={i} language={language} code={code} />
       }
-      return <span key={i} className='whitespace-pre-wrap'>{part}</span>
+      return <span key={i} className='whitespace-pre-wrap break-words'>{part}</span>
     })
   }
 
   const chatComponents = {
     p({ children }: { children?: React.ReactNode }) {
-      return <div className='mb-4 last:mb-0'>{children}</div>
+      return <div className='mb-4 last:mb-0 break-words'>{children}</div>
     },
 
     code({inline, className, children}: {
@@ -90,15 +90,15 @@ export default function MessageBox({ messages, isStreaming, isLoadingMessages }:
   }
 
   return (
-    <div className='overflow-y-auto min-h-0 flex-1'>
-      <div className='max-w-4xl mx-auto space-y-6 pt-8'>
+    <div className='overflow-y-auto min-h-0 flex-1 w-full'>
+      <div className='max-w-4xl mx-auto space-y-6 pt-8 pb-4 px-3 md:px-6'>
         {messages.map((msg, index) => (
           <div
             key={index}
             className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
           >
             {/* Avatar */}
-            <Avatar className='h-8 w-8 shrink-0'>
+            <Avatar className='h-8 w-8 shrink-0 select-none'>
               <AvatarFallback
                 className={cn(
                   'text-xs font-semibold text-foreground',
@@ -112,7 +112,7 @@ export default function MessageBox({ messages, isStreaming, isLoadingMessages }:
             {/* Bubble */}
               <div
                 className={cn(
-                  'max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed border text-foreground',
+                  'min-w-0 max-w-[80%] md:max-w-[70%] overflow-hidden rounded-2xl px-4 py-3 text-sm leading-relaxed border text-foreground',
                   msg.role === 'user'
                     ? 'bg-accent rounded-tr-sm'
                     : 'bg-card rounded-tl-sm'

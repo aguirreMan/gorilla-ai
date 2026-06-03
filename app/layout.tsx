@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 
@@ -13,8 +13,14 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Gorilla AI - Your Creative AI Agent',
-  description: 'Generate stunning AI images with Gorilla',
+  title: 'Gorilla AI - AI agent that teaches complex topics fast',
+  description: 'Supercharge your learning with Gorilla AI today',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  interactiveWidget: 'resizes-content',
 }
 
 export default function RootLayout({

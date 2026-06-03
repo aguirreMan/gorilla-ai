@@ -56,13 +56,20 @@ export default function UniversalSidebar({
   }
 
   return (
-    <div className='w-72 h-full flex flex-col bg-surface border-r border-border shrink-0'>
-      {/* User header */}
-      <div className={cn('fixed inset-y-0 left-0 z-50 w-72', isOpen ? 'translate-x-0' : '-translate-x-full')}>
-        <Button onClick={onClose}>
-          Close
-        </Button>
-      </div>
+    <>
+      {isOpen && (
+        <div className='fixed inset-0 z-50 bg-background/80 backdrop-blur-sm md:hidden' onClick={onClose} />
+      )}
+
+
+      {/*Side bar area */}
+      <div className={cn('w-72 h-full flex flex-col bg-surface border-r border-border shrink-0 transition-transform duration-300 ease-in-out',
+              // Mobile styles: fixed drawer tracking isOpen state
+        'fixed inset-y-0 left-0 z-50 md:static md:translate-x-0',
+        isOpen ? 'translate-x-0' : '-translate-x-full'
+      )}>
+
+
       <div className='flex items-center gap-3 px-3 py-3 shrink-0'>
         <Avatar className='h-7 w-7 shrink-0'>
           {isLoaded && (
@@ -178,6 +185,7 @@ export default function UniversalSidebar({
           Sign out
         </Button>
       </div>
-    </div>
+      </div>
+  </>
   )
 }
