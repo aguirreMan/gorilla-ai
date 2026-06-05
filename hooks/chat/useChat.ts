@@ -157,7 +157,7 @@ export function useChat() {
             }
 
             const parsedMessage: StreamingResponse = JSON.parse(json)
-          const content = parsedMessage.content
+            const content = parsedMessage.content
 
             if (content) {
              dispatch({ type: 'STREAM_MESSAGE', payload: { id: conversationId, content } })
