@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 import ReactMarkdown from 'react-markdown'
 import CodeBlock from './Codeblock'
 import dynamic from 'next/dynamic'
-const MermaidBlock = dynamic(() => import('./MermaidBlock'), {
+const MermaidDialog = dynamic(() => import('./MermaidDialog'), {
   ssr: false,
   loading: () => <div className="h-32 animate-pulse bg-muted rounded-xl" />
 })
@@ -81,7 +81,7 @@ export default function MessageBox({ messages, isStreaming, isLoadingMessages }:
 
       if (language === 'mermaid') {
         return <MermaidErrorBoundary>
-          <MermaidBlock chart={code} />
+          <MermaidDialog chart={code} />
         </MermaidErrorBoundary>
       }
 

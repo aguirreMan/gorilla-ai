@@ -9,8 +9,12 @@ mermaid.initialize({
   securityLevel: 'loose',
 })
 
+export interface MermaidProps {
+  chart: string
+}
 
-export default function MermaidBlock({ chart }: { chart: string }) {
+
+export default function MermaidBlock({ chart }: MermaidProps) {
   const mermaidRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -34,6 +38,6 @@ export default function MermaidBlock({ chart }: { chart: string }) {
   }, [chart])
 
   return (
-    <div className='w-full h-auto' ref={mermaidRef} />
+    <div className='w-full h-auto cursor-pointer' ref={mermaidRef} />
   )
 }
