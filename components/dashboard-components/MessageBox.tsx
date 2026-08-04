@@ -53,13 +53,13 @@ export default function MessageBox({ messages, isStreaming, isLoadingMessages }:
         const code = codeMatch[2].replace(/\n$/, '')
         return <CodeBlock key={i} language={language} code={code} />
       }
-      return <span key={i} className='whitespace-pre-wrap break-words'>{part}</span>
+      return <span key={i} className='whitespace-pre-wrap break-word'>{part}</span>
     })
   }
 
   const chatComponents = {
     p({ children }: { children?: React.ReactNode }) {
-      return <div className='mb-4 last:mb-0 break-words'>{children}</div>
+      return <div className='mb-4 last:mb-0 break-word'>{children}</div>
     },
 
     code({inline, className, children}: {
