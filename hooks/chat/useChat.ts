@@ -29,7 +29,7 @@ export function useChat() {
       title: 'New Chat',
       created_at: new Date().toISOString()
     }
-    dispatch({ type: 'NEW_CHAT', payload: newChat })
+    dispatch({ type: 'CREATE_NEW_CHAT', payload: newChat })
   }, [])
 
   const selectCurrentChat = useCallback(async(chatId: string) => {
@@ -54,6 +54,7 @@ export function useChat() {
   }, [state.conversationStore])
 
   const deleteChat = useCallback(async (chatId: string) => {
+    console.log('Chat is about to delete')
     try {
       const response = await fetch(`/api/conversations/${chatId}`, { method: 'DELETE' })
       if(!response.ok) throw new Error('Failed to delete chat')
@@ -61,9 +62,10 @@ export function useChat() {
     } catch (error) {
       console.error('Failed to delete chat', error)
     }
-  }, [])
+  }, [dispatch])
 
   const deselectChat = useCallback(() => {
+    console.log('deselectChat')
     if(abortController.current) abortController.current.abort()
     dispatch({ type: 'DESELECT_CHAT' })
   }, [])
@@ -96,7 +98,7 @@ export function useChat() {
         title: message,
         created_at: new Date().toISOString()
       }
-      dispatch({ type: 'NEW_CHAT', payload: generateNewChat })
+      dispatch({ type:'CREATE_NEW_CHAT', payload: generateNewChat })
       conversationId = generateNewChat.id
 
     }
@@ -160,7 +162,7 @@ export function useChat() {
             const content = parsedMessage.content
 
             if (content) {
-             dispatch({ type: 'STREAM_MESSAGE', payload: { id: conversationId, content } })
+             dispatch({ type: 'APPEND_STREAM_CONTENT', payload: { id: conversationId, content } })
             }
           }
         }
@@ -172,7 +174,7 @@ export function useChat() {
        const lastMessage = messageHistory[messageHistory.length - 1]
 
        if (lastMessage?.role === 'assistant' && !lastMessage.content) {
-         dispatch({ type: 'REMOVE_LAST_MESSAGE', payload: { id: conversationId } })
+         dispatch({ type: 'REMOVE_EMPTY_ASSISTANT_MESSAGE', payload: { id: conversationId } })
        }
      }
     } finally {
