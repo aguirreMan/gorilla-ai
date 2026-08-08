@@ -4,7 +4,7 @@ export type ChatActions =
   // navigation state controls the selected conversation
   // Controls conversation navigation and selection.
   | { type: 'CREATE_NEW_CHAT'; payload: Conversation }
-  | { type: 'SELECT_CHAT'; payload: string }
+ // | { type: 'SELECT_CHAT'; payload: string }
   | { type: 'DESELECT_CHAT' }
   | { type: 'DELETE_CHAT'; payload: string }
 
@@ -17,8 +17,10 @@ export type ChatActions =
 
   // server state
   // Hydrates conversations and messages from the server.
-  | { type: 'LOAD_CONVERSATIONS'; payload: Conversation[] }
+
+  //| { type: 'LOAD_CONVERSATIONS'; payload: Conversation[] }
   | { type: 'LOAD_MESSAGES'; payload: { id: string; messages: Message[] } }
+
 
   // UI Loading States
   | { type: 'SET_LOADING_CONVERSATIONS'; payload: boolean }
@@ -47,6 +49,7 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
         selectedChat: action.payload.id,
       }
     }
+      /*
     case 'SELECT_CHAT': {
       const chatExists = state.conversations.some((chat) => chat.id === action.payload)
       if (!chatExists) return state
@@ -55,6 +58,7 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
         selectedChat: action.payload,
       }
     }
+    */
     case 'DESELECT_CHAT': {
       return {
         ...state,
@@ -127,12 +131,14 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
       }
     }
     /* Server state */
+      /*
     case 'LOAD_CONVERSATIONS': {
       return {
         ...state,
         conversations: action.payload
       }
     }
+      */
     case 'LOAD_MESSAGES': {
       return {
         ...state,
@@ -142,6 +148,7 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
         },
       }
     }
+
       /* Ui Loading state */
     case 'SET_LOADING_CONVERSATIONS': {
       return {

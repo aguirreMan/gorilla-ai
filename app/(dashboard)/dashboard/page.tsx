@@ -14,9 +14,9 @@ export default function DashboardPage() {
   const { isSignedIn, isLoaded } = useUser()
 
   const {
-    conversations,
+    //conversations,
     messages,
-    isLoadingConversations,
+    //isLoadingConversations,
     isLoadingMessages,
     selectedChat,
     createNewChat,
@@ -34,12 +34,12 @@ export default function DashboardPage() {
   return (
     <div className='flex h-[calc(100dvh-4rem)]'>
       <Sidebar
-        conversations={conversations}
+       // conversations={conversations}
         activeConversationId={selectedChat}
         onSelectConversation={selectCurrentChat}
         onNewChat={createNewChat}
         onDeleteConversation={deleteChat}
-        isLoading={isLoadingConversations}
+        //isLoading={isLoadingConversations}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
       />

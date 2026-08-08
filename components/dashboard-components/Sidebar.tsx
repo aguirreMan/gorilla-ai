@@ -4,8 +4,10 @@ import { SidebarSkeleton } from '@/components/dashboard-components/SidebarSkelet
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { MessageSquare, Trash2, SquarePen } from 'lucide-react'
-import { Conversation } from '@/types/chatTypes'
+//import { Conversation } from '@/types/chatTypes'
 import { useClerk, useUser } from '@clerk/nextjs'
+import { useRouter } from 'next/navigation'
+import { useFetchConversations } from '@/hooks/chat/useFetchConversations'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import {
   AlertDialog,
@@ -22,36 +24,39 @@ import { cn } from '@/lib/utils'
 
 
 interface SidebarProps {
-  conversations: Conversation[]
+  //conversations: Conversation[]
   activeConversationId: string | null
   onSelectConversation: (id: string) => void
   onNewChat: () => void
   onDeleteConversation?: (id: string) => void
-  isLoading: boolean
+  //isLoading: boolean
   isOpen: boolean
   onClose: () => void
 }
 
 export default function UniversalSidebar({
-  conversations,
+  //conversations,
   activeConversationId,
   onSelectConversation,
   onNewChat,
   onDeleteConversation,
-  isLoading,
+  //isLoading,
   isOpen,
   onClose
 }: SidebarProps) {
 
   const { signOut } = useClerk()
   const { user, isLoaded } = useUser()
+  const { data, isLoading, error } = useFetchConversations()
+  const router = useRouter()
 
   async function redirectSignOut() {
     await signOut({ redirectUrl: '/' })
   }
 
-  function handleConversationSelect(id: string) {
-    onSelectConversation(id)
+  function handleConversationSelect(chatId: string) {
+    console.log('clicked:', chatId)
+    router.push(`/dashboard/${chatId}`)
     onClose()
   }
 
@@ -110,13 +115,13 @@ export default function UniversalSidebar({
         <SidebarSkeleton />
       ) : (
         <div className='flex-1 overflow-hidden px-2 py-2'>
-          {conversations.length === 0 ? (
+          {data?.conversations.length === 0 ? (
             <p className="text-xs text-center mt-8 px-4 text-muted-foreground">
               No chats yet. Start a new conversation.
             </p>
           ) : (
             <div className='space-y-0.5'>
-              {conversations.map((convo) => (
+              {data?.conversations.map((convo) => (
                 <div
                   key={convo.id}
                   className={`group/row relative flex items-center justify-between rounded-md px-2 py-2 cursor-pointer transition-colors hover:bg-muted

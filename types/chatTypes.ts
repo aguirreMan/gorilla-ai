@@ -18,6 +18,10 @@ export interface Conversation {
   created_at: string
 }
 
+export interface ConversationsResponse {
+  conversations: Conversation[]
+}
+
 export interface Chatstate {
   conversations: Conversation[]
   conversationStore: ConversationStore
