@@ -4,10 +4,8 @@ import { Conversation, StreamingResponse, Message} from '@/types/chatTypes'
 
 export function useChat() {
   const [state, dispatch] = useReducer(chatReducer, {
-    conversations: [],
     conversationStore: {},
     selectedChat: null,
-    isLoadingConversations: false,
     isLoadingMessages: false,
   })
 
@@ -20,8 +18,8 @@ export function useChat() {
   }, [state.conversationStore])
 
   const activeMessages = state.selectedChat
-    ? state.conversationStore[state.selectedChat] ?? []
-    : []
+      ? state.conversationStore[state.selectedChat] ?? []
+      : []
 
   const createNewChat = useCallback(() => {
     const newChat: Conversation = {
@@ -65,30 +63,7 @@ export function useChat() {
       }
     }, [dispatch])
 
-    const deselectChat = useCallback(() => {
-      console.log('deselectChat')
-      if (abortController.current) abortController.current.abort()
-      dispatch({ type: 'DESELECT_CHAT' })
-    }, [])
-    /*
-    useEffect(() => {
-       async function loadConversations() {
-          dispatch({ type: 'SET_LOADING_CONVERSATIONS', payload: true })
-         try {
-           const response = await fetch('/api/conversations')
-           if (!response.ok) throw new Error('Failed to load conversations')
-           const data: { conversations: Conversation[] } = await response.json()
-           dispatch({ type: 'LOAD_CONVERSATIONS', payload: data.conversations ?? [] })
-         } catch (error) {
-           console.error('Failed to load your conversations', error)
-         } finally {
-           dispatch({ type: 'SET_LOADING_CONVERSATIONS', payload: false })
-         }
-       }
-       loadConversations()
-     }, [])
 
-     */
     async function userSendsMessage(message: string) {
       if (isStreaming) return
       let conversationId = state.selectedChat
@@ -197,10 +172,8 @@ export function useChat() {
     }, [])
 
     return {
-      //conversations: state.conversations,
-      selectedChat: state.selectedChat,
+      //selectedChat: state.selectedChat,
       messages: activeMessages,
-      //isLoadingConversations: state.isLoadingConversations,
       isLoadingMessages: state.isLoadingMessages,
       createNewChat,
       selectCurrentChat,
@@ -208,6 +181,5 @@ export function useChat() {
       sendMessage: userSendsMessage,
       isStreaming,
       stopStreaming,
-      deselectChat,
     }
   }

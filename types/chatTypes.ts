@@ -23,9 +23,7 @@ export interface ConversationsResponse {
 }
 
 export interface Chatstate {
-  conversations: Conversation[]
   conversationStore: ConversationStore
   selectedChat: string | null
-  isLoadingConversations: boolean
   isLoadingMessages: boolean
 }

@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator'
 import { MessageSquare, Trash2, SquarePen } from 'lucide-react'
 //import { Conversation } from '@/types/chatTypes'
 import { useClerk, useUser } from '@clerk/nextjs'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useFetchConversations } from '@/hooks/chat/useFetchConversations'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import {
@@ -24,31 +24,22 @@ import { cn } from '@/lib/utils'
 
 
 interface SidebarProps {
-  //conversations: Conversation[]
-  activeConversationId: string | null
-  onSelectConversation: (id: string) => void
   onNewChat: () => void
   onDeleteConversation?: (id: string) => void
-  //isLoading: boolean
   isOpen: boolean
   onClose: () => void
 }
 
-export default function UniversalSidebar({
-  //conversations,
-  activeConversationId,
-  onSelectConversation,
-  onNewChat,
-  onDeleteConversation,
-  //isLoading,
-  isOpen,
-  onClose
-}: SidebarProps) {
+export default function Sidebar({ onNewChat, onDeleteConversation, isOpen, onClose }: SidebarProps) {
 
   const { signOut } = useClerk()
   const { user, isLoaded } = useUser()
-  const { data, isLoading, error } = useFetchConversations()
+  const { data, isLoading } = useFetchConversations()
   const router = useRouter()
+
+  // Selection is URL-driven: /dashboard/[chatId]
+  const params = useParams<{ chatId?: string }>()
+  const activeConversationId = params.chatId ?? null
 
   async function redirectSignOut() {
     await signOut({ redirectUrl: '/' })

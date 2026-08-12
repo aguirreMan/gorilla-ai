@@ -12,8 +12,8 @@ export function useFetchConversations() {
       }
       const data: ConversationsResponse = await response.json()
 
-      console.log('CONVERSATIONS RESPONSE:', data)
-      console.log('IS ARRAY:', Array.isArray(data))
+      //console.log('CONVERSATIONS RESPONSE:', data)
+      //console.log('IS ARRAY:', Array.isArray(data))
       return data
     },
   })

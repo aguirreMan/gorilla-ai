@@ -4,8 +4,6 @@ export type ChatActions =
   // navigation state controls the selected conversation
   // Controls conversation navigation and selection.
   | { type: 'CREATE_NEW_CHAT'; payload: Conversation }
- // | { type: 'SELECT_CHAT'; payload: string }
-  | { type: 'DESELECT_CHAT' }
   | { type: 'DELETE_CHAT'; payload: string }
 
 //Client state
@@ -29,40 +27,25 @@ export type ChatActions =
 export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
   switch (action.type) {
     case 'CREATE_NEW_CHAT': {
-      const selectedConversationMessage = state.selectedChat ? state.conversationStore[state.selectedChat] : undefined
-      if (selectedConversationMessage && selectedConversationMessage.length === 0) return state
+     // const selectedConversationMessage = state.selectedChat ? state.conversationStore[state.selectedChat] : undefined
+      //if (selectedConversationMessage && selectedConversationMessage.length === 0) return state
 
       return {
         ...state,
-        conversations: [
+        /*conversations: [
           {
             id: action.payload.id,
             title: action.payload.title,
             created_at: action.payload.created_at,
           },
-          ...state.conversations,
+          //...state.conversations,
         ],
+        */
         conversationStore: {
           ...state.conversationStore,
           [action.payload.id]: [],
         },
-        selectedChat: action.payload.id,
-      }
-    }
-      /*
-    case 'SELECT_CHAT': {
-      const chatExists = state.conversations.some((chat) => chat.id === action.payload)
-      if (!chatExists) return state
-      return {
-        ...state,
-        selectedChat: action.payload,
-      }
-    }
-    */
-    case 'DESELECT_CHAT': {
-      return {
-        ...state,
-        selectedChat: null,
+        //selectedChat: action.payload.id,
       }
     }
 
@@ -71,9 +54,9 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
       delete newStore[action.payload]
       return {
         ...state,
-        conversations: state.conversations.filter((conversation) => conversation.id !== action.payload),
+        //conversations: state.conversations.filter((conversation) => conversation.id !== action.payload),
         conversationStore: newStore,
-        selectedChat: state.selectedChat === action.payload ? null : state.selectedChat,
+       // selectedChat: state.selectedChat === action.payload ? null : state.selectedChat,
       }
     }
       /*Client state */
@@ -131,14 +114,6 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
       }
     }
     /* Server state */
-      /*
-    case 'LOAD_CONVERSATIONS': {
-      return {
-        ...state,
-        conversations: action.payload
-      }
-    }
-      */
     case 'LOAD_MESSAGES': {
       return {
         ...state,
@@ -149,13 +124,7 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
       }
     }
 
-      /* Ui Loading state */
-    case 'SET_LOADING_CONVERSATIONS': {
-      return {
-        ...state,
-        isLoadingConversations: action.payload,
-      }
-    }
+    /* Ui Loading state */
     case 'SET_LOADING_MESSAGES': {
       return {
         ...state,
