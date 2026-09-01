@@ -7,6 +7,9 @@ export interface Message {
   content: string
 }
 
+export interface MessagesResponse {
+  messages: Message[]
+}
 
 export interface StreamingResponse {
   content: string

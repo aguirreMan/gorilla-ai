@@ -1,33 +1,19 @@
-import { Chatstate, Conversation, Message } from '@/types/chatTypes'
+import { Chatstate, Conversation } from '@/types/chatTypes'
 
 export type ChatActions =
-  // navigation state controls the selected conversation
-  // Controls conversation navigation and selection.
   | { type: 'CREATE_NEW_CHAT'; payload: Conversation }
   | { type: 'DELETE_CHAT'; payload: string }
-
-//Client state
-// Optimistic chat updates and streaming.
   | { type: 'ADD_USER_MESSAGE'; payload: { id: string; message: string } }
   | { type: 'ADD_ASSISTANT_MESSAGE'; payload: { id: string } }
   | { type: 'APPEND_STREAM_CONTENT'; payload: { id: string; content: string } }
   | { type: 'REMOVE_EMPTY_ASSISTANT_MESSAGE'; payload: { id: string } }
 
-  // server state
-  // Hydrates conversations and messages from the server.
 
-  //| { type: 'LOAD_CONVERSATIONS'; payload: Conversation[] }
-  | { type: 'LOAD_MESSAGES'; payload: { id: string; messages: Message[] } }
-
-
-  // UI Loading States
-  | { type: 'SET_LOADING_CONVERSATIONS'; payload: boolean }
-  | { type: 'SET_LOADING_MESSAGES'; payload: boolean }
 
 export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
   switch (action.type) {
     case 'CREATE_NEW_CHAT': {
-     // const selectedConversationMessage = state.selectedChat ? state.conversationStore[state.selectedChat] : undefined
+      // const selectedConversationMessage = state.selectedChat ? state.conversationStore[state.selectedChat] : undefined
       //if (selectedConversationMessage && selectedConversationMessage.length === 0) return state
 
       return {
@@ -56,10 +42,10 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
         ...state,
         //conversations: state.conversations.filter((conversation) => conversation.id !== action.payload),
         conversationStore: newStore,
-       // selectedChat: state.selectedChat === action.payload ? null : state.selectedChat,
+        // selectedChat: state.selectedChat === action.payload ? null : state.selectedChat,
       }
     }
-      /*Client state */
+    /*Client state */
     case 'ADD_USER_MESSAGE': {
       return {
         ...state,
@@ -73,16 +59,16 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
       }
     }
     case 'ADD_ASSISTANT_MESSAGE': {
-        return {
-          ...state,
-          conversationStore: {
-            ...state.conversationStore,
-            [action.payload.id]: [
-              ...(state.conversationStore[action.payload.id] ?? []),
-              { role: 'assistant', content: '' }
-            ],
-          },
-        }
+      return {
+        ...state,
+        conversationStore: {
+          ...state.conversationStore,
+          [action.payload.id]: [
+            ...(state.conversationStore[action.payload.id] ?? []),
+            { role: 'assistant', content: '' }
+          ],
+        },
+      }
     }
 
     case 'APPEND_STREAM_CONTENT': {
@@ -111,24 +97,6 @@ export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
           ...state.conversationStore,
           [action.payload.id]: currentConversation.slice(0, -1),
         },
-      }
-    }
-    /* Server state */
-    case 'LOAD_MESSAGES': {
-      return {
-        ...state,
-        conversationStore: {
-          ...state.conversationStore,
-          [action.payload.id]: action.payload.messages
-        },
-      }
-    }
-
-    /* Ui Loading state */
-    case 'SET_LOADING_MESSAGES': {
-      return {
-        ...state,
-        isLoadingMessages: action.payload,
       }
     }
     default:
