@@ -1,7 +1,3 @@
-export interface ConversationStore {
-  [id: string]: Message[]
-}
-
 export interface Message {
   role: 'user' | 'assistant'
   content: string
@@ -25,8 +21,3 @@ export interface ConversationsResponse {
   conversations: Conversation[]
 }
 
-export interface Chatstate {
-  conversationStore: ConversationStore
-  selectedChat: string | null
-  isLoadingMessages: boolean
-}

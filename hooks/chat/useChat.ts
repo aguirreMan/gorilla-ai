@@ -1,18 +1,18 @@
 import { useState, useReducer, useCallback, useEffect, useRef } from 'react'
 import { chatReducer } from '@/lib/chat/chatReducer'
-import { Conversation, StreamingResponse } from '@/types/chatTypes'
+import { StreamingResponse } from '@/types/chatTypes'
 import { useFetchMessages } from '@/hooks/chat/useFetchMessages'
 
-export function useChat() {
+export function useChat(chatId: string | null) {
   const [state, dispatch] = useReducer(chatReducer, {
-    conversationStore: {},
-    selectedChat: null,
-    isLoadingMessages: false,
+    conversationStore: {}
   })
 
-  const chatId = state.selectedChat
-
-  const { messages: fetchedMessages, isLoading: isLoadingMessages, error: messagesError } = useFetchMessages(chatId)
+  const {
+    messages: serverMessages,
+    isLoading: isLoadingMessages,
+    error,
+  } = useFetchMessages(chatId)
 
   const [isStreaming, setStreaming] = useState(false)
   const abortController = useRef<AbortController | null>(null)
@@ -22,32 +22,33 @@ export function useChat() {
     conversationStoreRef.current = state.conversationStore
   }, [state.conversationStore])
 
-  const activeMessages = chatId ? state.conversationStore[chatId] ?? [] : []
+  const localMessages = chatId ? state.conversationStore[chatId] ?? [] : []
 
-  const createNewChat = useCallback(() => {
+  /*const createNewChat = useCallback(() => {
     const newChat: Conversation = {
       id: crypto.randomUUID(),
       title: 'New Chat',
       created_at: new Date().toISOString()
     }
-    dispatch({ type: 'CREATE_NEW_CHAT', payload: newChat })
+    //dispatch({ type: 'CREATE_NEW_CHAT', payload: newChat })
   }, [])
-
-  const deleteChat = useCallback(async (chatId: string) => {
-    console.log('Chat is about to delete')
-    try {
-      const response = await fetch(`/api/conversations/${chatId}`, { method: 'DELETE' })
-      if (!response.ok) throw new Error('Failed to delete chat')
-      dispatch({ type: 'DELETE_CHAT', payload: chatId })
-    } catch (error) {
-      console.error('Failed to delete chat', error)
-    }
-  }, [dispatch])
-
+*/
+  /*
+    const deleteChat = useCallback(async (chatId: string) => {
+      console.log('Chat is about to delete')
+      try {
+        const response = await fetch(`/api/conversations/${chatId}`, { method: 'DELETE' })
+        if (!response.ok) throw new Error('Failed to delete chat')
+        dispatch({ type: 'DELETE_CHAT', payload: chatId })
+      } catch (error) {
+        console.error('Failed to delete chat', error)
+      }
+    }, [dispatch])
+  */
 
   async function userSendsMessage(message: string) {
-    if (isStreaming) return
-    let conversationId = state.selectedChat
+    if (isStreaming || (chatId && isLoadingMessages)) return
+    let conversationId = chatId
 
     if (!conversationId) {
       const generateNewChat = {
@@ -55,7 +56,7 @@ export function useChat() {
         title: message,
         created_at: new Date().toISOString()
       }
-      dispatch({ type: 'CREATE_NEW_CHAT', payload: generateNewChat })
+      //dispatch({ type: 'CREATE_NEW_CHAT', payload: generateNewChat })
       conversationId = generateNewChat.id
 
     }
@@ -153,13 +154,7 @@ export function useChat() {
   }, [])
 
   return {
-    selectedChat: state.selectedChat,
-    messages: activeMessages,
-    fetchedMessages,
-    isLoadingMessages: isLoadingMessages || state.isLoadingMessages,
-    messagesError,
-    createNewChat,
-    deleteChat,
+    messages: localMessages,
     sendMessage: userSendsMessage,
     isStreaming,
     stopStreaming,

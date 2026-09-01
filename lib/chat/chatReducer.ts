@@ -1,105 +1,62 @@
-import { Chatstate, Conversation } from '@/types/chatTypes'
+import { Message } from '@/types/chatTypes'
 
 export type ChatActions =
-  | { type: 'CREATE_NEW_CHAT'; payload: Conversation }
-  | { type: 'DELETE_CHAT'; payload: string }
-  | { type: 'ADD_USER_MESSAGE'; payload: { id: string; message: string } }
-  | { type: 'ADD_ASSISTANT_MESSAGE'; payload: { id: string } }
-  | { type: 'APPEND_STREAM_CONTENT'; payload: { id: string; content: string } }
-  | { type: 'REMOVE_EMPTY_ASSISTANT_MESSAGE'; payload: { id: string } }
+  | { type: 'ADD_USER_MESSAGE'; payload: { message: string } }
+  | { type: 'ADD_ASSISTANT_MESSAGE' }
+  | { type: 'APPEND_STREAM_CONTENT'; payload: { content: string } }
+  | { type: 'REMOVE_EMPTY_ASSISTANT_MESSAGE' }
+  | { type: 'RESET' }
 
-
-
-export function chatReducer(state: Chatstate, action: ChatActions): Chatstate {
+export function chatReducer(messages: Message[], action: ChatActions): Message[] {
   switch (action.type) {
-    case 'CREATE_NEW_CHAT': {
-      // const selectedConversationMessage = state.selectedChat ? state.conversationStore[state.selectedChat] : undefined
-      //if (selectedConversationMessage && selectedConversationMessage.length === 0) return state
-
-      return {
-        ...state,
-        /*conversations: [
-          {
-            id: action.payload.id,
-            title: action.payload.title,
-            created_at: action.payload.created_at,
-          },
-          //...state.conversations,
-        ],
-        */
-        conversationStore: {
-          ...state.conversationStore,
-          [action.payload.id]: [],
-        },
-        //selectedChat: action.payload.id,
-      }
-    }
-
-    case 'DELETE_CHAT': {
-      const newStore = { ...state.conversationStore }
-      delete newStore[action.payload]
-      return {
-        ...state,
-        //conversations: state.conversations.filter((conversation) => conversation.id !== action.payload),
-        conversationStore: newStore,
-        // selectedChat: state.selectedChat === action.payload ? null : state.selectedChat,
-      }
-    }
     /*Client state */
     case 'ADD_USER_MESSAGE': {
-      return {
-        ...state,
-        conversationStore: {
-          ...state.conversationStore,
-          [action.payload.id]: [
-            ...(state.conversationStore[action.payload.id] ?? []),
-            { role: 'user', content: action.payload.message },
-          ],
+      return [
+        ...messages,
+        {
+          role: 'user',
+          content: action.payload.message,
         },
-      }
+      ]
     }
     case 'ADD_ASSISTANT_MESSAGE': {
-      return {
-        ...state,
-        conversationStore: {
-          ...state.conversationStore,
-          [action.payload.id]: [
-            ...(state.conversationStore[action.payload.id] ?? []),
-            { role: 'assistant', content: '' }
-          ],
-        },
-      }
+      return [
+        ...messages,
+        {
+          role: 'assistant',
+          content: ''
+        }
+      ]
     }
 
     case 'APPEND_STREAM_CONTENT': {
-      const conversation = state.conversationStore[action.payload.id] ?? []
-      const lastMessage = conversation[conversation.length - 1]
-      if (!lastMessage || lastMessage.role !== 'assistant') return state
-      return {
-        ...state,
-        conversationStore: {
-          ...state.conversationStore,
-          [action.payload.id]: [
-            ...conversation.slice(0, -1),
-            { ...lastMessage, content: lastMessage.content + action.payload.content },
-          ],
-        },
-      }
+      return messages.map((message, index) => {
+        const isLastMessage = index === messages.length - 1
+
+        if (isLastMessage && message.role === 'assistant') {
+          return {
+            ...message,
+            content: message.content + action.payload.content,
+          }
+        }
+        return message
+      })
     }
 
     case 'REMOVE_EMPTY_ASSISTANT_MESSAGE': {
-      const currentConversation = state.conversationStore[action.payload.id] ?? []
-      if (currentConversation.length === 0) return state
+      if (messages.length === 0) return messages
+      const lastMessage = messages[messages.length - 1]
 
-      return {
-        ...state,
-        conversationStore: {
-          ...state.conversationStore,
-          [action.payload.id]: currentConversation.slice(0, -1),
-        },
+      if (lastMessage.role === 'assistant' && lastMessage.content === '') {
+        return messages.slice(0, -1)
       }
+      return messages
     }
-    default:
-      return state
+    case 'RESET': {
+      return []
+    }
+    default: {
+      return messages
+    }
   }
 }
