@@ -1,10 +1,11 @@
-import { Message } from '@/types/chatTypes'
+import type { Message } from '@/types/chatTypes'
 
 export type ChatActions =
   | { type: 'ADD_USER_MESSAGE'; payload: { message: string } }
   | { type: 'ADD_ASSISTANT_MESSAGE' }
   | { type: 'APPEND_STREAM_CONTENT'; payload: { content: string } }
   | { type: 'REMOVE_EMPTY_ASSISTANT_MESSAGE' }
+  | { type: 'RESET_PENDING_MESSAGES' }
 
 export function chatReducer(messages: Message[], action: ChatActions): Message[] {
   switch (action.type) {
@@ -50,6 +51,11 @@ export function chatReducer(messages: Message[], action: ChatActions): Message[]
       }
       return messages
     }
+
+    case 'RESET_PENDING_MESSAGES': {
+      return []
+    }
+
     default: {
       return messages
     }

@@ -1,4 +1,4 @@
-import { useState, useRef, useReducer } from 'react'
+import { useState, useEffect, useRef, useReducer } from 'react'
 import { chatReducer } from '@/lib/chat/chatReducer'
 import type { StreamingResponse } from '@/types/chatTypes'
 import { useFetchMessages } from '@/hooks/chat/useFetchMessages'
@@ -12,6 +12,11 @@ export function useChat(chatId: string | null) {
   const abortController = useRef<AbortController | null>(null)
 
   const displayMessages = [...fetchedMessages, ...pendingMessages]
+
+  useEffect(() => {
+    abortController.current?.abort()
+    dispatch({ type: 'RESET_PENDING_MESSAGES' })
+  }, [chatId])
 
   async function sendMessage(message: string) {
     if (isStreaming || !chatId) return
