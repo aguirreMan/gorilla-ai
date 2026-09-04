@@ -5,11 +5,9 @@ export type ChatActions =
   | { type: 'ADD_ASSISTANT_MESSAGE' }
   | { type: 'APPEND_STREAM_CONTENT'; payload: { content: string } }
   | { type: 'REMOVE_EMPTY_ASSISTANT_MESSAGE' }
-  | { type: 'RESET' }
 
 export function chatReducer(messages: Message[], action: ChatActions): Message[] {
   switch (action.type) {
-    /*Client state */
     case 'ADD_USER_MESSAGE': {
       return [
         ...messages,
@@ -51,9 +49,6 @@ export function chatReducer(messages: Message[], action: ChatActions): Message[]
         return messages.slice(0, -1)
       }
       return messages
-    }
-    case 'RESET': {
-      return []
     }
     default: {
       return messages
