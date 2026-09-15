@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useReducer } from 'react'
 import { chatReducer } from '@/lib/chat/chatReducer'
 import type { StreamingResponse } from '@/types/chatTypes'
 import { useFetchMessages } from '@/hooks/chat/useFetchMessages'
+import { useQueryClient } from '@tanstack/react-query'
 
 export function useChat(chatId: string) {
   const [pendingMessages, dispatch] = useReducer(chatReducer, [])
@@ -13,6 +14,8 @@ export function useChat(chatId: string) {
 
   const displayMessages = [...fetchedMessages, ...pendingMessages]
 
+  const queryClient = useQueryClient()
+
   useEffect(() => {
     abortController.current?.abort()
     abortController.current = null
@@ -21,6 +24,7 @@ export function useChat(chatId: string) {
 
   function stopStreaming() {
     abortController.current?.abort()
+    setStreaming(false)
   }
 
   async function sendMessage(message: string) {
@@ -83,6 +87,12 @@ export function useChat(chatId: string) {
       }
     } finally {
       setStreaming(false)
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['messages', chatId] }),
+        queryClient.invalidateQueries({ queryKey: ['conversations'] }),
+      ])
+      dispatch({ type: 'RESET_PENDING_MESSAGES' })
+
     }
   }
 

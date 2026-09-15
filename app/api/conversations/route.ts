@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto'
 import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { supabaseServer } from '@/lib/supabase/supabaseServer'
@@ -21,4 +22,21 @@ export async function GET() {
   }
 
   return NextResponse.json({ conversations })
+}
+
+export async function POST() {
+  const { userId } = await auth()
+  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const { data: conversation, error } = await supabaseServer
+    .from('conversations')
+    .insert({ id: randomUUID(), user_id: userId, title: 'New chat' })
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Failed to create conversation', error)
+    return NextResponse.json({ error: 'Failed to create conversation' }, { status: 500 })
+  }
+  return NextResponse.json({ conversation }, { status: 201 })
 }

@@ -1,3 +1,4 @@
+import { supabaseServer } from '@/lib/supabase/supabaseServer'
 import { NextRequest } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { OpenRouterRequest } from '@/types/openrouter'
@@ -20,6 +21,29 @@ export async function POST(request: NextRequest) {
 
   try {
     const { model, messages, conversationId }: OpenRouterRequest = await request.json()
+    if (typeof conversationId !== 'string' ||
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(conversationId) ||
+        typeof model !== 'string' || !model.trim() ||
+        !Array.isArray(messages) || messages.length === 0 ||
+        messages.some(message => !message || typeof message.content !== 'string' ||
+          !['user', 'assistant'].includes(message.role)) ||
+        messages[messages.length - 1].role !== 'user' ||
+        !messages[messages.length - 1].content.trim()) {
+      return Response.json({ error: 'Invalid chat request' }, { status: 400 })
+    }
+
+    const { data: conversation, error: conversationError } = await supabaseServer
+      .from('conversations')
+      .select('id')
+      .eq('id', conversationId)
+      .eq('user_id', userId)
+      .maybeSingle()
+
+    if (conversationError) throw conversationError
+    if (!conversation) {
+      return Response.json({ error: 'Conversation not found' }, { status: 404 })
+    }
+
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       signal: request.signal,

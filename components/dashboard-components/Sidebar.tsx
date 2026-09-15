@@ -4,7 +4,6 @@ import { SidebarSkeleton } from '@/components/dashboard-components/SidebarSkelet
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { MessageSquare, Trash2, SquarePen } from 'lucide-react'
-//import { Conversation } from '@/types/chatTypes'
 import { useClerk, useUser } from '@clerk/nextjs'
 import { useParams, useRouter } from 'next/navigation'
 import { useFetchConversations } from '@/hooks/chat/useFetchConversations'
@@ -20,6 +19,8 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from '@/components/ui/alert-dialog'
+import { useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
 
@@ -34,6 +35,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { user, isLoaded } = useUser()
   const { data, isLoading } = useFetchConversations()
   const router = useRouter()
+  const queryClient = useQueryClient()
 
   // Selection is URL-driven: /dashboard/[chatId]
   const params = useParams<{ chatId?: string }>()
@@ -44,8 +46,24 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   }
 
   function handleConversationSelect(chatId: string) {
-    console.log('clicked:', chatId)
+    //console.log('clicked:', chatId)
     router.push(`/dashboard/${chatId}`)
+    onClose()
+  }
+
+  async function onDeleteConversation(chatId: string) {
+    try {
+      const response = await fetch('/api/conversations/' + chatId, { method: 'DELETE' })
+      if (!response.ok) throw new Error('Failed to delete conversation')
+      if (activeConversationId === chatId) router.push('/dashboard')
+      await queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    } catch {
+      toast.error('Could not delete this chat. Please try again.')
+    }
+  }
+
+  function handleNewChat() {
+    router.push('/dashboard')
     onClose()
   }
 
@@ -90,7 +108,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           <Button
             variant='ghost'
             className='w-full justify-start gap-2 text-sm font-normal text-muted-foreground hover:text-foreground'
-            onClick={onNewChat}
+            onClick={handleNewChat}
           >
             <SquarePen size={16} />
             New Chat
@@ -123,7 +141,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     <MessageSquare size={14} className="shrink-0 mr-2 opacity-60" />
                     <span className='text-sm truncate flex-1 min-w-0'>{convo.title}</span>
 
-                    {onDeleteConversation && (
+                    {(
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button

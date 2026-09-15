@@ -3,15 +3,12 @@ import { supabaseServer } from '@/lib/supabase/supabaseServer'
 export async function saveChatHistory(conversationId: string, userID: string, title: string) {
   const { data, error } = await supabaseServer
     .from('conversations')
-    .upsert({
-      id: conversationId,
-      user_id: userID,
+    .update({
       title,
       updated_at: new Date(),
-    },
-    {
-      onConflict: 'id',
     })
+    .eq('id', conversationId)
+    .eq('user_id', userID)
     .select()
     .single()
 
