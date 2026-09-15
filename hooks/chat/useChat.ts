@@ -3,7 +3,7 @@ import { chatReducer } from '@/lib/chat/chatReducer'
 import type { StreamingResponse } from '@/types/chatTypes'
 import { useFetchMessages } from '@/hooks/chat/useFetchMessages'
 
-export function useChat(chatId: string | null) {
+export function useChat(chatId: string) {
   const [pendingMessages, dispatch] = useReducer(chatReducer, [])
 
   const { messages: fetchedMessages, isLoading, error } = useFetchMessages(chatId)
@@ -15,11 +15,16 @@ export function useChat(chatId: string | null) {
 
   useEffect(() => {
     abortController.current?.abort()
+    abortController.current = null
     dispatch({ type: 'RESET_PENDING_MESSAGES' })
   }, [chatId])
 
+  function stopStreaming() {
+    abortController.current?.abort()
+  }
+
   async function sendMessage(message: string) {
-    if (isStreaming || !chatId) return
+    if (isStreaming) return
 
     const updatedMessages = [...displayMessages, { role: 'user' as const, content: message }]
 
@@ -88,5 +93,6 @@ export function useChat(chatId: string | null) {
     error,
     sendMessage,
     isStreaming,
+    stopStreaming
   }
 }
