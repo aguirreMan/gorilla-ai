@@ -6,6 +6,42 @@ import { chatGenerationRateLimiting } from '@/lib/upstash/chatLimit'
 import { saveChatHistory, saveChatMessage } from '@/lib/supabase-chat/saveChatHistory'
 import { GORILLA_SYSTEM_PROMPT } from '@/lib/prompts/gorilla'
 
+function isChatRequestValid(body: unknown): body is OpenRouterRequest {
+  if (typeof body !== 'object' || body === null) {
+    return false
+  }
+
+  const { model, messages, conversationId } = body as Record<string, unknown>
+
+  const isValidConversationId =
+    typeof conversationId === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(conversationId)
+
+  const isValidModel = typeof model === 'string' && model.trim().length > 0
+
+  if (!Array.isArray(messages) || messages.length === 0) return false
+
+  const allMessagesValid = messages.every((msg) => {
+    if (typeof msg !== 'object' || msg === null) return false
+
+    const message = msg as Record<string, unknown>
+
+    return (typeof message.content === 'string' && (message.role === 'user' || message.role === 'assistant'))
+  })
+
+  const lastMessage = messages[messages.length - 1] as Record<string, unknown>
+
+  const lastMessageIsValidUserMessage =
+    lastMessage.role === 'user' &&
+    typeof lastMessage.content === 'string' &&
+    lastMessage.content.trim().length > 0
+
+  return (
+    isValidConversationId &&
+    isValidModel &&
+    allMessagesValid &&
+    lastMessageIsValidUserMessage
+  )
+}
 
 export async function POST(request: NextRequest) {
   const { userId } = await auth()
@@ -19,18 +55,13 @@ export async function POST(request: NextRequest) {
     return new Response(JSON.stringify({ error: 'Rate limit exceeded' }), { status: 429 })
   }
 
+
   try {
-    const { model, messages, conversationId }: OpenRouterRequest = await request.json()
-    if (typeof conversationId !== 'string' ||
-        !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(conversationId) ||
-        typeof model !== 'string' || !model.trim() ||
-        !Array.isArray(messages) || messages.length === 0 ||
-        messages.some(message => !message || typeof message.content !== 'string' ||
-          !['user', 'assistant'].includes(message.role)) ||
-        messages[messages.length - 1].role !== 'user' ||
-        !messages[messages.length - 1].content.trim()) {
+    const body: unknown = await request.json()
+    if (!isChatRequestValid(body)) {
       return Response.json({ error: 'Invalid chat request' }, { status: 400 })
     }
+    const { model, messages, conversationId } = body
 
     const { data: conversation, error: conversationError } = await supabaseServer
       .from('conversations')
@@ -117,7 +148,7 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error) {
-    if(error instanceof Error && error.name === 'AbortError') {
+    if (error instanceof Error && error.name === 'AbortError') {
       return new Response(null, { status: 499 })
     }
     console.error('Streaming Error happened ', error)
