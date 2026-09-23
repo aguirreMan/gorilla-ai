@@ -10,13 +10,13 @@ import type { Conversation } from '@/types/chatTypes'
 export default function DashboardPage() {
   const router = useRouter()
   const queryClient = useQueryClient()
-  const [isCreating, setCreating] = useState(false)
-  const creating = useRef(false)
+  const [isCreatingChat, setCreatingChat] = useState(false)
+  const creatingChatRef = useRef(false)
 
   async function createConversation() {
-    if (creating.current) return
-    creating.current = true
-    setCreating(true)
+    if (creatingChatRef.current) return
+    creatingChatRef.current = true
+    setCreatingChat(true)
     try {
       const response = await fetch('/api/conversations', { method: 'POST' })
       if (!response.ok) throw new Error('Failed to create conversation')
@@ -26,16 +26,16 @@ export default function DashboardPage() {
     } catch {
       toast.error('Could not create a chat. Please try again.')
     } finally {
-      creating.current = false
-      setCreating(false)
+      creatingChatRef.current = false
+      setCreatingChat(false)
     }
   }
 
   return (
     <div className='flex flex-col items-center justify-center flex-1 gap-4 p-6'>
       <h1>Welcome to Gorilla AI</h1>
-      <Button onClick={createConversation} disabled={isCreating}>
-        {isCreating ? 'Creating chat…' : 'Start a new chat'}
+      <Button onClick={createConversation} disabled={isCreatingChat}>
+        {isCreatingChat ? 'Creating chat…' : 'Start a new chat'}
       </Button>
     </div>
   )

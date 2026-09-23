@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
     const encoder = new TextEncoder()
 
 
-    const transformStream = new TransformStream({
+    const transformStream = new TransformStream<Uint8Array, Uint8Array>({
       async transform(chunk, controller) {
         buffer += new TextDecoder().decode(chunk, { stream: true })
 

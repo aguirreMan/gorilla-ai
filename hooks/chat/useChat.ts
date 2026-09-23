@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef, useReducer } from 'react'
 import { chatReducer } from '@/lib/chat/chatReducer'
-import type { StreamingResponse } from '@/types/chatTypes'
 import { useFetchMessages } from '@/hooks/chat/useFetchMessages'
-import { useQueryClient } from '@tanstack/react-query'
+import { useSyncMessages } from '@/hooks/chat/useSyncMessages'
+import { readStream } from '@/lib/chat/readStream'
 
 export function useChat(chatId: string) {
   const [pendingMessages, dispatch] = useReducer(chatReducer, [])
+  const { syncMessages } = useSyncMessages()
 
   const { messages: fetchedMessages, isLoading, error } = useFetchMessages(chatId)
 
@@ -14,7 +15,6 @@ export function useChat(chatId: string) {
 
   const displayMessages = [...fetchedMessages, ...pendingMessages]
 
-  const queryClient = useQueryClient()
 
   useEffect(() => {
     abortController.current?.abort()
@@ -26,6 +26,7 @@ export function useChat(chatId: string) {
     abortController.current?.abort()
     setStreaming(false)
   }
+
 
   async function sendMessage(message: string) {
     if (isStreaming) return
@@ -53,49 +54,25 @@ export function useChat(chatId: string) {
       })
       if (!response.ok || !response.body) throw new Error('Stream connection failed')
 
-      const reader = response.body.getReader()
-      const decoder = new TextDecoder()
-      let buffer = ''
-      let finishedStreaming = false
-
-      while (!finishedStreaming) {
-        const messageResults = await reader.read()
-        finishedStreaming = messageResults?.done ?? true
-        buffer += decoder.decode(messageResults?.value ?? new Uint8Array(), { stream: true })
-        const lines = buffer.split('\n')
-        buffer = lines.pop() || ''
-
-        for (const line of lines) {
-          if (line.startsWith('data:')) {
-            const json = line.slice(5).trim()
-            if (json === '[DONE]') {
-              finishedStreaming = true
-              break
-            }
-            if (json) {
-              const parsed: StreamingResponse = JSON.parse(json)
-              if (parsed.content) {
-                dispatch({ type: 'APPEND_STREAM_CONTENT', payload: { content: parsed.content } })
-              }
-            }
-          }
+      await readStream({
+        body: response.body, onContentChange: (content) => {
+          dispatch({ type: 'APPEND_STREAM_CONTENT', payload: { content } })
         }
-      }
+      })
+
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') {
         dispatch({ type: 'REMOVE_EMPTY_ASSISTANT_MESSAGE' })
       }
     } finally {
       setStreaming(false)
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ['messages', chatId] }),
-        queryClient.invalidateQueries({ queryKey: ['conversations'] }),
-      ])
+
+      await syncMessages(chatId)
+
       dispatch({ type: 'RESET_PENDING_MESSAGES' })
 
     }
   }
-
 
   return {
     messages: displayMessages,
