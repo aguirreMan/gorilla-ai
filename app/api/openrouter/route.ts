@@ -1,10 +1,11 @@
 import { supabaseServer } from '@/lib/supabase/supabaseServer'
 import { NextRequest } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { OpenRouterRequest } from '@/types/openrouter'
+import type { OpenRouterRequest, StreamingChunk } from '@/types/openrouter'
 import { chatGenerationRateLimiting } from '@/lib/upstash/chatLimit'
 import { saveChatHistory, saveChatMessage } from '@/lib/supabase-chat/saveChatHistory'
 import { GORILLA_SYSTEM_PROMPT } from '@/lib/prompts/gorilla'
+
 
 function isChatRequestValid(body: unknown): body is OpenRouterRequest {
   if (typeof body !== 'object' || body === null) {
@@ -41,6 +42,30 @@ function isChatRequestValid(body: unknown): body is OpenRouterRequest {
     allMessagesValid &&
     lastMessageIsValidUserMessage
   )
+}
+
+function streamingChunkValidation(value: unknown): value is StreamingChunk {
+  if (typeof value !== 'object' || value === null) return false
+  if (!('choices' in value)) return false
+
+  const choices = value.choices
+
+  if (!Array.isArray(choices)) return false
+
+  return choices.every((choice) => {
+    if (typeof choice !== 'object' || choice === null) return false
+
+    if ('delta' in choice && choice.delta !== undefined) {
+      const delta = choice.delta
+
+      if (typeof delta !== 'object' || delta === null) return false
+
+      if ('content' in delta && delta.content !== undefined) {
+        if (typeof delta.content !== 'string') return false
+      }
+    }
+    return true
+  })
 }
 
 export async function POST(request: NextRequest) {
@@ -121,7 +146,9 @@ export async function POST(request: NextRequest) {
           const jsonData = line.slice(5).trim()
           if (jsonData === '[DONE]') break
           try {
-            const parseData = JSON.parse(jsonData)
+            const parseData: unknown = JSON.parse(jsonData)
+            if (!streamingChunkValidation(parseData)) continue
+
             const content = parseData.choices[0]?.delta?.content
             if (content) {
               fullMessageContent += content

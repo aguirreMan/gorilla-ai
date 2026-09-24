@@ -3,3 +3,11 @@ export interface OpenRouterRequest {
   model: string
   messages: { role: string; content: string }[]
 }
+
+export interface StreamingChunk {
+  choices: Array<{
+    delta?: {
+      content?: string
+    }
+  }>
+}
