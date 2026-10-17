@@ -4,6 +4,7 @@ import { useState, ReactNode } from 'react'
 import { Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Sidebar from '@/components/dashboard-components/Sidebar'
+import ChatArea from '@/components/dashboard-components/ChatArea'
 
 export default function DashboardChatLayout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -23,6 +24,7 @@ export default function DashboardChatLayout({ children }: { children: ReactNode 
             <Menu size={20} />
           </Button>
         </div>
+        <ChatArea />
         {children}
       </div>
     </div>

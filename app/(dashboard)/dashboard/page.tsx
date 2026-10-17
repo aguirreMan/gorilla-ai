@@ -4,8 +4,9 @@ import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { Button } from '@/components/ui/button'
+//import { Button } from '@/components/ui/button'
 import type { Conversation } from '@/types/chatTypes'
+import UniversalChat from '@/components/dashboard-components/UniversalChat'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -15,13 +16,20 @@ export default function DashboardPage() {
 
   async function createConversation() {
     if (creatingChatRef.current) return
+
     creatingChatRef.current = true
     setCreatingChat(true)
+
     try {
       const response = await fetch('/api/conversations', { method: 'POST' })
+
       if (!response.ok) throw new Error('Failed to create conversation')
+
       const { conversation }: { conversation: Conversation } = await response.json()
-      await queryClient.invalidateQueries({ queryKey: ['conversations'] })
+      await queryClient.invalidateQueries({
+        queryKey: ['conversations']
+      })
+
       router.push('/dashboard/' + conversation.id)
     } catch {
       toast.error('Could not create a chat. Please try again.')
@@ -34,9 +42,7 @@ export default function DashboardPage() {
   return (
     <div className='flex flex-col items-center justify-center flex-1 gap-4 p-6'>
       <h1>Welcome to Gorilla AI</h1>
-      <Button onClick={createConversation} disabled={isCreatingChat}>
-        {isCreatingChat ? 'Creating chat…' : 'Start a new chat'}
-      </Button>
+      <UniversalChat onSend={createConversation} isStreaming={isCreatingChat} />
     </div>
   )
 }

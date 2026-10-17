@@ -4,7 +4,7 @@ import { useFetchMessages } from '@/hooks/chat/useFetchMessages'
 import { useSyncMessages } from '@/hooks/chat/useSyncMessages'
 import { readStream } from '@/lib/chat/readStream'
 
-export function useChat(chatId: string) {
+export function useChat(chatId: string | null) {
   const [pendingMessages, dispatch] = useReducer(chatReducer, [])
   const { syncMessages } = useSyncMessages()
 
