@@ -4,7 +4,6 @@ import { useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-
 import { useChat } from '@/hooks/chat/useChat'
 import { createConversation } from '@/lib/chat/createConversation'
 import MessageBox from './MessageBox'
@@ -24,7 +23,7 @@ export default function ChatArea() {
         if (creatingChatRef.current) return
 
         if (activeChatId) {
-            await chat.sendMessage(message)
+            await chat.sendMessage(message, activeChatId)
             return
         }
 
@@ -33,15 +32,15 @@ export default function ChatArea() {
         try {
             const conversation = await createConversation()
 
-            // Next: send the first message using conversation.id
-
             router.replace(`/dashboard/${conversation.id}`)
 
             void queryClient.invalidateQueries({
                 queryKey: ['conversations'],
             })
+
+            await chat.sendMessage(message, conversation.id)
         } catch {
-            toast.error('Could not create a conversation.')
+            toast.error('Could not send message.')
         } finally {
             creatingChatRef.current = false
         }

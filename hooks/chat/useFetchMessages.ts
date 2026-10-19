@@ -2,11 +2,9 @@ import { useQuery } from '@tanstack/react-query'
 import type { MessagesResponse } from '@/types/chatTypes'
 
 export function useFetchMessages(chatId: string | null) {
-    //console.log('useFetchMessages chatId:', chatId)
     const { data, isLoading, error } = useQuery({
         queryKey: ['messages', chatId],
         queryFn: async ({ signal }) => {
-            console.log('ACTUAL MESSAGE FETCH:', chatId)
             const response = await fetch(`/api/conversations/${chatId}/messages`, { signal })
 
             if (!response.ok) {
