@@ -18,18 +18,33 @@ export function useChat(chatId: string | null) {
     abortController: AbortController
   } | null>(null)
 
+  function clearIfCurrent(id: string) {
+    if (activeRequestRef.current?.id === id) {
+      activeRequestRef.current = null
+      setStreaming(false)
+      dispatch({ type: 'RESET_PENDING_MESSAGES' })
+    }
+  }
+
   const displayMessages = [...fetchedMessages, ...pendingMessages]
 
 
   useEffect(() => {
-    activeRequestRef.current?.abortController.abort()
+    const request = activeRequestRef.current
+
+    if (request?.conversationId === chatId) return
+
+    request?.abortController.abort()
     activeRequestRef.current = null
+
     dispatch({ type: 'RESET_PENDING_MESSAGES' })
+    setStreaming(false)
   }, [chatId])
 
 
   function stopStreaming() {
     activeRequestRef.current?.abortController.abort()
+    activeRequestRef.current = null
     setStreaming(false)
   }
 
@@ -52,14 +67,14 @@ export function useChat(chatId: string | null) {
 
     const updatedMessages = [...messageHistory, { role: 'user' as const, content: message }]
 
-    dispatch({ type: 'ADD_USER_MESSAGE', payload: { message } })
-    dispatch({ type: 'ADD_ASSISTANT_MESSAGE' })
+    if (!chatId || targetChatId === chatId) {
+      dispatch({ type: 'ADD_USER_MESSAGE', payload: { message } })
+      dispatch({ type: 'ADD_ASSISTANT_MESSAGE' })
+    }
+
+
 
     setStreaming(true)
-
-    if (activeRequestRef.current) {
-      activeRequestRef.current.abortController.abort()
-    }
 
     try {
       const response = await fetch('/api/openrouter', {
@@ -81,16 +96,18 @@ export function useChat(chatId: string | null) {
       })
 
     } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
+      if (
+        activeRequestRef.current?.id === request.id &&
+        error instanceof Error &&
+        error.name === 'AbortError'
+      ) {
         dispatch({ type: 'REMOVE_EMPTY_ASSISTANT_MESSAGE' })
       }
     } finally {
-      await syncMessages(targetChatId)
 
-      if (activeRequestRef.current === request) {
-        activeRequestRef.current = null
-        setStreaming(false)
-        dispatch({ type: 'RESET_PENDING_MESSAGES' })
+      if (activeRequestRef.current?.id === request.id) {
+        await syncMessages(targetChatId)
+        clearIfCurrent(request.id)
       }
 
     }
