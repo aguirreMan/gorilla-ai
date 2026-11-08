@@ -1,138 +1,17 @@
-'use client'
-
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { Menu, X } from 'lucide-react'
-import { Button } from '../ui/button'
-
-const navLinks = [
-  { label: 'Pricing', href: '/pricing' },
-]
+import { Button } from '@/components/ui/button'
 
 export default function NavbarMarketing() {
-  const [openNav, setOpenNav] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const pathname = usePathname()
-
-  function toggleNav() {
-    setOpenNav(prev => !prev)
-  }
-
-
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 768px)')
-    const handleResize = () => { if (mq.matches) setOpenNav(false) }
-    mq.addEventListener('change', handleResize)
-    return () => mq.removeEventListener('change', handleResize)
-  }, [])
-
-  // Scroll background
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  useEffect(() => {
-    if (openNav) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [openNav])
-
   return (
-    <>
-      <nav className={`fixed w-full top-0 left-0 z-50 px-6 flex items-center justify-between transition-all duration-300 ${
-        scrolled
-          ? 'bg-background/80 backdrop-blur-md border-b border-border py-4'
-          : 'bg-transparent pt-8 pb-4'
-      }`}>
-
-        {/* Logo */}
-        <Link href='/'>
-          <span className='text-2xl font-semibold tracking-tight text-accent cursor-pointer'>
-            Gorilla AI
-          </span>
-        </Link>
-
-        {/* Desktop nav */}
-        <div className='hidden md:flex items-center gap-6'>
-          {navLinks.map(({ label, href }) => (
-            <Link
-              key={label}
-              href={href}
-              onClick={() => setOpenNav(false)}
-              className={`text-sm transition-colors ${
-                pathname === href
-                  ? 'text-foreground font-medium'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {label}
-            </Link>
-          ))}
-          <Button asChild variant='ghost' size='sm'>
-            <Link href='/sign-in' onClick={() => setOpenNav(false)}>Sign in</Link>
-          </Button>
-          <Button asChild size='sm'>
-            <Link href='/sign-up' onClick={() => setOpenNav(false)}>Get started</Link>
-          </Button>
+    <header className='border-b border-border bg-background'>
+      <a href='#main-content' className='sr-only z-50 rounded-md bg-foreground px-4 py-3 text-background focus:not-sr-only focus:absolute focus:left-4 focus:top-4'>Skip to content</a>
+      <nav aria-label='Main navigation' className='mx-auto flex min-h-20 max-w-6xl flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 py-4 sm:px-6'>
+        <Link href='/' aria-label='Gorilla AI home' className='rounded-sm text-base font-semibold tracking-tight text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground sm:text-lg'>Gorilla AI<span aria-hidden='true' className='text-primary'>.</span></Link>
+        <div className='flex items-center gap-1 sm:gap-3'>
+          <Button asChild variant='ghost' className='min-h-11 px-3 text-muted-foreground'><Link href='/sign-in'>Sign in</Link></Button>
+          <Button asChild variant='outline' className='min-h-11 px-3 sm:px-4'><Link href='/dashboard'>Open workspace</Link></Button>
         </div>
-
-        {/* Hamburger */}
-        <button
-          className='md:hidden z-50 text-muted-foreground hover:text-foreground transition-colors'
-          onClick={toggleNav}
-          aria-label='Toggle navigation'
-        >
-          {openNav ? <X size={26} /> : <Menu size={26} />}
-        </button>
       </nav>
-
-      {/* Mobile overlay */}
-      {openNav && (
-        <div
-          className='fixed inset-0 w-full h-full bg-background/95 backdrop-blur-sm z-40 flex flex-col justify-center items-center gap-8'
-          onClick={toggleNav}
-        >
-          <span className='text-xl font-semibold text-foreground'>Gorilla AI</span>
-
-          <nav
-            className='flex flex-col gap-6 items-center'
-            onClick={e => e.stopPropagation()}
-          >
-            {navLinks.map(({ label, href }) => (
-              <Link
-                key={label}
-                href={href}
-                onClick={() => setOpenNav(false)}
-                className={`text-xl font-medium transition-colors ${
-                  pathname === href
-                    ? 'text-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                {label}
-              </Link>
-            ))}
-
-            <div className='flex flex-col gap-3 mt-4 w-full max-w-xs'>
-              <Button asChild variant='outline' size='lg' className='w-full'>
-                <Link href='/sign-in' onClick={() => setOpenNav(false)}>Sign in</Link>
-              </Button>
-              <Button asChild size='lg' className='w-full'>
-                <Link href='/sign-up' onClick={() => setOpenNav(false)}>Get started</Link>
-              </Button>
-            </div>
-          </nav>
-        </div>
-      )}
-    </>
+    </header>
   )
 }

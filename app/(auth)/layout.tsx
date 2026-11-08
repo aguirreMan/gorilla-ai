@@ -2,9 +2,9 @@ import { ClerkProvider } from '@clerk/nextjs'
 import Link from 'next/link'
 
 export default function AuthLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode
+  children: React.ReactNode
 }) {
   return (
     <ClerkProvider>
@@ -16,23 +16,26 @@ export default function AuthLayout({
           w-[500px] h-[500px] rounded-full bg-primary/6 blur-[120px]'
         />
 
-      {/* Back to home */}
+        {/* Back to home */}
         <Link
-          href='/'
-          className='absolute top-6 left-6 z-10 text-sm font-medium text-muted-foreground
-        hover:text-foreground transition-colors'
+          href="/"
+          className="absolute left-6 top-6 z-10 rounded-sm
+    text-sm font-medium text-muted-foreground
+    transition-colors hover:text-foreground
+    focus-visible:outline-2 focus-visible:outline-offset-4
+    focus-visible:outline-primary"
         >
-         ← Back to home
+          ← Back to home
         </Link>
 
-      {/* Main content */}
+        {/* Main content */}
         <div className='relative z-10 w-full max-w-md space-y-6 px-4'>
           <div className='text-center space-y-1'>
             <h1 className='text-2xl font-semibold text-foreground'>
               Gorilla AI
             </h1>
             <p className='text-sm text-muted-foreground'>
-              Understand and debug your code faster
+              Your personal AI workspace
             </p>
           </div>
           {children}
