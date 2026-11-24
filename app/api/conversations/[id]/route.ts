@@ -8,8 +8,6 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
   const { id } = await params
 
-  // Simulate a delay to test delete
-  //await new Promise(resolve => setTimeout(resolve, 2000))
 
   const { error } = await supabaseServer
     .from('conversations')

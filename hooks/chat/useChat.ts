@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef, useReducer } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { chatReducer } from '@/lib/chat/chatReducer'
 import { useFetchMessages } from '@/hooks/chat/useFetchMessages'
-import { useSyncMessages } from '@/hooks/chat/useSyncMessages'
 import { readStream } from '@/lib/chat/readStream'
 
 export function useChat(chatId: string | null) {
   const [pendingMessages, dispatch] = useReducer(chatReducer, [])
-  const { syncMessages } = useSyncMessages()
+
+  const queryClient = useQueryClient()
 
   const { messages: fetchedMessages, isLoading, error } = useFetchMessages(chatId)
 
@@ -18,7 +19,7 @@ export function useChat(chatId: string | null) {
     abortController: AbortController
   } | null>(null)
 
-  function clearIfCurrent(id: string) {
+  function cleanupActiveRequest(id: string) {
     if (activeRequestRef.current?.id === id) {
       activeRequestRef.current = null
       setStreaming(false)
@@ -43,9 +44,8 @@ export function useChat(chatId: string | null) {
 
 
   function stopStreaming() {
-    activeRequestRef.current?.abortController.abort()
-    activeRequestRef.current = null
-    setStreaming(false)
+    const request = activeRequestRef.current
+    request?.abortController.abort()
   }
 
 
@@ -71,8 +71,6 @@ export function useChat(chatId: string | null) {
       dispatch({ type: 'ADD_USER_MESSAGE', payload: { message } })
       dispatch({ type: 'ADD_ASSISTANT_MESSAGE' })
     }
-
-
 
     setStreaming(true)
 
@@ -106,8 +104,11 @@ export function useChat(chatId: string | null) {
     } finally {
 
       if (activeRequestRef.current?.id === request.id) {
-        await syncMessages(targetChatId)
-        clearIfCurrent(request.id)
+        try {
+          await queryClient.invalidateQueries({ queryKey: ['messages', targetChatId] })
+        } finally {
+          cleanupActiveRequest(request.id)
+        }
       }
 
     }

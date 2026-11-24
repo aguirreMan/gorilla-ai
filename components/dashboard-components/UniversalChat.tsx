@@ -33,6 +33,7 @@ export default function UniversalChat({
 
   function handleAction() {
     if (isStreaming) {
+      console.log('Stop button clicked')
       stopStreaming?.()
     } else {
       if (canSend) sendToOpenRouter()

@@ -11,6 +11,12 @@ export function useFetchMessages(chatId: string | null) {
                 throw new Error('Failed to fetch messages for this chat')
             }
             const result: MessagesResponse = await response.json()
+            console.log('Messages query:', {
+                chatId,
+                data,
+                isLoading,
+                error
+            })
             return result.messages
         },
         enabled: !!chatId
