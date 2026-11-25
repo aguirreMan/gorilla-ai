@@ -1,5 +1,9 @@
 import { ClerkProvider } from '@clerk/nextjs'
+import { Suspense } from 'react'
+import { shadcn } from '@clerk/themes'
 import Link from 'next/link'
+import AuthSkeleton from './components/AuthSkeleton'
+
 
 export default function AuthLayout({
   children,
@@ -7,7 +11,18 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        theme: shadcn,
+        cssLayerName: 'clerk',
+        elements: {
+          rootBox: 'w-full flex justify-center',
+          cardBox: 'w-full max-w-[400px]',
+          card: 'px-10 py-8',
+        }
+      }}
+
+    >
       <div className='relative min-h-screen flex items-center justify-center bg-background overflow-hidden'>
         {/* Background glow */}
         <div
@@ -38,7 +53,9 @@ export default function AuthLayout({
               Your personal AI workspace
             </p>
           </div>
-          {children}
+          <Suspense fallback={<AuthSkeleton />}>
+            {children}
+          </Suspense>
         </div>
       </div>
     </ClerkProvider>
